@@ -6,7 +6,10 @@ $logs = [];
 $erro = '';
 try {
     // consulta apenas o email do admin e os registros mais recentes
-    $logs = $conexao->query('SELECT l.created_at, u.email AS admin_email, l.acao, l.entidade, l.entidade_id, l.descricao FROM logs_admin l JOIN usuarios u ON u.id = l.admin_id ORDER BY l.created_at DESC, l.id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC);
+    $logs = $conexao->query('SELECT l.created_at, u.email AS admin_email, l.acao, l.entidade, l.entidade_id, l.descricao
+        FROM logs_admin AS l INNER JOIN usuarios AS u
+            ON u.id = l.admin_id
+            ORDER BY l.created_at DESC, l.id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     error_log('Nao foi possivel consultar o historico administrativo');
     $erro = 'Não foi possível carregar o histórico. Tente novamente.';

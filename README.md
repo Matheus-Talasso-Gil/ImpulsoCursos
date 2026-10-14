@@ -28,10 +28,10 @@ A recuperação de senha funciona somente em conexões locais (`127.0.0.1` ou `:
 
 ## Perfis de acesso
 
-| Perfil | Acesso |
-| --- | --- |
-| Visitante | Login e cadastro de conta com dados do aluno |
-| Usuário | Início, perfil, cursos e sair |
+| Perfil        | Acesso                                             |
+| ------------- | -------------------------------------------------- |
+| Visitante     | Login e cadastro de conta com dados do aluno       |
+| Usuário       | Início, perfil, cursos e sair                      |
 | Administrador | Gestão de alunos, relatório, cursos, perfil e sair |
 
 O cadastro público sempre cria contas do tipo `usuario`. A conta admin é promovida diretamente no banco e uma constraint limita esse papel ao e-mail autorizado. Após mudar o papel no banco, saia e entre novamente para atualizar a sessão. O perfil exibe os dados do aluno vinculado à conta ou informa que ainda não existe vínculo.
@@ -328,6 +328,8 @@ impulsos_cursos/
 
 ## Preparar o banco de dados
 
+As consultas usam `INNER JOIN` explicitamente quando a relação é obrigatória e `LEFT JOIN` quando precisam preservar registros sem relacionamento, como contas sem aluno e cursos sem inscrições.
+
 ### Favoritos de cursos
 
 Contas autenticadas podem favoritar ou remover um favorito nos detalhes do curso. A página **Favoritos** lista os cursos da própria conta por nome; o dashboard comum mostra o total e uma prévia de até três cursos. O menu comum inclui o acesso, mantendo o menu administrativo atual.
@@ -478,7 +480,7 @@ O cadastro usa RETURNING id e salva alunos.usuario_id na mesma transação. O re
 
 Para registros antigos, [vincular_contas_existentes.sql](database/vincular_contas_existentes.sql) compara lower(trim(email)). Somente correspondências únicas nos dois lados e contas livres são preenchidas. Vínculos existentes, casos ambíguos e dados pessoais são preservados. Execute após a migration estrutural, se o banco for antigo:
 
-~~~sh
+```powershell
 psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/vincular_contas_existentes.sql
 php impulsos_cursos/database/verificar_cadastro_relatorio.php
-~~~
+```

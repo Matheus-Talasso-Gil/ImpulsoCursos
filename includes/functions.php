@@ -50,8 +50,9 @@ function listarAlunos($conexao, $cursoId = '', $situacao = 'todas')
     // agrupa os cursos sem duplicar alunos e preserva quem nao possui inscricoes
     $sql = "SELECT a.*, COALESCE((
                 SELECT STRING_AGG(c.nome, ', ' ORDER BY c.nome, c.id)
-                FROM inscricoes i JOIN cursos c ON c.id = i.curso_id
-                WHERE i.usuario_id = a.usuario_id
+                FROM inscricoes AS i INNER JOIN cursos AS c
+                    ON c.id = i.curso_id
+                    WHERE i.usuario_id = a.usuario_id
             ), 'Sem curso') AS cursos
             FROM alunos a";
     $filtros = [];
@@ -140,8 +141,9 @@ function read_w_w($conexao, $id)
         // mostra as inscricoes reais sem usar o campo antigo de turma
         $sql = "SELECT a.*, COALESCE((
                     SELECT STRING_AGG(c.nome, ', ' ORDER BY c.nome, c.id)
-                    FROM inscricoes i JOIN cursos c ON c.id = i.curso_id
-                    WHERE i.usuario_id = a.usuario_id
+                    FROM inscricoes AS i INNER JOIN cursos AS c
+                        ON c.id = i.curso_id
+                        WHERE i.usuario_id = a.usuario_id
                 ), 'Sem curso') AS cursos
                 FROM alunos a WHERE a.id = :id";
         $stmt = $conexao->prepare($sql);
@@ -250,7 +252,10 @@ function consultar_user($conexao, $email)
 // busca apenas os cursos da conta autenticada
 function buscarCursosDoUsuario($conexao)
 {
-    $stmt = $conexao->prepare('SELECT c.id, c.nome, c.descricao, c.carga_horaria FROM inscricoes i JOIN cursos c ON c.id = i.curso_id WHERE i.usuario_id = :usuario_id ORDER BY c.id');
+    $stmt = $conexao->prepare('SELECT c.id, c.nome, c.descricao, c.carga_horaria
+        FROM inscricoes AS i INNER JOIN cursos AS c
+            ON c.id = i.curso_id
+            WHERE i.usuario_id = :usuario_id ORDER BY c.id');
     $stmt->execute([':usuario_id' => (int) $_SESSION['id']]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -377,7 +382,10 @@ function removerFavorito($conexao, $cursoId, $token)
 function buscarFavoritosUsuario($conexao)
 {
     // relaciona os cursos somente aos favoritos da conta autenticada
-    $stmt = $conexao->prepare('SELECT c.id, c.nome, c.descricao, c.carga_horaria FROM favoritos f JOIN cursos c ON c.id = f.curso_id WHERE f.usuario_id = :usuario_id ORDER BY c.nome, c.id');
+    $stmt = $conexao->prepare('SELECT c.id, c.nome, c.descricao, c.carga_horaria
+        FROM favoritos AS f INNER JOIN cursos AS c
+            ON c.id = f.curso_id
+            WHERE f.usuario_id = :usuario_id ORDER BY c.nome, c.id');
     $stmt->execute([':usuario_id' => (int) ($_SESSION['id'] ?? 0)]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }

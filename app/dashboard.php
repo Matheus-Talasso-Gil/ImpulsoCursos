@@ -20,7 +20,9 @@ try {
     // busca somente a conta da sessao mesmo quando nao ha aluno vinculado
     $stmt = $conexao->prepare("SELECT u.email, u.created_at, a.nome, a.ativo,
         COALESCE((SELECT STRING_AGG(c.nome, ', ' ORDER BY c.nome, c.id)
-            FROM inscricoes i JOIN cursos c ON c.id = i.curso_id
+            FROM inscricoes AS i
+            INNER JOIN cursos AS c
+                ON c.id = i.curso_id
             WHERE i.usuario_id = u.id), 'Sem curso') AS cursos,
         a.usuario_id AS aluno_vinculado,
         (SELECT COUNT(*) FROM inscricoes i WHERE i.usuario_id = u.id) AS total_inscricoes,
@@ -31,8 +33,10 @@ try {
     if (!$conta) {
         $erro = 'Não foi possível encontrar sua conta. Saia e entre novamente.';
     } else {
-        $stmt = $conexao->prepare('SELECT c.id, c.nome FROM inscricoes i
-            JOIN cursos c ON c.id = i.curso_id WHERE i.usuario_id = :id ORDER BY c.id LIMIT 3');
+        $stmt = $conexao->prepare('SELECT c.id, c.nome
+            FROM inscricoes AS i INNER JOIN cursos AS c
+                ON c.id = i.curso_id
+                WHERE i.usuario_id = :id ORDER BY c.id LIMIT 3');
         $stmt->execute([':id' => (int) $_SESSION['id']]);
         $meusCursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         // calcula se cada curso ja possui inscricao da conta autenticada

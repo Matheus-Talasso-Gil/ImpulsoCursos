@@ -35,7 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
         if (!$aluno) {
             echo '<p class="message-error" role="alert">Aluno não encontrado.</p>';
         } else {
-            $stmt = $conexao->prepare('SELECT c.id, c.nome FROM inscricoes i JOIN cursos c ON c.id = i.curso_id WHERE i.usuario_id = :usuario_id ORDER BY c.id');
+            $stmt = $conexao->prepare('SELECT c.id, c.nome
+            FROM inscricoes AS i INNER JOIN cursos AS c
+                ON c.id = i.curso_id
+                WHERE i.usuario_id = :usuario_id ORDER BY c.id');
             $stmt->execute([':usuario_id' => $aluno['usuario_id']]);
             $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $dados = ['id' => $id, 'usuario_id' => $aluno['usuario_id'], 'cursos' => array_column($cursos, 'id')];

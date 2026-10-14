@@ -384,7 +384,6 @@ O banco também impede excluir cursos com inscrições, inclusive se surgir uma 
 
 O diagrama técnico em **Recuperação de senha demonstrativa local** integra o fluxo geral. O acesso começa no link Esqueci minha senha do login. Apenas contas `tipo = usuario` podem redefinir a senha, em conexão local e na mesma sessão do navegador. Uma conta não elegível recebe a mesma mensagem e link genéricos, mas não uma recuperação válida. O token dura dez minutos; a redefinição valida token, prazo, tipo da conta, CSRF e confirmação da nova senha, grava `password_hash()` e invalida o token após sucesso. A tela oferece Voltar para entrar; não redireciona automaticamente nem autentica a conta.
 
-
 ### Favoritos
 
 ```mermaid

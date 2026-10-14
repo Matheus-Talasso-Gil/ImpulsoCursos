@@ -6,14 +6,14 @@ Guia para executar, compreender e apresentar o projeto de gestão de alunos.
 
 ## Como usar este guia
 
-| Quero… | Onde encontrar |
-| --- | --- |
-| Rodar o site no computador | [Preparação e execução](#2-preparação-e-execução) |
-| Encontrar a responsabilidade de um arquivo | [Estrutura](#3-estrutura-e-fluxo-de-dados) e [páginas](#4-referência-das-páginas) |
-| Entender os dados e as consultas | [Banco e funções](#5-banco-de-dados-e-funções) |
-| Aprender com exemplos do projeto | [Conceitos](#6-conceitos-usados-no-código) e [exemplos](#7-exemplos-explicados) |
-| Conferir o funcionamento ou investigar um problema | [Testes](#8-conferência-manual) e [dúvidas frequentes](#9-dúvidas-frequentes) |
-| Preparar uma explicação do trabalho | [Roteiro de estudo](#12-roteiro-de-estudo) |
+| Quero…                                             | Onde encontrar                                                                    |
+| -------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Rodar o site no computador                         | [Preparação e execução](#2-preparação-e-execução)                                 |
+| Encontrar a responsabilidade de um arquivo         | [Estrutura](#3-estrutura-e-fluxo-de-dados) e [páginas](#4-referência-das-páginas) |
+| Entender os dados e as consultas                   | [Banco e funções](#5-banco-de-dados-e-funções)                                    |
+| Aprender com exemplos do projeto                   | [Conceitos](#6-conceitos-usados-no-código) e [exemplos](#7-exemplos-explicados)   |
+| Conferir o funcionamento ou investigar um problema | [Testes](#8-conferência-manual) e [dúvidas frequentes](#9-dúvidas-frequentes)     |
+| Preparar uma explicação do trabalho                | [Roteiro de estudo](#12-roteiro-de-estudo)                                        |
 
 ## Sumário
 
@@ -40,13 +40,13 @@ Esta documentação descreve os fluxos PHP atuais. As informações sobre o banc
 
 ### Tecnologias utilizadas
 
-| Tecnologia | Utilização |
-| --- | --- |
-| HTML | Estrutura das páginas, formulários e tabela do relatório. |
-| CSS | Cores, espaçamento, cartões, campos e adaptação para celular em `css/style.css`. |
-| PHP | Recebimento dos formulários, controle de sessão e operações no banco. |
-| PDO | Conexão do PHP com o PostgreSQL e execução das consultas. |
-| PostgreSQL | Armazenamento dos alunos e usuários. |
+| Tecnologia | Utilização                                                                       |
+| ---------- | -------------------------------------------------------------------------------- |
+| HTML       | Estrutura das páginas, formulários e tabela do relatório.                        |
+| CSS        | Cores, espaçamento, cartões, campos e adaptação para celular em `css/style.css`. |
+| PHP        | Recebimento dos formulários, controle de sessão e operações no banco.            |
+| PDO        | Conexão do PHP com o PostgreSQL e execução das consultas.                        |
+| PostgreSQL | Armazenamento dos alunos e usuários.                                             |
 
 ---
 
@@ -190,12 +190,12 @@ Esse diagrama resume as operações protegidas. Algumas páginas carregam a cone
 
 ### 4.2. Componentes compartilhados
 
-| Arquivo | Função |
-| --- | --- |
-| `header.php` | Visitantes veem login e cadastro de conta. Contas comuns veem início, cursos, perfil e sair. Admins também veem gestão de alunos. |
-| `footer.php` | Exibe o texto do rodapé. |
-| `session.php` | Verifica se existe uma sessão ativa e chama `session_start()` quando necessário. |
-| `functions.php` | Carrega a conexão com o banco e reúne as funções de cadastro, consulta, atualização, exclusão e busca de usuários. |
+| Arquivo         | Função                                                                                                                            |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `header.php`    | Visitantes veem login e cadastro de conta. Contas comuns veem início, cursos, perfil e sair. Admins também veem gestão de alunos. |
+| `footer.php`    | Exibe o texto do rodapé.                                                                                                          |
+| `session.php`   | Verifica se existe uma sessão ativa e chama `session_start()` quando necessário.                                                  |
+| `functions.php` | Carrega a conexão com o banco e reúne as funções de cadastro, consulta, atualização, exclusão e busca de usuários.                |
 
 ### 4.3. Conexão com o banco
 
@@ -203,14 +203,14 @@ Esse diagrama resume as operações protegidas. Algumas páginas carregam a cone
 
 ### 4.4. Acesso e sessão
 
-| Arquivo | Funcionamento |
-| --- | --- |
-| `login.php` | Busca a conta pelo e-mail e verifica o hash com `password_verify()`. Renova o ID da sessão e guarda ID, e-mail e tipo da conta antes de redirecionar ao início. |
-| `cadastrar.php` | Cria uma conta comum com senha em hash e redireciona ao login. Cria também o aluno com usuario_id preenchido na mesma transação; não realiza login automático. |
-| `verificar_user.php` | Verifica a sessão. Se `$_SESSION['id']` não existir, redireciona para o login e encerra a execução com `exit()`. |
-| `verificar_admin.php` | Exige login e papel admin. Contas comuns recebem HTTP 403. |
-| `perfil.php` | Busca o aluno usando exclusivamente `$_SESSION['id']`. Exibe seus dados ou informa ausência de vínculo. Senha e CPF não são consultados nessa página. |
-| `logout.php` | Limpa os dados de sessão, destrói a sessão e redireciona para `/impulsos_cursos/index.php`. |
+| Arquivo               | Funcionamento                                                                                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `login.php`           | Busca a conta pelo e-mail e verifica o hash com `password_verify()`. Renova o ID da sessão e guarda ID, e-mail e tipo da conta antes de redirecionar ao início. |
+| `cadastrar.php`       | Cria uma conta comum com senha em hash e redireciona ao login. Cria também o aluno com usuario_id preenchido na mesma transação; não realiza login automático.  |
+| `verificar_user.php`  | Verifica a sessão. Se `$_SESSION['id']` não existir, redireciona para o login e encerra a execução com `exit()`.                                                |
+| `verificar_admin.php` | Exige login e papel admin. Contas comuns recebem HTTP 403.                                                                                                      |
+| `perfil.php`          | Busca o aluno usando exclusivamente `$_SESSION['id']`. Exibe seus dados ou informa ausência de vínculo. Senha e CPF não são consultados nessa página.           |
+| `logout.php`          | Limpa os dados de sessão, destrói a sessão e redireciona para `/impulsos_cursos/index.php`.                                                                     |
 
 ### 4.5. Gestão de alunos
 
@@ -252,24 +252,22 @@ Cancelar abre `delete.php` e limpa as confirmações pendentes. Se as inscriçõ
 
 É a página aberta pelo menu Consultar. Permite buscar por ID inteiro positivo até 2147483647 ou por CPF com ou sem pontuação, inclusive nos registros antigos. Reutiliza `read_w_w()` para mostrar o cadastro e oferece um link ao relatório.
 
-
-
 #### `cursos.php` — Inscrições
 
 Lista cursos do banco e permite inscrever a conta identificada por `$_SESSION['id']`. Ignora um `usuario_id` enviado pelo navegador. A constraint do par usuário–curso e o `ON CONFLICT` impedem inscrições duplicadas. Contas sem aluno também podem se inscrever.
 
 ### 4.6. Cursos e administração
 
-| Arquivo em `app/` | Funcionamento |
-| --- | --- |
-| `curso.php` | Exibe detalhes pelo ID informado no endereço e permite inscrição com token CSRF. ID inválido recebe HTTP 400; curso inexistente recebe HTTP 404. |
-| `meus_cursos.php` | Consulta somente as inscrições da conta identificada pela sessão; sem inscrições, exibe uma mensagem. |
-| `admin.php` | Painel administrativo com totais de alunos, usuários, cursos e inscrições. |
-| `usuarios.php` | Consulta administrativa de ID, e-mail, tipo e aluno vinculado; não consulta senhas. |
-| `alunos_cursos.php` | Consulta administrativa dos cursos dos alunos. |
-| `cursos_admin.php` | Lista cursos e quantidade de inscritos, com acesso ao cadastro, edição e exclusão. |
-| `curso_create.php` e `curso_update.php` | Exigem admin e token CSRF; validam nome e carga horária positiva no servidor. |
-| `curso_delete.php` | Exige admin, confirmação e token CSRF. Cursos com inscrições não podem ser excluídos; nenhuma inscrição é apagada. |
+| Arquivo em `app/`                       | Funcionamento                                                                                                                                    |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `curso.php`                             | Exibe detalhes pelo ID informado no endereço e permite inscrição com token CSRF. ID inválido recebe HTTP 400; curso inexistente recebe HTTP 404. |
+| `meus_cursos.php`                       | Consulta somente as inscrições da conta identificada pela sessão; sem inscrições, exibe uma mensagem.                                            |
+| `admin.php`                             | Painel administrativo com totais de alunos, usuários, cursos e inscrições.                                                                       |
+| `usuarios.php`                          | Consulta administrativa de ID, e-mail, tipo e aluno vinculado; não consulta senhas.                                                              |
+| `alunos_cursos.php`                     | Consulta administrativa dos cursos dos alunos.                                                                                                   |
+| `cursos_admin.php`                      | Lista cursos e quantidade de inscritos, com acesso ao cadastro, edição e exclusão.                                                               |
+| `curso_create.php` e `curso_update.php` | Exigem admin e token CSRF; validam nome e carga horária positiva no servidor.                                                                    |
+| `curso_delete.php`                      | Exige admin, confirmação e token CSRF. Cursos com inscrições não podem ser excluídos; nenhuma inscrição é apagada.                               |
 
 Catálogo, detalhes e Meus cursos aceitam contas comuns e administradores. As demais páginas desta tabela exigem admin. A inscrição pelo catálogo também valida token CSRF.
 
@@ -281,12 +279,12 @@ Catálogo, detalhes e Meus cursos aceitam contas comuns e administradores. As de
 
 O código utiliza quatro tabelas:
 
-| Tabela | Campos usados | Finalidade |
-| --- | --- | --- |
-| `alunos` | `id`, `nome`, `cpf`, `nasc`, `turma`, `ativo`, `email`, `usuario_id` | Cadastro com conta opcional. |
-| `usuarios` | `id`, `email`, `senha`, `tipo` | Contas e níveis de acesso. |
-| `cursos` | `id`, `nome`, `descricao`, `carga_horaria` | Cursos disponíveis. |
-| `inscricoes` | `id`, `usuario_id`, `curso_id` | Relação única entre conta e curso. |
+| Tabela       | Campos usados                                                        | Finalidade                         |
+| ------------ | -------------------------------------------------------------------- | ---------------------------------- |
+| `alunos`     | `id`, `nome`, `cpf`, `nasc`, `turma`, `ativo`, `email`, `usuario_id` | Cadastro com conta opcional.       |
+| `usuarios`   | `id`, `email`, `senha`, `tipo`                                       | Contas e níveis de acesso.         |
+| `cursos`     | `id`, `nome`, `descricao`, `carga_horaria`                           | Cursos disponíveis.                |
+| `inscricoes` | `id`, `usuario_id`, `curso_id`                                       | Relação única entre conta e curso. |
 
 O campo `ativo` representa a situação do aluno e não determina acesso à conta. `alunos.turma` é texto e não gera inscrições. `usuario_id` aceita NULL e possui FK e índice único parcial; alunos antigos continuam no relatório sem conta. Consulte o [dicionário](dicionario.md) e os [diagramas](diagrama.md).
 
@@ -294,16 +292,16 @@ O campo `ativo` representa a situação do aluno e não determina acesso à cont
 
 Arquivo: [includes/functions.php](includes/functions.php).
 
-| Função | O que faz |
-| --- | --- |
-| `cadastrar($conexao, $nome, $turma, $nasc, $ativo, $email, $cpf)` | Insere um aluno. Função legada; o cadastro público utiliza cadastrar_aluno_usuario. |
-| `listarAlunos($conexao, $cursoId = '', $situacao = 'todas')` | Lista alunos em ordem de ID com filtros opcionais. |
-| `apagar($conexao, $id)` | Exclui somente o aluno e verifica as linhas afetadas. As confirmações ficam em `delete.php`. |
-| `Consultar($conexao, $id)` | Função disponível para buscar e exibir um aluno. |
-| `Atualizar($conexao, $id, $nome, $turma, $nasc, $ativo, $email, $cpf)` | Mantém a assinatura existente e grava somente nome, situação e e-mail. |
-| `read_w_w($conexao, $id)` | Busca e exibe os dados do aluno e um link para voltar ao início. |
-| `cadastrar_user($conexao, $email, $senha)` | Valida e-mail e duplicatas e cria uma conta comum com senha em hash e retorna o ID obtido por RETURNING id. |
-| `consultar_user($conexao, $email)` | Retorna ID, e-mail, hash e tipo para autenticação. |
+| Função                                                                 | O que faz                                                                                                   |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `cadastrar($conexao, $nome, $turma, $nasc, $ativo, $email, $cpf)`      | Insere um aluno. Função legada; o cadastro público utiliza cadastrar_aluno_usuario.                         |
+| `listarAlunos($conexao, $cursoId = '', $situacao = 'todas')`           | Lista alunos em ordem de ID com filtros opcionais.                                                          |
+| `apagar($conexao, $id)`                                                | Exclui somente o aluno e verifica as linhas afetadas. As confirmações ficam em `delete.php`.                |
+| `Consultar($conexao, $id)`                                             | Função disponível para buscar e exibir um aluno.                                                            |
+| `Atualizar($conexao, $id, $nome, $turma, $nasc, $ativo, $email, $cpf)` | Mantém a assinatura existente e grava somente nome, situação e e-mail.                                      |
+| `read_w_w($conexao, $id)`                                              | Busca e exibe os dados do aluno e um link para voltar ao início.                                            |
+| `cadastrar_user($conexao, $email, $senha)`                             | Valida e-mail e duplicatas e cria uma conta comum com senha em hash e retorna o ID obtido por RETURNING id. |
+| `consultar_user($conexao, $email)`                                     | Retorna ID, e-mail, hash e tipo para autenticação.                                                          |
 
 ---
 
@@ -354,13 +352,13 @@ $stmt->execute();
 $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
 ```
 
-| Etapa | Explicação |
-| --- | --- |
-| `SELECT ... WHERE id = :id` | Procura o registro com o ID informado. |
-| `prepare($sql)` | Prepara a consulta, deixando o valor separado do SQL. |
-| `bindParam(':id', $id)` | Liga o parâmetro à variável que contém o ID. |
-| `execute()` | Envia a consulta para execução. |
-| `fetch(...)` | Obtém um registro; sem resultado, retorna `false`. |
+| Etapa                       | Explicação                                            |
+| --------------------------- | ----------------------------------------------------- |
+| `SELECT ... WHERE id = :id` | Procura o registro com o ID informado.                |
+| `prepare($sql)`             | Prepara a consulta, deixando o valor separado do SQL. |
+| `bindParam(':id', $id)`     | Liga o parâmetro à variável que contém o ID.          |
+| `execute()`                 | Envia a consulta para execução.                       |
+| `fetch(...)`                | Obtém um registro; sem resultado, retorna `false`.    |
 
 Quando a busca encontra um aluno, `$aluno['nome']` acessa seu nome. A chave `nome` corresponde à coluna retornada pelo banco.
 
@@ -422,40 +420,40 @@ Esse endereço é enviado ao navegador. `exit()` impede que o restante da págin
 
 ## 8. Conferência manual
 
-| Ação | Resultado esperado |
-| --- | --- |
-| Abrir uma página de gestão sem login | Redirecionamento ao login. |
-| Entrar com credenciais válidas | Acesso ao início com sessão autenticada. |
-| Cadastrar um aluno de teste | Mensagem de sucesso e registro no relatório. |
-| Abrir o relatório | IDs em ordem crescente. |
-| Editar pelo relatório | Formulário preenchido; salvar mostra a confirmação. |
-| Consultar um ID existente | Exibição dos dados correspondentes. |
-| Consultar um ID inexistente válido | Mensagem informando que não há registro. |
-| Buscar para excluir e cancelar | O aluno permanece no relatório. |
-| Confirmar a exclusão de um aluno de teste | Registro removido do relatório. |
-| Abrir gestão com conta comum | HTTP 403. |
-| Abrir perfil sem vínculo | Mensagem simples informando ausência de cadastro de aluno. |
-| Cadastro público | Conta e aluno associados automaticamente na mesma transação. |
-| Reutilizar conta já vinculada | Operação rejeitada sem substituir o vínculo existente. |
-| Conferir ID, CPF e nascimento após editar | Valores originais preservados. |
-| Inscrever uma conta sem aluno em um curso | Inscrição funciona e não cria aluno automaticamente. |
-| Repetir inscrição no mesmo curso | Nenhuma inscrição duplicada. |
-| Confirmar exclusão de aluno com cursos pela primeira vez | Cursos listados e nova confirmação exigida. |
-| Cancelar a segunda confirmação | Cadastro permanece. |
-| Concluir exclusão de aluno de teste com cursos | Somente aluno removido; conta e inscrições preservadas. |
-| Clicar em Sair | Sessão encerrada; páginas protegidas passam a exigir login. |
-| Cadastrar e editar curso como admin | Nome, descrição e carga horária salvos aparecem no catálogo e nos detalhes. |
-| Enviar carga horária zero ou negativa | Validação rejeita a gravação. |
-| Abrir gestão de cursos ou usuários com conta comum | HTTP 403. |
-| Consultar Meus cursos com duas contas diferentes | Cada conta vê somente suas próprias inscrições. |
-| Confirmar exclusão de curso de teste sem inscrições | Curso removido da gestão e do catálogo. |
-| Tentar excluir curso com inscrições | Exclusão bloqueada; curso e inscrições preservados. |
-| Enviar inscrição ou gestão de curso sem token CSRF válido | Solicitação rejeitada sem gravar a alteração. |
-| Recuperar senha de conta comum de teste em localhost | Nova senha funciona; senha antiga falha; não há login automático. |
-| Reutilizar token após troca ou aguardar mais de 10 minutos | Redefinição rejeitada. |
-| Solicitar recuperação para e-mail inexistente ou admin | Solicitação mantém resposta genérica; redefinição não altera nenhuma senha. |
-| Confirmar senhas diferentes ou com menos de 8 caracteres | Redefinição rejeitada sem alterar a senha. |
-| Abrir recuperação por conexão fora de loopback | HTTP 403. |
+| Ação                                                       | Resultado esperado                                                          |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Abrir uma página de gestão sem login                       | Redirecionamento ao login.                                                  |
+| Entrar com credenciais válidas                             | Acesso ao início com sessão autenticada.                                    |
+| Cadastrar um aluno de teste                                | Mensagem de sucesso e registro no relatório.                                |
+| Abrir o relatório                                          | IDs em ordem crescente.                                                     |
+| Editar pelo relatório                                      | Formulário preenchido; salvar mostra a confirmação.                         |
+| Consultar um ID existente                                  | Exibição dos dados correspondentes.                                         |
+| Consultar um ID inexistente válido                         | Mensagem informando que não há registro.                                    |
+| Buscar para excluir e cancelar                             | O aluno permanece no relatório.                                             |
+| Confirmar a exclusão de um aluno de teste                  | Registro removido do relatório.                                             |
+| Abrir gestão com conta comum                               | HTTP 403.                                                                   |
+| Abrir perfil sem vínculo                                   | Mensagem simples informando ausência de cadastro de aluno.                  |
+| Cadastro público                                           | Conta e aluno associados automaticamente na mesma transação.                |
+| Reutilizar conta já vinculada                              | Operação rejeitada sem substituir o vínculo existente.                      |
+| Conferir ID, CPF e nascimento após editar                  | Valores originais preservados.                                              |
+| Inscrever uma conta sem aluno em um curso                  | Inscrição funciona e não cria aluno automaticamente.                        |
+| Repetir inscrição no mesmo curso                           | Nenhuma inscrição duplicada.                                                |
+| Confirmar exclusão de aluno com cursos pela primeira vez   | Cursos listados e nova confirmação exigida.                                 |
+| Cancelar a segunda confirmação                             | Cadastro permanece.                                                         |
+| Concluir exclusão de aluno de teste com cursos             | Somente aluno removido; conta e inscrições preservadas.                     |
+| Clicar em Sair                                             | Sessão encerrada; páginas protegidas passam a exigir login.                 |
+| Cadastrar e editar curso como admin                        | Nome, descrição e carga horária salvos aparecem no catálogo e nos detalhes. |
+| Enviar carga horária zero ou negativa                      | Validação rejeita a gravação.                                               |
+| Abrir gestão de cursos ou usuários com conta comum         | HTTP 403.                                                                   |
+| Consultar Meus cursos com duas contas diferentes           | Cada conta vê somente suas próprias inscrições.                             |
+| Confirmar exclusão de curso de teste sem inscrições        | Curso removido da gestão e do catálogo.                                     |
+| Tentar excluir curso com inscrições                        | Exclusão bloqueada; curso e inscrições preservados.                         |
+| Enviar inscrição ou gestão de curso sem token CSRF válido  | Solicitação rejeitada sem gravar a alteração.                               |
+| Recuperar senha de conta comum de teste em localhost       | Nova senha funciona; senha antiga falha; não há login automático.           |
+| Reutilizar token após troca ou aguardar mais de 10 minutos | Redefinição rejeitada.                                                      |
+| Solicitar recuperação para e-mail inexistente ou admin     | Solicitação mantém resposta genérica; redefinição não altera nenhuma senha. |
+| Confirmar senhas diferentes ou com menos de 8 caracteres   | Redefinição rejeitada sem alterar a senha.                                  |
+| Abrir recuperação por conexão fora de loopback             | HTTP 403.                                                                   |
 
 Este roteiro é uma orientação de teste, não um registro de testes executados durante a documentação.
 
@@ -463,17 +461,17 @@ Este roteiro é uma orientação de teste, não um registro de testes executados
 
 ## 9. Dúvidas frequentes
 
-| Situação | Explicação e verificação |
-| --- | --- |
-| Clicar em Cadastrar, Excluir ou Relatório volta ao login | As páginas exigem `$_SESSION['id']`. Entre antes de usá-las. |
-| O endereço muda, mas a página não abre corretamente | Confira se o servidor foi iniciado na pasta que contém `impulsos_cursos`. Os links começam com `/impulsos_cursos/`. |
-| Depois de atualizar, continuo com os campos preenchidos | Esse é o fluxo atual. Confira a mensagem de sucesso e volte ao relatório para ver o registro salvo. |
-| O formulário não envia | Confira campos obrigatórios, formato de e-mail e limites numéricos indicados pelo navegador. |
-| Não consigo localizar um aluno por ID | Informe um inteiro positivo até 2147483647 e confira se o cadastro ainda existe. |
-| O visual antigo continua aparecendo | Atualize com `Ctrl + F5` e confira se o CSS está sendo carregado. |
-| Aparece erro de conexão com o banco | Verifique se o servidor PostgreSQL está acessível e se a conexão está configurada corretamente. |
-| Perfil não consegue consultar cadastro de aluno | Confira a conexão e se `vincular_alunos_usuarios.sql` foi executada. O detalhe técnico fica no log. |
-| Vínculo não foi confirmado | Confira se aluno e conta estão disponíveis e se a conta manteve o mesmo e-mail desde a conferência. |
+| Situação                                                 | Explicação e verificação                                                                                            |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Clicar em Cadastrar, Excluir ou Relatório volta ao login | As páginas exigem `$_SESSION['id']`. Entre antes de usá-las.                                                        |
+| O endereço muda, mas a página não abre corretamente      | Confira se o servidor foi iniciado na pasta que contém `impulsos_cursos`. Os links começam com `/impulsos_cursos/`. |
+| Depois de atualizar, continuo com os campos preenchidos  | Esse é o fluxo atual. Confira a mensagem de sucesso e volte ao relatório para ver o registro salvo.                 |
+| O formulário não envia                                   | Confira campos obrigatórios, formato de e-mail e limites numéricos indicados pelo navegador.                        |
+| Não consigo localizar um aluno por ID                    | Informe um inteiro positivo até 2147483647 e confira se o cadastro ainda existe.                                    |
+| O visual antigo continua aparecendo                      | Atualize com `Ctrl + F5` e confira se o CSS está sendo carregado.                                                   |
+| Aparece erro de conexão com o banco                      | Verifique se o servidor PostgreSQL está acessível e se a conexão está configurada corretamente.                     |
+| Perfil não consegue consultar cadastro de aluno          | Confira a conexão e se `vincular_alunos_usuarios.sql` foi executada. O detalhe técnico fica no log.                 |
+| Vínculo não foi confirmado                               | Confira se aluno e conta estão disponíveis e se a conta manteve o mesmo e-mail desde a conferência.                 |
 
 ---
 
@@ -539,7 +537,17 @@ O cadastro usa RETURNING id e salva alunos.usuario_id na mesma transação. O re
 
 Para registros antigos, [vincular_contas_existentes.sql](database/vincular_contas_existentes.sql) compara lower(trim(email)). Somente correspondências únicas nos dois lados e contas livres são preenchidas. Vínculos existentes, casos ambíguos e dados pessoais são preservados. Execute após a migration estrutural, se o banco for antigo:
 
-~~~sh
+```powershell
 psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/vincular_contas_existentes.sql
 php impulsos_cursos/database/verificar_cadastro_relatorio.php
-~~~
+```
+
+### Relacionamentos nas consultas
+
+- `usuarios -> inscricoes -> cursos`: inscrições referenciam a conta e o curso por FKs obrigatórias. `buscarCursosDoUsuario()` e o dashboard usam `INNER JOIN` entre inscrições e cursos; a conta é filtrada pelo ID da sessão.
+- `usuarios -> favoritos -> cursos`: favoritos possuem FKs obrigatórias para conta e curso. `buscarFavoritosUsuario()` usa `INNER JOIN` com cursos e o ID da sessão, sendo reutilizada pela página Favoritos e pelo dashboard.
+- `logs_admin -> usuarios`: `app/logs_admin.php` usa `INNER JOIN` por `l.admin_id = u.id`. O schema exige `admin_id NOT NULL REFERENCES usuarios(id)` e impede excluir o usuário referenciado. A exclusão do alvo da ação não remove o log, pois `entidade_id` não possui FK.
+
+`INNER JOIN` retorna apenas pares com correspondência. `LEFT JOIN` também mantém registros da tabela à esquerda sem correspondência: contas sem aluno no dashboard e em Usuários, cursos sem inscrições no catálogo, nos detalhes e na gestão de cursos, e alunos sem conta ou cursos em Cursos dos alunos.
+
+No relatório e na consulta individual, o `INNER JOIN` fica dentro da subconsulta de inscrições e cursos. A consulta principal continua partindo de alunos e usa `COALESCE` para mostrar **Sem curso**, preservando alunos sem vínculo ou inscrições.

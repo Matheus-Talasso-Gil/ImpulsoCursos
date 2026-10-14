@@ -4,16 +4,16 @@
 
 Guarda os dados dos alunos cadastrados. Os tipos abaixo seguem [table.pgsql](database/table.pgsql) e a [migration de vínculo](database/vincular_alunos_usuarios.sql). A estrutura de bancos antigos deve ser conferida após executar as migrations.
 
-| Campo | Tipo | Chave | Aceita nulo? | Descrição |
-| --- | --- | --- | --- | --- |
-| id | SERIAL | PK | Não | Identificador do aluno, gerado automaticamente. |
-| nome | VARCHAR(255) | — | Não | Nome do aluno. |
-| cpf | VARCHAR(14) | UNIQUE | Não | Documento imutável após o cadastro. |
-| nasc | DATE | — | Não | Data de nascimento imutável. |
-| turma | VARCHAR(255) | — | Não | Código da turma, como INF-01, ING-01 ou ADM-01. |
-| ativo | BOOLEAN | — | Não | Situação do aluno com padrão TRUE. |
-| email | VARCHAR(255) | — | Não | E-mail do aluno. |
-| usuario_id | INTEGER | FK e UNIQUE parcial | Sim | Referência à conta em `usuarios(id)`. |
+| Campo      | Tipo         | Chave               | Aceita nulo? | Descrição                                       |
+| ---------- | ------------ | ------------------- | ------------ | ----------------------------------------------- |
+| id         | SERIAL       | PK                  | Não          | Identificador do aluno, gerado automaticamente. |
+| nome       | VARCHAR(255) | —                   | Não          | Nome do aluno.                                  |
+| cpf        | VARCHAR(14)  | UNIQUE              | Não          | Documento imutável após o cadastro.             |
+| nasc       | DATE         | —                   | Não          | Data de nascimento imutável.                    |
+| turma      | VARCHAR(255) | —                   | Não          | Código da turma, como INF-01, ING-01 ou ADM-01. |
+| ativo      | BOOLEAN      | —                   | Não          | Situação do aluno com padrão TRUE.              |
+| email      | VARCHAR(255) | —                   | Não          | E-mail do aluno.                                |
+| usuario_id | INTEGER      | FK e UNIQUE parcial | Sim          | Referência à conta em `usuarios(id)`.           |
 
 - Base: tabela `alunos` criada em [database/table.pgsql](database/table.pgsql).
 - A coluna "Aceita nulo?" segue as regras definidas no banco.
@@ -26,13 +26,13 @@ Guarda os dados dos alunos cadastrados. Os tipos abaixo seguem [table.pgsql](dat
 
 Guarda as contas usadas para entrar no sistema.
 
-| Campo | Tipo | Chave | Aceita nulo? | Descrição |
-| --- | --- | --- | --- | --- |
-| id | SERIAL | PK | Não | ID da conta guardado na sessão após o login. |
-| email | VARCHAR(255) | UNIQUE | Não | E-mail usado no login. |
-| senha | VARCHAR(255) | — | Não | Hash gerado por `password_hash()`. |
-| tipo | VARCHAR(20) | CHECK | Não | `usuario` ou `admin` com padrão `usuario`. |
-| created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Não | Data e hora de criação da conta, preenchida pelo banco e somente leitura no sistema. Contas antigas recebem o horário da migration. |
+| Campo      | Tipo         | Chave                     | Aceita nulo? | Descrição                                                                                                                           |
+| ---------- | ------------ | ------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| id         | SERIAL       | PK                        | Não          | ID da conta guardado na sessão após o login.                                                                                        |
+| email      | VARCHAR(255) | UNIQUE                    | Não          | E-mail usado no login.                                                                                                              |
+| senha      | VARCHAR(255) | —                         | Não          | Hash gerado por `password_hash()`.                                                                                                  |
+| tipo       | VARCHAR(20)  | CHECK                     | Não          | `usuario` ou `admin` com padrão `usuario`.                                                                                          |
+| created_at | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP | Não          | Data e hora de criação da conta, preenchida pelo banco e somente leitura no sistema. Contas antigas recebem o horário da migration. |
 
 - Os campos aparecem nas consultas de [functions.php](includes/functions.php).
 - A tabela `usuarios` é criada pelo script [table.pgsql](database/table.pgsql).
@@ -42,24 +42,49 @@ Guarda as contas usadas para entrar no sistema.
 
 ## Cursos
 
-| Campo | Tipo | Chave | Aceita nulo? | Descrição |
-| --- | --- | --- | --- | --- |
-| id | SERIAL | PK | Não | Identificador do curso. |
-| nome | VARCHAR(100) | — | Não | Nome do curso. |
-| descricao | TEXT | — | Sim | Descrição opcional. |
-| carga_horaria | INTEGER | — | Não | Duração em horas. |
+| Campo         | Tipo         | Chave | Aceita nulo? | Descrição               |
+| ------------- | ------------ | ----- | ------------ | ----------------------- |
+| id            | SERIAL       | PK    | Não          | Identificador do curso. |
+| nome          | VARCHAR(100) | —     | Não          | Nome do curso.          |
+| descricao     | TEXT         | —     | Sim          | Descrição opcional.     |
+| carga_horaria | INTEGER      | —     | Não          | Duração em horas.       |
 
 O schema atual não possui `CHECK` para exigir `cursos.carga_horaria > 0`; essa validação é feita no servidor pelos formulários administrativos. O campo não possui valor padrão.
 
 ## Inscrições
 
-| Campo | Tipo | Chave | Aceita nulo? | Descrição |
-| --- | --- | --- | --- | --- |
-| id | SERIAL | PK | Não | Identificador da inscrição. |
-| usuario_id | INTEGER | FK | Não | Referência a `usuarios(id)`. |
-| curso_id | INTEGER | FK | Não | Referência a `cursos(id)`. |
+| Campo      | Tipo    | Chave | Aceita nulo? | Descrição                    |
+| ---------- | ------- | ----- | ------------ | ---------------------------- |
+| id         | SERIAL  | PK    | Não          | Identificador da inscrição.  |
+| usuario_id | INTEGER | FK    | Não          | Referência a `usuarios(id)`. |
+| curso_id   | INTEGER | FK    | Não          | Referência a `cursos(id)`.   |
 
 `inscricao_unica` impede repetir o par `(usuario_id, curso_id)`. Inscrições pertencem à conta e podem existir sem cadastro de aluno. `alunos.turma` não gera inscrição nem possui relação automática com `cursos`. As FKs não usam exclusão em cascata.
+
+## Favoritos
+
+| Campo      | Tipo      | Restrição                 | Nulo | Descrição                                          |
+| ---------- | --------- | ------------------------- | ---- | -------------------------------------------------- |
+| id         | SERIAL    | PK                        | Não  | Identificador do favorito.                         |
+| usuario_id | INTEGER   | FK                        | Não  | Referência a `usuarios(id)` com ON DELETE CASCADE. |
+| curso_id   | INTEGER   | FK                        | Não  | Referência a `cursos(id)` com ON DELETE CASCADE.   |
+| created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Não  | Data de criação do favorito.                       |
+
+`favoritos_usuario_curso_unique` impede repetir o par `(usuario_id, curso_id)`. Favoritos são independentes das inscrições.
+
+## Logs administrativos
+
+| Campo       | Tipo        | Restrição                 | Nulo | Descrição                                                 |
+| ----------- | ----------- | ------------------------- | ---- | --------------------------------------------------------- |
+| id          | SERIAL      | PK                        | Não  | Identificador do log.                                     |
+| admin_id    | INTEGER     | FK                        | Não  | Referência a `usuarios(id)`, sem exclusão em cascata.     |
+| acao        | VARCHAR(20) | NOT NULL                  | Não  | Ação administrativa registrada.                           |
+| entidade    | VARCHAR(20) | NOT NULL                  | Não  | Tipo do alvo da ação.                                     |
+| entidade_id | INTEGER     | —                         | Sim  | ID do alvo, sem FK para preservar logs após sua exclusão. |
+| descricao   | TEXT        | NOT NULL                  | Não  | Descrição da ação.                                        |
+| created_at  | TIMESTAMP   | DEFAULT CURRENT_TIMESTAMP | Não  | Data de criação do log.                                   |
+
+A aplicação registra ações apenas para uma sessão administrativa válida. A FK obrigatória de `admin_id` permite relacionar logs e usuários com `INNER JOIN`.
 
 ## Scripts do banco
 
