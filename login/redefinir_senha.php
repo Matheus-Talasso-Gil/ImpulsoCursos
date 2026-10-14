@@ -7,12 +7,12 @@ if (isset($_SESSION['id'])) {
 }
 protegerRecuperacaoLocal();
 require_once __DIR__ . '/../database/connect_postgres.php';
-// evita compartilhar a url com token e armazenar esta pagina no cache
+// evita compartilhar a origem e armazenar esta pagina no cache
 header('Referrer-Policy: no-referrer');
 header('Cache-Control: no-store');
 $_SESSION['recuperacao_csrf'] ??= bin2hex(random_bytes(32));
-// o token vem da url o id da conta e obtido apenas da sessao
-$token = $_GET['token'] ?? null;
+// recupera o token e a identidade somente da sessao
+$token = $_SESSION['recuperacao_continuar'] ?? null;
 $erro = '';
 $podeRedefinir = false;
 $sucesso = false;

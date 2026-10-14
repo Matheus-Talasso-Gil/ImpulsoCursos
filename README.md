@@ -351,7 +351,7 @@ php impulsos_cursos/database/verificar_favoritos.php
 ### Estrutura inicial
 
 1. Crie o banco PostgreSQL que será usado pelo sistema.
-2. Configure host, nome do banco, usuário e senha em `database/connect_postgres.php`.
+2. Copie `database/config.example.php` para `database/config.local.php` e configure host, nome do banco, usuário e senha. O arquivo local é ignorado pelo Git. Como alternativa, configure `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS` no ambiente do PHP.
 3. No terminal aberto na pasta que contém `impulsos_cursos`, crie as tabelas iniciais:
 
     ```powershell
@@ -484,3 +484,17 @@ Para registros antigos, [vincular_contas_existentes.sql](database/vincular_conta
 psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/vincular_contas_existentes.sql
 php impulsos_cursos/database/verificar_cadastro_relatorio.php
 ```
+
+## Segurança implementada
+
+As consultas usam prepared statements para dados externos; as senhas são gravadas com `password_hash()` e conferidas com `password_verify()`. Dados de usuários e do banco são escapados com `htmlspecialchars()` nas telas.
+
+Login, cadastro, recuperação, inscrições, cancelamentos, favoritos e operações administrativas de gravação validam tokens CSRF. Sair mantém o link do menu e pede confirmação por POST com CSRF. A sessão regenera o ID após login, descarta dados da identidade anterior e expira após mais de 30 minutos de inatividade. Cookies usam HttpOnly, SameSite=Lax e Secure quando a conexão é HTTPS. Rotas administrativas exigem o papel admin no servidor.
+
+PKs, FKs, UNIQUE e NOT NULL protegem a integridade. Na revisão de 14/10/2026, o banco configurado não apresentou órfãos ou duplicidades nas relações verificadas, mas seis campos de bancos antigos ainda aceitavam NULL. A migration abaixo alinha esses campos ao schema, abortando integralmente se houver valores nulos, sem apagar ou preencher dados:
+
+```powershell
+psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/garantir_campos_obrigatorios.sql
+```
+
+A migration foi testada em tabelas temporárias e não foi aplicada ao banco configurado. Veja os resultados e o checklist em [testes.md](testes.md). A recuperação permanece uma demonstração local para contas de teste, sem verificação de identidade; seu token fica na sessão e não na URL. Credenciais antigas continuam no histórico Git e precisam ser trocadas antes de usar o projeto com dados reais.

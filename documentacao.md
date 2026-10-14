@@ -199,7 +199,7 @@ Esse diagrama resume as operações protegidas. Algumas páginas carregam a cone
 
 ### 4.3. Conexão com o banco
 
-**`connect_postgres.php`** define host, nome do banco, usuário e senha e cria o objeto `$conexao` com `new PDO(...)`. O banco configurado no código é `escola`. Se ocorrer uma exceção de conexão, o bloco `catch` mostra a mensagem de erro. As credenciais devem ser consultadas no próprio arquivo; não são repetidas aqui.
+**`connect_postgres.php`** lê a configuração de `database/config.local.php`, ignorado pelo Git, ou das variáveis `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS`. Cria `$conexao` com PDO e registra falhas técnicas no servidor, exibindo apenas uma mensagem genérica. Para uma instalação nova, copie `database/config.example.php` para o arquivo local e preencha os valores.
 
 ### 4.4. Acesso e sessão
 
@@ -210,7 +210,7 @@ Esse diagrama resume as operações protegidas. Algumas páginas carregam a cone
 | `verificar_user.php`  | Verifica a sessão. Se `$_SESSION['id']` não existir, redireciona para o login e encerra a execução com `exit()`.                                                |
 | `verificar_admin.php` | Exige login e papel admin. Contas comuns recebem HTTP 403.                                                                                                      |
 | `perfil.php`          | Busca o aluno usando exclusivamente `$_SESSION['id']`. Exibe seus dados ou informa ausência de vínculo. Senha e CPF não são consultados nessa página.           |
-| `logout.php`          | Limpa os dados de sessão, destrói a sessão e redireciona para `/impulsos_cursos/index.php`.                                                                     |
+| `logout.php`          | Confirma saída por POST com CSRF, destrói a sessão, remove o cookie e redireciona ao início.                                                                    |
 
 ### 4.5. Gestão de alunos
 
@@ -441,7 +441,7 @@ Esse endereço é enviado ao navegador. `exit()` impede que o restante da págin
 | Confirmar exclusão de aluno com cursos pela primeira vez   | Cursos listados e nova confirmação exigida.                                 |
 | Cancelar a segunda confirmação                             | Cadastro permanece.                                                         |
 | Concluir exclusão de aluno de teste com cursos             | Somente aluno removido; conta e inscrições preservadas.                     |
-| Clicar em Sair                                             | Sessão encerrada; páginas protegidas passam a exigir login.                 |
+| Clicar em Sair e confirmar                                 | Sessão encerrada; páginas protegidas passam a exigir login.                 |
 | Cadastrar e editar curso como admin                        | Nome, descrição e carga horária salvos aparecem no catálogo e nos detalhes. |
 | Enviar carga horária zero ou negativa                      | Validação rejeita a gravação.                                               |
 | Abrir gestão de cursos ou usuários com conta comum         | HTTP 403.                                                                   |
@@ -551,3 +551,38 @@ php impulsos_cursos/database/verificar_cadastro_relatorio.php
 `INNER JOIN` retorna apenas pares com correspondência. `LEFT JOIN` também mantém registros da tabela à esquerda sem correspondência: contas sem aluno no dashboard e em Usuários, cursos sem inscrições no catálogo, nos detalhes e na gestão de cursos, e alunos sem conta ou cursos em Cursos dos alunos.
 
 No relatório e na consulta individual, o `INNER JOIN` fica dentro da subconsulta de inscrições e cursos. A consulta principal continua partindo de alunos e usa `COALESCE` para mostrar **Sem curso**, preservando alunos sem vínculo ou inscrições.
+
+## Revisão de segurança e banco em 14/10/2026
+
+Dados externos são passados por parâmetros PDO. A concatenação no painel usa apenas nomes de tabelas de uma lista fixa; os filtros do relatório usam condições fixas e parâmetros. Dados textuais exibidos são escapados com `htmlspecialchars()`; IDs e contadores são convertidos para inteiro.
+
+Login valida e-mail e CSRF, confere `password_verify()`, regenera o ID da sessão e limpa dados da identidade anterior. Cadastro grava hashes e conta/aluno na mesma transação. Sessões usam cookies com HttpOnly, SameSite=Lax, Secure em HTTPS, modo estrito e somente cookies; mais de 30 minutos de inatividade encerram o acesso na próxima requisição. Privacidade e Termos reutilizam a inicialização central em modo de leitura, sem renovar atividade.
+
+Rotas de aluno, usuários, gestão de cursos e logs exigem admin no servidor. Perfil, cursos próprios, inscrições, cancelamentos e favoritos usam o ID da sessão. A seleção de um curso por URL é legítima no catálogo; não permite escolher a conta que será inscrita. O papel administrativo fica na sessão: alterações de papel no banco exigem novo login para serem refletidas.
+
+As gravações de cadastro, edição, exclusão, inscrição, cancelamento, favoritos e recuperação já exigiam CSRF. A revisão acrescentou CSRF ao login e à confirmação de logout. GET em Sair apenas mostra a confirmação; POST sem token válido mantém a sessão. O token de recuperação deixou a URL e fica somente na sessão; mantém expiração, uso único e validação do tipo da conta. Formulários de consulta sem gravação não precisam de token para alterar dados, pois não alteram registros.
+
+### Integridade e exclusões
+
+Todas as seis tabelas possuem PK. E-mail de conta e CPF possuem UNIQUE; `alunos.usuario_id` tem índice único parcial e admite NULL. Inscrições e favoritos têm UNIQUE no par conta/curso e FKs obrigatórias. As relações foram confirmadas no banco configurado, sem órfãos ou duplicidades nas verificações executadas.
+
+- `alunos.usuario_id -> usuarios.id`: sem CASCADE; a conta referenciada não pode ser apagada enquanto houver vínculo. Excluir o aluno preserva conta e inscrições.
+- `inscricoes.usuario_id -> usuarios.id` e `inscricoes.curso_id -> cursos.id`: sem CASCADE; inscrições impedem excluir a conta ou o curso referenciado.
+- `favoritos.usuario_id -> usuarios.id` e `favoritos.curso_id -> cursos.id`: ON DELETE CASCADE remove apenas favoritos quando o registro referenciado é excluído.
+- `logs_admin.admin_id -> usuarios.id`: sem CASCADE; preserva o administrador referenciado. `entidade_id` não é FK, preservando histórico após excluir o alvo.
+
+A ação padrão dessas FKs sem ON DELETE explícito é NO ACTION. Os CHECKs existentes limitam o tipo da conta e o e-mail autorizado para admin. O trigger de alunos protege ID, CPF, nascimento e vínculo já preenchido. Carga horária positiva é validada no PHP; não foi acrescentado CHECK ao banco.
+
+Os índices de PK, e-mail, CPF, pares conta/curso e vínculo único de aluno foram mantidos. Os pares cobrem buscas pelo primeiro campo, `usuario_id`. Não foram criados índices adicionais sem evidência de necessidade ou de lentidão; buscas por `curso_id` e ordenação de logs podem ser avaliadas com o crescimento dos dados.
+
+### Diferença em bancos antigos
+
+No banco revisado, `alunos.nome`, `turma`, `nasc`, `ativo`, `usuarios.email` e `senha` ainda aceitavam NULL, apesar de serem obrigatórios no schema. Não havia valores nulos nesses campos. `database/garantir_campos_obrigatorios.sql` aplica NOT NULL e o padrão TRUE de ativo dentro de uma transação. Não modifica valores, tipos, PKs ou FKs; qualquer NULL aborta a aplicação inteira. Foi testada somente em tabelas temporárias.
+
+`CREATE TABLE IF NOT EXISTS` não corrige automaticamente tabelas já existentes. Aplique as migrations documentadas em instalações antigas. O script destrutivo de reset é legado e não é um instalador das seis tabelas atuais; não foi executado nem ampliado com CASCADE.
+
+### Validação e limites
+
+O roteiro completo e os comandos estão em [testes.md](testes.md). A consulta de integridade usa uma transação READ ONLY; os testes de operações usam tabelas temporárias. Não houve gravação em registros reais nem alteração do CSS.
+
+A recuperação local permite redefinir contas comuns conhecendo o e-mail: deve continuar limitada a contas de teste. Credenciais removidas do arquivo rastreado permanecem no histórico Git; a revisão não troca a senha do servidor. Também não acrescenta limite de tentativas de login ou invalidação imediata de sessões ao mudar senha ou papel. Não há upload no sistema.

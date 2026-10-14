@@ -2,14 +2,25 @@
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../includes/functions.php';
 $erro = '';
+$_SESSION['login_token'] ??= bin2hex(random_bytes(32));
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $usuario = consultar_user($conexao, $_POST['email'] ?? '');
+        // valida o token antes de autenticar a conta
+        if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['login_token'], $_POST['token'])) {
+            throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e tente novamente.');
+        }
+        $email = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';
+        $usuario = false;
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) && strlen($email) <= 255) {
+            $usuario = consultar_user($conexao, $email);
+        }
         // confere a senha pelo hash sem recuperar a senha original
         $senha = $_POST['senha'] ?? '';
         if ($usuario && is_string($senha) && password_verify($senha, $usuario['senha'])) {
             // troca o id da sessao para impedir o reaproveitamento da sessao anterior
             session_regenerate_id(true);
+            // descarta tokens e selecoes da identidade anterior
+            $_SESSION = [];
             $_SESSION['id'] = $usuario['id'];
             $_SESSION['email'] = $usuario['email'];
             $_SESSION['tipo'] = $usuario['tipo'] ?? 'usuario';
@@ -24,6 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
         $erro = 'Usuário ou senha inválidos';
+    } catch (InvalidArgumentException $e) {
+        $erro = $e->getMessage();
     } catch (PDOException $e) {
         // registra o erro no servidor sem expor detalhes do banco ao usuario
         error_log($e->getMessage());
@@ -54,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p class="message-error" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
     <?php endif; ?>
     <form action="" method="post">
+        <input type="hidden" name="token" value="<?= htmlspecialchars($_SESSION['login_token'], ENT_QUOTES, 'UTF-8') ?>">
         <label for="email">E-mail:</label>
         <input type="email" name="email" id="email" autocomplete="username" required>
         <label for="senha">Senha:</label>

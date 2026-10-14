@@ -20,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         validarCsrfRecuperacao($_POST['csrf'] ?? null);
         // so ativa a recuperacao para usuarios comuns a resposta inicial e igual para qualquer email
         $tokenContinuar = iniciarRecuperacaoSenha($conexao, $_POST['email'] ?? null);
+        $_SESSION['recuperacao_continuar'] = $tokenContinuar;
         $mensagem = 'Se existir uma conta de usuário válida com esse e-mail, será possível continuar com a recuperação.';
     } catch (InvalidArgumentException $e) {
         $erro = $e->getMessage();
@@ -45,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($erro !== ''): ?><p class="message-error" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p><?php endif; ?>
     <?php if ($mensagem !== ''): ?>
         <p class="message-warning" role="status"><?= htmlspecialchars($mensagem, ENT_QUOTES, 'UTF-8') ?></p>
-        <p><a class="report-link" href="redefinir_senha.php?token=<?= htmlspecialchars($tokenContinuar, ENT_QUOTES, 'UTF-8') ?>">Continuar recuperação</a></p>
+        <p><a class="report-link" href="redefinir_senha.php">Continuar recuperação</a></p>
     <?php else: ?>
         <form method="post">
             <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['recuperacao_csrf'], ENT_QUOTES, 'UTF-8') ?>">

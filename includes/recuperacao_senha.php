@@ -17,7 +17,7 @@ function validarCsrfRecuperacao($token)
 function iniciarRecuperacaoSenha($conexao, $email)
 {
     // invalida a recuperacao anterior a cada nova solicitacao
-    unset($_SESSION['recuperacao_senha']);
+    unset($_SESSION['recuperacao_senha'], $_SESSION['recuperacao_continuar']);
     // gera um token imprevisivel para impedir tentativas de adivinhacao
     $token = bin2hex(random_bytes(32));
     $email = is_string($email) ? trim($email) : '';
@@ -30,7 +30,7 @@ function iniciarRecuperacaoSenha($conexao, $email)
             $_SESSION['recuperacao_senha'] = ['usuario_id' => (int) $usuario['id'], 'token' => $token, 'expira_em' => time() + 600];
         }
     }
-    // retorna o mesmo tipo de link sem revelar se a conta existe
+    // mantem a resposta generica sem revelar se a conta existe
     return $token;
 }
 function validarRecuperacaoSenha($conexao, $token)
@@ -80,5 +80,5 @@ function redefinirSenhaUsuario($conexao, $token, $csrf, $senha, $confirmacao)
         throw new InvalidArgumentException('Solicitação inválida ou expirada.');
     }
     // invalida o token apos a troca para impedir uma segunda utilizacao
-    unset($_SESSION['recuperacao_senha']);
+    unset($_SESSION['recuperacao_senha'], $_SESSION['recuperacao_continuar']);
 }

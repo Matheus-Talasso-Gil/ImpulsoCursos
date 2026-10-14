@@ -17,7 +17,8 @@ $erroPerfil = '';
 try {
     $stmt = $conexao->prepare("SELECT a.id, a.nome, a.nasc, a.email, a.ativo,
         COALESCE((SELECT STRING_AGG(c.nome, ', ' ORDER BY c.nome, c.id)
-            FROM inscricoes i JOIN cursos c ON c.id = i.curso_id
+            FROM inscricoes AS i
+            INNER JOIN cursos AS c ON c.id = i.curso_id
             WHERE i.usuario_id = a.usuario_id), 'Sem curso') AS cursos
         FROM alunos a WHERE a.usuario_id = :usuario_id");
     $stmt->execute([':usuario_id' => (int) $_SESSION['id']]);

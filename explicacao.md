@@ -81,7 +81,7 @@ A árvore destaca os pontos de entrada. As tabelas abaixo explicam todos os arqu
 | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [cadastrar.php](login/cadastrar.php)                                          | Recebe nome, CPF, nascimento, e-mail e senha. Cria conta comum e aluno na mesma transação, com aluno ativo e turma `Sem turma`. O vínculo é preenchido automaticamente usando o ID retornado pelo INSERT da conta. |
 | [login.php](login/login.php)                                                  | Confere e-mail e senha, renova o identificador da sessão e guarda os dados de autenticação. Encaminha usuário ao dashboard e administrador ao painel.                                                              |
-| [logout.php](login/logout.php)                                                | Limpa os dados da sessão, encerra a autenticação e retorna à página inicial.                                                                                                                                       |
+| [logout.php](login/logout.php)                                                | Pede confirmação por POST com CSRF, limpa a sessão, remove o cookie e retorna à página inicial.                                                                                                                    |
 | [perfil.php](login/perfil.php)                                                | Mostra os dados da própria conta, sua data de criação e o aluno vinculado. Contas comuns também veem uma prévia de até três cursos.                                                                                |
 | [recuperar_senha.php](login/recuperar_senha.php)                              | Inicia a demonstração local de recuperação para contas comuns e apresenta um link para continuar. Não envia e-mail.                                                                                                |
 | [redefinir_senha.php](login/redefinir_senha.php)                              | Valida a recuperação e recebe a nova senha com confirmação. Após salvar, o token deixa de valer.                                                                                                                   |
@@ -281,3 +281,17 @@ O parâmetro vem de `$_SESSION['id']`. Meus cursos reutiliza essa função. Favo
 O dashboard e a confirmação de exclusão de aluno relacionam inscrições com cursos. O relatório e a consulta individual fazem essa relação dentro de uma subconsulta; alunos sem inscrições continuam aparecendo como **Sem curso**. Logs administrativos relacionam `logs_admin AS l` com `usuarios AS u` por `u.id = l.admin_id`, uma FK obrigatória.
 
 Os `LEFT JOINs` preservam contas sem aluno, cursos sem inscrições e alunos sem conta ou curso nas listagens que precisam mostrar esses registros.
+
+## Como as proteções funcionam
+
+SQL Injection ocorre quando uma entrada vira parte do comando SQL. Aqui `prepare()` e `execute()` enviam valores separados do comando: um texto como `' OR 1=1 --` é tratado como valor, não como condição SQL. Nomes de tabelas no painel vêm de uma lista fixa, nunca do navegador.
+
+XSS acontece quando um texto é interpretado como HTML ou script. As telas usam `htmlspecialchars()` para mostrar nomes, descrições e mensagens como texto. IDs usados nos links são convertidos para inteiro. A revisão não encontrou um ponto de XSS nas telas examinadas.
+
+CSRF é uma solicitação feita por outro site usando a sessão do navegador. Cada operação de gravação exige um token imprevisível de `random_bytes()`, salvo na sessão e comparado com `hash_equals()`. Login também exige token; Sair agora pede confirmação por POST, sem encerrar a sessão apenas ao abrir o link.
+
+A sessão identifica a conta e expira por inatividade. Após login, o ID é regenerado e os dados da identidade anterior são descartados. Cookies usam HttpOnly e SameSite=Lax; Secure é aplicado em HTTPS. Privacidade e Termos leem a sessão sem renovar atividade. `verificar_user.php` exige login e `verificar_admin.php` exige o papel admin; esconder um link não substitui essas verificações.
+
+PK identifica cada registro; FK exige que o registro relacionado exista; UNIQUE impede duplicatas; NOT NULL exige um valor. O vínculo de aluno é opcional e único, enquanto inscrições e favoritos exigem conta e curso. Apenas favoritos usam exclusão em cascata. Logs preservam o administrador e continuam existindo após excluir o alvo da ação.
+
+`database/verificar_integridade.php` consulta metadados e totais sem alterar dados. `garantir_campos_obrigatorios.sql` corrige a ausência de NOT NULL em bancos antigos, abortando se houver nulos. Os testes e suas limitações estão em [testes.md](testes.md). A conexão usa configuração local ignorada pelo Git ou variáveis de ambiente, preservando PDO e PostgreSQL.

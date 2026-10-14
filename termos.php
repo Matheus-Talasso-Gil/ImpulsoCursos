@@ -7,12 +7,7 @@ if (!in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'HEAD'], true)) {
 }
 // o menu pode ler a sessao existente sem alterar dados ou renovar a atividade
 $headerSessaoSomenteLeitura = true;
-$cookieSessao = $_COOKIE[session_name()] ?? null;
-// aceita somente um identificador de sessao no formato esperado
-if (session_status() === PHP_SESSION_NONE && is_string($cookieSessao)
-    && preg_match('/^[a-zA-Z0-9,-]{1,256}$/D', $cookieSessao) === 1) {
-    session_start(['read_and_close' => true]);
-}
+require_once __DIR__ . '/includes/session.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
