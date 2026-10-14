@@ -98,6 +98,136 @@ Para abrir e visualizar os protótipos `.excalidraw` no VS Code, instale a exten
 ![Tela de resultado da consulta](prototipos/imagens/tela_resultado_da_consulta.png)
 </details>
 
+## Telas do sistema final
+
+Capturas das telas implementadas no Impulso Cursos. Clique no título de cada tela para visualizar a imagem.
+
+<details>
+<summary>Tela inicial pública</summary>
+
+![Tela inicial pública](imagens%20finais/tela_de_login.png)
+
+</details>
+
+<details>
+<summary>Dashboard do usuário</summary>
+
+![Dashboard do usuário](imagens%20finais/tela_inicial_de_usuario_cadastrado.png)
+
+</details>
+
+<details>
+<summary>Tela inicial do administrador</summary>
+
+![Tela inicial do administrador](imagens%20finais/tela_inicial_adm.png)
+
+</details>
+
+<details>
+<summary>Painel administrativo</summary>
+
+![Painel administrativo](imagens%20finais/tela_painel_do_adm.png)
+
+</details>
+
+<details>
+<summary>Meu perfil</summary>
+
+![Meu perfil](imagens%20finais/tela_meu_perfil.png)
+
+</details>
+
+<details>
+<summary>Todos os cursos</summary>
+
+![Todos os cursos](imagens%20finais/tela_de_todos_os_cursos.png)
+
+</details>
+
+<details>
+<summary>Meus cursos</summary>
+
+![Meus cursos](imagens%20finais/tela_dos_meus_cursos.png)
+
+</details>
+
+<details>
+<summary>Cursos favoritos</summary>
+
+![Cursos favoritos](imagens%20finais/tela_de_cursos_favoritos.png)
+
+</details>
+
+<details>
+<summary>Gerenciamento de cursos</summary>
+
+![Gerenciamento de cursos](imagens%20finais/tela_de_gerenciamento_de_cursos.png)
+
+</details>
+
+<details>
+<summary>Consulta de aluno</summary>
+
+![Consulta de aluno](imagens%20finais/tela_de_consulta_de_aluno.png)
+
+</details>
+
+<details>
+<summary>Relatório de alunos</summary>
+
+![Relatório de alunos](imagens%20finais/tela_relatorio_de_alunos.png)
+
+</details>
+
+<details>
+<summary>Cursos dos alunos</summary>
+
+![Cursos dos alunos](imagens%20finais/tela_cursos_dos_alunos.png)
+
+</details>
+
+<details>
+<summary>Usuários cadastrados</summary>
+
+![Usuários cadastrados](imagens%20finais/tela_de_usuarios_cadastrados.png)
+
+</details>
+
+<details>
+<summary>Exclusão de aluno</summary>
+
+![Exclusão de aluno](imagens%20finais/tela_de_exclusoa_de_aluno.png)
+
+</details>
+
+<details>
+<summary>Confirmação de exclusão de aluno</summary>
+
+![Confirmação de exclusão de aluno](imagens%20finais/tela_confirmacao_exclusao.png)
+
+</details>
+
+<details>
+<summary>Confirmação de saída</summary>
+
+![Confirmação de saída](imagens%20finais/tela_confirmacao_logout.png)
+
+</details>
+
+<details>
+<summary>Política de Privacidade</summary>
+
+![Política de Privacidade](imagens%20finais/tela_da_politica_de_uso.png)
+
+</details>
+
+<details>
+<summary>Termos de Uso</summary>
+
+![Termos de Uso](imagens%20finais/tela_dos_termos_de_uso.png)
+
+</details>
+
 ## Evolução do projeto no Trello
 
 O desenvolvimento do **Impulso Cursos** foi acompanhado por um quadro Kanban no Trello.
@@ -221,11 +351,19 @@ Atualização do quadro Trello com 51 tarefas concluídas, duas em andamento e d
 ![Trello - commits 85 a 91](trello/commits85-91.png)
 
 </details>
+<details>
+<summary><strong>Commits 92–98</strong></summary>
+
+Atualização do quadro Trello com 56 tarefas concluídas, duas a fazer e uma em andamento. O registro mostra a evolução do dashboard, da data de criação das contas e da documentação, com favoritos e capturas do sistema final ainda na lista de tarefas daquele momento.
+
+![Trello - commits 92 a 98](trello/commits92-98.png)
+
+</details>
 <!-- markdownlint-enable MD033 -->
 
 ## Estrutura principal
 
-A estrutura abaixo apresenta os arquivos atuais do projeto, incluindo a recuperação de senha, a gestão de cursos, os protótipos e as imagens do Trello até os commits 85–91.
+A estrutura abaixo apresenta os arquivos atuais do projeto, incluindo a recuperação de senha, a gestão de cursos, os protótipos e as capturas do sistema final e as imagens do Trello até os commits 92–98.
 
 ```text
 impulsos_cursos/
@@ -303,6 +441,8 @@ impulsos_cursos/
 │   ├── tela_login.excalidraw
 │   └── tela_resultado_da_consulta.excalidraw
 │
+├── imagens finais/              # capturas das telas implementadas
+│
 ├── trello/
 │   ├── primeiros7commits.png
 │   ├── commits8-15.png
@@ -316,7 +456,8 @@ impulsos_cursos/
 │   ├── commits64-70.png
 │   ├── commits71-77.png
 │   ├── commits78-84.png
-│   └── commits85-91.png
+│   ├── commits85-91.png
+│   └── commits92-98.png
 │
 ├── briefing.md
 ├── diagrama.md
