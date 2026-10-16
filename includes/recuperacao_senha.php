@@ -9,7 +9,7 @@ function protegerRecuperacaoLocal()
 }
 function validarCsrfRecuperacao($token)
 {
-    // compara os tokens de forma segura para impedir pedidos forjados
+
     if (!is_string($token) || !isset($_SESSION['recuperacao_csrf']) || !hash_equals($_SESSION['recuperacao_csrf'], $token)) {
         throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e tente novamente.');
     }
@@ -41,7 +41,7 @@ function validarRecuperacaoSenha($conexao, $token)
         unset($_SESSION['recuperacao_senha']);
         throw new InvalidArgumentException('Solicitação inválida ou expirada.');
     }
-    // compara o token recebido com o salvo usando uma comparacao segura
+
     if (!is_string($token) || !is_string($recuperacao['token'] ?? null) || !hash_equals($recuperacao['token'], $token)) {
         throw new InvalidArgumentException('Solicitação inválida ou expirada.');
     }
@@ -70,7 +70,7 @@ function redefinirSenhaUsuario($conexao, $token, $csrf, $senha, $confirmacao)
     if (!is_string($confirmacao) || $senha !== $confirmacao) {
         throw new InvalidArgumentException('As senhas devem ser iguais.');
     }
-    // transforma a nova senha em hash antes de salvar
+
     $hash = password_hash($senha, PASSWORD_DEFAULT);
     // revalida o tipo ao salvar para impedir alteracao de senha administrativa
     $stmt = $conexao->prepare("UPDATE usuarios SET senha = :senha WHERE id = :id AND tipo = 'usuario'");

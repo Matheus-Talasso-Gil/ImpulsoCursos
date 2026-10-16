@@ -9,10 +9,10 @@ Sistema web fictício de gestão de alunos, desenvolvido com PHP, PDO e PostgreS
 - Relatório com filtros por curso e situação
 - Validação matemática dos dígitos verificadores do CPF
 - Cadastro e autenticação de usuários com senha protegida por hash
-- Menus e páginas controlados pelo papel da conta
+- Menus e páginas separados para usuário e administrador
 - Gestão administrativa de cursos e consulta de usuários e vínculos
 - Catálogo, detalhes, inscrição e consulta de Meus cursos
-- Dashboard próprio para usuários autenticados, com resumo da conta, aluno vinculado, totais e prévias de até três cursos, além de atalhos
+- Dashboard do usuário com dados da conta, totais, prévias de cursos e atalhos
 - Recuperação de senha demonstrativa local para contas comuns de teste
 - Política de Privacidade pública em `privacidade.php`, acessível pelo rodapé de todas as páginas
 - Termos de Uso públicos em `termos.php`, com regras da plataforma e link no rodapé
@@ -40,7 +40,7 @@ O cadastro público sempre cria contas do tipo `usuario`. A conta admin é promo
 
 O login de uma conta `usuario` abre `app/dashboard.php`; o link Início e o acesso ao index autenticado também levam ao dashboard. Administradores entram em `app/admin.php` e são redirecionados para esse painel se tentarem abrir o dashboard do usuário. Visitantes continuam vendo o index público.
 
-O dashboard usa apenas o ID da sessão, exibe `usuarios.created_at` e aceita contas sem aluno vinculado ou sem inscrições. Para conferir, entre com uma conta comum com e sem inscrições/vínculo, confira totais e data, teste os atalhos e tente adicionar `?usuario_id=outro_id` (os dados devem continuar sendo os seus). Sem login, o dashboard deve levar ao login; com admin, ao painel. Confira também o catálogo vazio e o layout em desktop, tablet e celular.
+O dashboard mostra os dados da conta logada, incluindo a data de criação. Funciona mesmo sem aluno vinculado ou inscrições. Para conferir, teste os totais e atalhos com uma conta comum; um `usuario_id` enviado pela URL não deve mudar os dados exibidos. Sem login, a página abre o login; com admin, abre o painel administrativo.
 
 ## Requisitos
 
@@ -469,11 +469,11 @@ impulsos_cursos/
 
 ## Preparar o banco de dados
 
-As consultas usam `INNER JOIN` explicitamente quando a relação é obrigatória e `LEFT JOIN` quando precisam preservar registros sem relacionamento, como contas sem aluno e cursos sem inscrições.
+Nas consultas, `INNER JOIN` reúne registros relacionados. `LEFT JOIN` também mantém registros sem relação, como contas sem aluno e cursos sem inscrições. Os exemplos estão na [documentação](documentacao.md#relacionamentos-nas-consultas).
 
 ### Favoritos de cursos
 
-Contas autenticadas podem favoritar ou remover um favorito nos detalhes do curso. A página **Favoritos** lista os cursos da própria conta por nome; o dashboard comum mostra o total e uma prévia de até três cursos. O menu comum inclui o acesso, mantendo o menu administrativo atual.
+Nos detalhes de um curso, a conta logada pode adicioná-lo ou removê-lo dos favoritos. A página **Favoritos** lista os cursos salvos por nome; o dashboard mostra o total e até três deles.
 
 Novas instalações já incluem `favoritos` em `database/table.pgsql`. Para bancos existentes, execute a migração antes de usar o recurso:
 
@@ -537,9 +537,9 @@ A migration não recria tabelas nem altera IDs, senhas ou tipos. Pode ser execut
 
 Nos novos cadastros, o INSERT omite `created_at` e o PostgreSQL usa automaticamente `CURRENT_TIMESTAMP` (início da transação). A informação aparece em **Meu perfil** e **Usuários cadastrados**, somente para leitura; campos enviados por GET ou POST não são usados. Login, logout e redefinição de senha não alteram esse valor.
 
-O projeto não configura explicitamente o fuso da conexão nem o do PHP. No teste deste ambiente, PostgreSQL 18.6 informou `America/Sao_Paulo` e PHP informou `UTC`. `TIMESTAMP` não guarda fuso: o valor usa o horário da sessão PostgreSQL e é exibido sem conversão. Confira `SHOW timezone;` no banco e `date_default_timezone_get()` no PHP antes de comparar horários em outra instalação; configurações diferentes podem produzir horários locais diferentes. Esta tarefa não muda configurações globais. Datas ausentes ou inválidas aparecem como **Não informada**.
+O projeto não define o fuso horário do PHP ou da conexão. `TIMESTAMP` guarda o horário usado pelo PostgreSQL, sem informação de fuso, e a tela o exibe sem conversão. Se houver diferença de horários, confira `SHOW timezone;` no banco e `date_default_timezone_get()` no PHP. Datas ausentes ou inválidas aparecem como **Não informada**.
 
-Para validar as telas, aplique a migration, cadastre uma conta pelo **Cadastre-se** e confira a data no perfil e na listagem administrativa. Anote `created_at`, faça logout/login e redefina a senha pela demonstração local; o valor deve permanecer igual. Envie também um campo extra `created_at` no POST de cadastro: o horário deve continuar sendo preenchido pelo banco. Reexecute a migration e confirme que os valores existentes foram preservados.
+Para conferir, cadastre uma conta de teste e veja a data no perfil e na listagem administrativa. Login, troca de senha e nova execução da migration devem preservar essa data. Mesmo que o formulário envie `created_at`, o banco deve preencher o valor.
 
 ## Executar o sistema
 
@@ -568,7 +568,7 @@ Para testar manualmente, confira o menu deslogado, crie uma conta comum, tente a
 
 Após aplicar a migration de vínculo, confira também:
 
-1. Alunos antigos continuam no relatório com **Sem conta** e com os mesmos IDs, CPFs e nascimentos.
+1. Alunos antigos continuam no relatório com os mesmos IDs, CPFs e nascimentos. Sem inscrições, aparecem com **Sem curso**.
 2. O perfil de uma conta sem aluno informa ausência de vínculo.
 3. Cadastre uma conta pública e confira o aluno já associado; inscreva em dois cursos e veja ambos em uma única linha no relatório.
 4. Uma conta não pode ser vinculada a outro aluno e um aluno vinculado não pode receber outra conta.
@@ -617,4 +617,6 @@ PKs, FKs, UNIQUE e NOT NULL protegem a integridade. Na revisão de 14/10/2026, o
 psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/garantir_campos_obrigatorios.sql
 ```
 
-Em 16/10/2026, a migration `database/garantir_campos_obrigatorios.sql` foi aplicada com sucesso ao banco configurado, via PHP/PDO e `database/connect_postgres.php`, sem psql. O arquivo SQL original foi executado integralmente em uma única transação, com BEGIN/COMMIT e sem commit parcial. Não houve preenchimento de nulos, alteração manual ou exclusão de registros, nem alteração de outras tabelas. A consulta prévia somente de leitura encontrou zero NULL em cada campo: `alunos.nome`, `alunos.turma`, `alunos.nasc`, `alunos.ativo`, `usuarios.email` e `usuarios.senha`. Após a aplicação, o information_schema confirmou NOT NULL nas seis colunas e DEFAULT TRUE em `alunos.ativo`. A verificação de integridade realizada após a aplicação terminou sem problemas nos dados verificados: nenhum órfão, duplicidade ou carga horária inválida. As FKs estavam validadas e as restrições/índices UNIQUE presentes. As contagens de NULL permaneceram em zero. A recuperação permanece uma demonstração local para contas de teste, sem verificação de identidade; seu token fica na sessão e não na URL. Credenciais antigas continuam no histórico Git e precisam ser trocadas antes de usar o projeto com dados reais.
+Em 16/10/2026, a migration foi aplicada ao banco configurado pela conexão PDO do projeto, em uma única transação. Os seis campos estavam sem NULL e ficaram obrigatórios; `alunos.ativo` ficou com DEFAULT TRUE. A verificação posterior não encontrou órfãos, duplicidades ou cargas horárias inválidas. Nenhum registro foi preenchido ou apagado.
+
+A recuperação de senha continua sendo uma demonstração local, sem verificação de identidade. Credenciais antigas permanecem no histórico Git e precisam ser trocadas antes de usar o projeto com dados reais. Os detalhes de segurança estão na [documentação](documentacao.md#revisão-de-segurança-e-banco-em-14102026).

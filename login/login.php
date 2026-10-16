@@ -5,7 +5,7 @@ $erro = '';
 $_SESSION['login_token'] ??= bin2hex(random_bytes(32));
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // valida o token antes de autenticar a conta
+
         if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['login_token'], $_POST['token'])) {
             throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e tente novamente.');
         }
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (filter_var($email, FILTER_VALIDATE_EMAIL) && strlen($email) <= 255) {
             $usuario = consultar_user($conexao, $email);
         }
-        // confere a senha pelo hash sem recuperar a senha original
+
         $senha = $_POST['senha'] ?? '';
         if ($usuario && is_string($senha) && password_verify($senha, $usuario['senha'])) {
             // troca o id da sessao para impedir o reaproveitamento da sessao anterior
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['id'] = $usuario['id'];
             $_SESSION['email'] = $usuario['email'];
             $_SESSION['tipo'] = $usuario['tipo'] ?? 'usuario';
-            // conta a inatividade a partir do login bem sucedido
+
             $_SESSION['ultima_atividade'] = time();
             if ($_SESSION['tipo'] === 'admin') {
                 $destino = '../app/admin.php';

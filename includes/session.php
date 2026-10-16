@@ -21,8 +21,8 @@ if (session_status() === PHP_SESSION_NONE) {
 // visitantes nao tem controle de inatividade o horario e mantido apenas no servidor
 if (!($headerSessaoSomenteLeitura ?? false) && isset($_SESSION['id'])) {
     $agora = time();
-    // a expiracao e verificada na proxima requisicao antes de gerar qualquer html
-    // encerra o acesso quando a inatividade ultrapassa trinta minutos
+    // verifica a inatividade antes de gerar a pagina
+
     if (isset($_SESSION['ultima_atividade']) && $agora - $_SESSION['ultima_atividade'] > 1800) {
         $_SESSION = [];
         session_destroy();

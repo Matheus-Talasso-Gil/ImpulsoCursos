@@ -2,11 +2,11 @@
 
 ## Visão do proprietário
 
-Quero um sistema simples e confiável para organizar os alunos, as contas e os cursos da Impulso Cursos. Os alunos devem criar o próprio cadastro e acompanhar suas inscrições. A equipe deve conseguir realizar as tarefas comuns rapidamente, encontrar informações com facilidade e manter os dados protegidos. O site precisa funcionar bem em computadores e celulares.
+Quero um sistema para organizar alunos, contas e cursos da Impulso Cursos. Os alunos devem criar o próprio cadastro e acompanhar suas inscrições. A equipe precisa consultar e atualizar os dados com facilidade. O site deve proteger esses dados e funcionar em computadores e celulares.
 
 ## Objetivos
 
-- Centralizar os dados dos alunos.
+- Reunir os dados dos alunos em um só lugar.
 - Facilitar matrícula, consulta, atualização e exclusão de cadastros.
 - Reduzir erros por meio de validação e mensagens claras.
 - Permitir que a equipe acompanhe a situação dos alunos e das turmas.
@@ -28,7 +28,7 @@ Quero um sistema simples e confiável para organizar os alunos, as contas e os c
 - Mensagens claras para falhas de autenticação.
 - Acesso restrito a usuários autorizados.
 - Menus específicos para visitante, aluno e administrador; impedir acesso direto de contas comuns às páginas administrativas.
-- O cadastro público deve criar apenas contas comuns. A concessão inicial de acesso administrativo deve ser controlada no banco de dados.
+- O cadastro público deve criar apenas contas comuns. O acesso de administrador é definido no banco de dados.
 
 ### Alunos
 
@@ -66,7 +66,7 @@ Quero um sistema simples e confiável para organizar os alunos, as contas e os c
 
 - Exibir um relatório com os dados principais dos alunos.
 - Indicar claramente quando não houver cadastros ou resultados.
-- Manter navegação consistente entre as telas e oferecer retorno visual após cada ação.
+- Usar menus parecidos entre as telas e mostrar o resultado de cada ação.
 - Oferecer um painel administrativo com totais de alunos, usuários, cursos e inscrições e atalhos para as tarefas de gestão.
 - Indicar alunos ativos e inativos e cadastros sem conta vinculada.
 
@@ -82,8 +82,8 @@ Quero um sistema simples e confiável para organizar os alunos, as contas e os c
 - Validar os dados no servidor, mesmo que também haja validação no navegador.
 - Armazenar senhas com hash; nunca guardar senhas em texto puro.
 - Usar consultas preparadas para acessar o banco de dados.
-- Escapar dados exibidos em HTML para reduzir riscos de injeção de conteúdo.
-- Proteger operações de alteração contra solicitações forjadas e usar a sessão autenticada para identificar o titular de inscrições e dados pessoais.
+- Usar htmlspecialchars ao exibir dados para que sejam tratados como texto.
+- Usar tokens CSRF nos formulários e a sessão para identificar a conta que está alterando seus dados ou inscrições.
 - Não publicar senhas, tokens ou credenciais no repositório.
 - Documentar como configurar o banco e executar o projeto do zero.
 

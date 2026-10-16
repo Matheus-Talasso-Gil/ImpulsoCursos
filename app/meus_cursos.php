@@ -12,7 +12,7 @@ $cursoCancelar = false;
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $token = $_POST['token'] ?? null;
-        // compara os tokens de forma segura antes de processar o cancelamento
+
         if (!is_string($token) || !hash_equals($_SESSION['cancelamento_token'], $token)) {
             throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e tente novamente.');
         }

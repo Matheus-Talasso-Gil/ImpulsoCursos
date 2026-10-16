@@ -49,7 +49,7 @@ Guarda as contas usadas para entrar no sistema.
 | descricao     | TEXT         | —     | Sim          | Descrição opcional.     |
 | carga_horaria | INTEGER      | —     | Não          | Duração em horas.       |
 
-O schema atual não possui `CHECK` para exigir `cursos.carga_horaria > 0`; essa validação é feita no servidor pelos formulários administrativos. O campo não possui valor padrão.
+A carga horária deve ser positiva. O PHP faz essa validação; o banco não tem CHECK para essa regra nem valor padrão para o campo.
 
 ## Inscrições
 
@@ -89,7 +89,7 @@ A aplicação registra ações apenas para uma sessão administrativa válida. A
 ## Scripts do banco
 
 - [table.pgsql](database/table.pgsql) cria tabelas ausentes e aplica a estrutura de vínculo sem apagar registros.
-- [vincular_alunos_usuarios.sql](database/vincular_alunos_usuarios.sql) adiciona a relação opcional e as proteções sem preencher vínculos ou alterar IDs e sequences. Confere FK e índice equivalentes antes de criar novos. Estrutura incompatível ou dados inválidos interrompem a transação.
+- [vincular_alunos_usuarios.sql](database/vincular_alunos_usuarios.sql) adiciona o vínculo opcional e suas proteções, sem preencher dados ou mudar IDs. Reaproveita FK e índice equivalentes quando já existem. Se encontrar uma estrutura incompatível ou dados inválidos, desfaz a transação.
 - [adicionar_tipo_usuario.sql](database/adicionar_tipo_usuario.sql) adiciona o papel da conta e suas restrições.
 
 ## Legenda
@@ -102,7 +102,7 @@ A aplicação registra ações apenas para uma sessão administrativa válida. A
 - **SERIAL:** inteiro com geração automática por uma sequence; não garante IDs consecutivos sem lacunas.
 - **Nulo:** ausência de valor no campo; não é o mesmo que texto vazio.
 
-O cadastro público preenche usuario_id automaticamente com RETURNING id. A migration [vincular_contas_existentes.sql](database/vincular_contas_existentes.sql) preenche somente correspondências únicas de e-mail normalizado, preservando vínculos e casos ambíguos. O relatório consulta cursos e inscricoes; turma continua sendo um campo legado separado.
+No cadastro público, o ID retornado pela criação da conta é salvo em `alunos.usuario_id`. A migration [vincular_contas_existentes.sql](database/vincular_contas_existentes.sql) preenche somente correspondências únicas de e-mail normalizado, preservando vínculos e casos ambíguos. O relatório consulta cursos e inscricoes; turma continua sendo um campo legado separado.
 
 ## Conferência do banco em 14/10/2026
 

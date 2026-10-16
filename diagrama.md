@@ -2,7 +2,7 @@
 
 Os arquivos do CRUD utilizam a tabela `alunos`.
 
-O campo `id` é a chave primária. `alunos.usuario_id` é uma FK opcional e única para `usuarios(id)`. Os fluxos usam `graph LR`; somente o banco usa `erDiagram`.
+O campo `id` é a chave primária. `alunos.usuario_id` é uma FK opcional e única para `usuarios(id)`. Os fluxos são lidos da esquerda para a direita; o DER mostra as tabelas e suas relações.
 
 ## Diagrama Entidade-Relacionamento
 
@@ -340,7 +340,7 @@ graph LR
     Gravou -->|Sim| Sucesso["Sucesso e recarga dos dados"]
 ```
 
-ID, CPF, nascimento, turma e vínculo já preenchido são protegidos. A edição valida os campos no formulário e no servidor, confere CSRF e o aluno selecionado na sessão, recupera a identidade original e grava somente nome, situação e e-mail. A consulta individual não tem botões diretos de editar/excluir: a edição usa o relatório ou `update.php`, e a exclusão usa a busca de `delete.php`.
+A edição altera somente nome, situação e e-mail. O servidor valida os campos, o token CSRF e o aluno selecionado na sessão. ID, CPF, nascimento, turma e vínculo já preenchido são preservados. Para editar, use o relatório ou `update.php`; para excluir, use `delete.php`.
 
 O fluxo de exclusão de aluno foi preservado em **Exclusão com confirmação**: exige confirmação inicial e, se a conta vinculada tiver inscrições, uma segunda confirmação com a lista de cursos. Cancelar mantém o cadastro; excluir remove somente o aluno e seu vínculo, preservando conta e inscrições.
 
@@ -459,7 +459,7 @@ graph LR
 
 ## Diagrama de casos de uso
 
-Representação conceitual em `graph LR`: os atores ficam fora dos grupos de funções; as linhas sem seta ligam atores a casos de uso e as setas pontilhadas mostram decomposição ou navegação. Não representam herança de permissões nem relações UML formais.
+Este desenho resume o que cada tipo de usuário pode fazer. As linhas ligam usuários às funções; as setas pontilhadas mostram ações relacionadas. É uma representação simplificada, sem seguir toda a notação UML.
 
 ```mermaid
 graph LR

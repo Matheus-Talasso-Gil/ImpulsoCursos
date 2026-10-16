@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
             $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $dados = ['id' => $id, 'usuario_id' => $aluno['usuario_id'], 'cursos' => array_column($cursos, 'id')];
             if (isset($_POST['confirmar']) || isset($_POST['confirmar_cursos'])) {
-                if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['exclusao_token'], $_POST['token'])) { // compara os tokens de forma segura para impedir solicitacoes forjadas
+                if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['exclusao_token'], $_POST['token'])) {
                     echo '<p class="message-error" role="alert">Solicitação inválida. Recarregue a página.</p>';
                 } elseif (($_SESSION['exclusao_pendente'] ?? null) !== $dados) {
                     // exige nova conferencia se o aluno ou suas inscricoes mudaram

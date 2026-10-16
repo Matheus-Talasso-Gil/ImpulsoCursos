@@ -1,6 +1,6 @@
 # Impulso Cursos — Documentação do sistema
 
-Guia para executar, compreender e apresentar o projeto de gestão de alunos.
+Guia para executar, entender e apresentar o projeto.
 
 **Início rápido:** [README](README.md) · **Página inicial:** [index.php](index.php) · **Estilos:** [style.css](css/style.css)
 
@@ -36,7 +36,7 @@ Guia para executar, compreender e apresentar o projeto de gestão de alunos.
 
 A Impulso Cursos é uma empresa fictícia de educação. O sistema apresenta os cursos e permite cadastrar, consultar, atualizar e excluir alunos. Os usuários que acessam a gestão fazem login com e-mail e senha.
 
-Esta documentação descreve os fluxos PHP atuais. As informações sobre o banco seguem o SQL e as consultas do projeto, não uma inspeção do servidor.
+As explicações seguem o PHP e o SQL do projeto. Os resultados de verificações anteriores aparecem nas seções de revisão.
 
 ### Tecnologias utilizadas
 
@@ -54,7 +54,7 @@ Esta documentação descreve os fluxos PHP atuais. As informações sobre o banc
 
 1. Tenha PHP com PDO e o driver PostgreSQL habilitados.
 2. Tenha acesso ao servidor PostgreSQL e às tabelas necessárias.
-3. Confira a configuração em `database/connect_postgres.php`.
+3. Copie `database/config.example.php` para `database/config.local.php` e preencha os dados do banco, como explicado no [README](README.md#estrutura-inicial).
 4. Mantenha a pasta do projeto com o nome `impulsos_cursos`, usado nos links.
 5. Abra o terminal na pasta que contém `impulsos_cursos` e execute:
 
@@ -65,7 +65,7 @@ Esta documentação descreve os fluxos PHP atuais. As informações sobre o banc
 6. Abra `http://localhost:8000/impulsos_cursos/index.php`.
 7. Faça login para acessar as páginas de gestão.
 
-Para instalações novas use `database/table.pgsql`. Em bancos existentes execute `database/vincular_alunos_usuarios.sql`; o comando está no [README](README.md#preparar-o-banco-de-dados). Essa migration adiciona o vínculo sem criar contas para alunos antigos ou alterar seus dados, IDs e sequences.
+Para instalações novas use `database/table.pgsql`. Em bancos existentes execute `database/vincular_alunos_usuarios.sql`; o comando está no [README](README.md#preparar-o-banco-de-dados). Essa migration adiciona o vínculo sem criar contas para alunos antigos ou mudar seus dados e identificadores.
 
 Abrir o PHP diretamente como arquivo no navegador não executa o código. O servidor PHP precisa estar rodando.
 
@@ -224,7 +224,7 @@ Redireciona administradores para o relatório e demais acessos para o cadastro p
 
 Chama listarAlunos com filtros de curso e situação. Mostra ID, nome, CPF, nascimento, cursos, e-mail, situação e ações em ordem de ID. STRING_AGG reúne as inscrições em uma única linha por aluno. Alunos sem conta ou sem inscrições aparecem como Sem curso.
 
-Cada botão Editar pertence a um formulário que envia o ID por POST para `update.php`. O ID vai em um campo `hidden`, que não aparece na tela.
+O botão Editar envia o ID do aluno por POST para `update.php`.
 
 #### `update.php` — Edição
 

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../database/connect_postgres.php';
 function validar_cpf($cpf) // valida o tamanho e os dois digitos verificadores do cpf
 {
-    // remove caracteres que nao sao digitos antes de validar o cpf
+
     $cpf = preg_replace('/\D/', '', (string) $cpf);
     if (strlen($cpf) !== 11 || preg_match('/^(\d)\1{10}$/', $cpf)) {
         return false;
@@ -19,7 +19,7 @@ function validar_cpf($cpf) // valida o tamanho e os dois digitos verificadores d
         return false;
     }
     $soma = 0;
-    // calcula a soma usada no segundo digito verificador
+
     for ($i = 0; $i < 10; $i++) {
         $soma += (int) $cpf[$i] * (11 - $i);
     }
@@ -67,8 +67,8 @@ function listarAlunos($conexao, $cursoId = '', $situacao = 'todas')
     } elseif ($situacao === 'inativo') {
         $filtros[] = 'a.ativo = FALSE';
     }
-    // combina os filtros para exigir todas as condicoes informadas
-    // separa os valores externos do sql para impedir injecao
+
+
     if ($filtros) {
         $sql .= ' WHERE ' . implode(' AND ', $filtros);
     }
@@ -98,10 +98,10 @@ function Consultar($conexao, $id)
     $sql = "SELECT nome, nasc, turma, ativo, email, cpf
             FROM alunos
             WHERE id = :id";
-        $stmt = $conexao->prepare($sql);
-        $stmt->bindParam(":id", $id);
-        $stmt->execute();
-        $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = $conexao->prepare($sql);
+    $stmt->bindParam(":id", $id);
+    $stmt->execute();
+    $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($aluno) {
         echo 'Aluno: ' . htmlspecialchars((string) $aluno['nome'], ENT_QUOTES, 'UTF-8') . '<br>';
@@ -117,7 +117,7 @@ function Consultar($conexao, $id)
 // preserva cpf e nascimento mesmo recebendo esses campos por compatibilidade
 function Atualizar($conexao, $id, $nome, $turma, $nasc, $ativo, $email, $cpf)
 {
-      $sql = "UPDATE alunos SET nome = :nome,
+    $sql = "UPDATE alunos SET nome = :nome,
             ativo = :ativo, email = :email WHERE id = :id";
     try {
         $stmt = $conexao->prepare($sql);
@@ -197,14 +197,14 @@ function cadastrar_aluno_usuario($conexao, array $dados)
             throw new InvalidArgumentException('Este CPF já possui cadastro de aluno. Procure o administrador.');
         }
         $usuarioId = cadastrar_user($conexao, $email, $dados['senha'] ?? '');
-        // salva o id da conta diretamente no cadastro do aluno
+
         $stmt = $conexao->prepare('INSERT INTO alunos (nome, cpf, nasc, turma, ativo, email, usuario_id) VALUES (:nome, :cpf, :nasc, :turma, TRUE, :email, :usuario_id)');
         $stmt->execute([':nome' => $nome, ':cpf' => $cpf, ':nasc' => $nasc, ':turma' => $turma, ':email' => $email, ':usuario_id' => $usuarioId]);
-        // confirma o cadastro somente depois de salvar conta e aluno
+
         $conexao->commit();
     } catch (Throwable $e) {
         if ($conexao->inTransaction()) {
-            // desfaz as alteracoes se qualquer etapa do cadastro falhar
+
             $conexao->rollBack();
         }
         throw $e;
@@ -226,14 +226,14 @@ function cadastrar_user($conexao, $email, $senha) // valida o email e cria uma c
     if (consultar_user($conexao, $email)) {
         throw new InvalidArgumentException('Este e-mail já está cadastrado. Entre com a senha do cadastro mais recente.');
     }
-    // transforma a senha em hash antes de salvar no banco
+
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
     $sql = "INSERT INTO usuarios (email, senha, tipo) VALUES (:email, :senha, 'usuario') RETURNING id"; // forca o cadastro publico a criar sempre uma conta comum
     $stmt = $conexao->prepare($sql);
     $stmt->bindParam(":email", $email);
     $stmt->bindParam(":senha", $senhaHash);
     $stmt->execute();
-    // obtem o id criado pelo insert sem buscar novamente pelo email
+
     return (int) $stmt->fetchColumn();
 }
 // usa a conta mais recente quando existem emails duplicados
@@ -275,7 +275,7 @@ function buscarCursoPorId($conexao, $id)
 }
 function inscreverUsuarioNoCurso($conexao, $cursoId, $token)
 {
-    if (!is_string($token) || !isset($_SESSION['inscricao_token']) || !hash_equals($_SESSION['inscricao_token'], $token)) { // compara os tokens de forma segura para impedir solicitacoes forjadas
+    if (!is_string($token) || !isset($_SESSION['inscricao_token']) || !hash_equals($_SESSION['inscricao_token'], $token)) {
         throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e tente novamente.');
     }
     $cursoId = filter_var($cursoId, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 2147483647]]);
@@ -311,7 +311,7 @@ function validarDadosCursoAdmin($dados)
 }
 function validarTokenCursoAdmin($token)
 {
-    // compara os tokens de forma segura para proteger as alteracoes de cursos
+
     if (!is_string($token) || !isset($_SESSION['curso_admin_token']) || !hash_equals($_SESSION['curso_admin_token'], $token)) {
         throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e tente novamente.');
     }
@@ -331,7 +331,7 @@ function validarFavorito($cursoId, $token)
     if ($usuarioId === false) {
         throw new InvalidArgumentException('Entre em sua conta para alterar os favoritos.');
     }
-    // compara os tokens de forma segura antes de alterar os favoritos
+
     if (!is_string($token) || !isset($_SESSION['favoritos_token']) || !hash_equals($_SESSION['favoritos_token'], $token)) {
         throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e tente novamente.');
     }
@@ -381,7 +381,7 @@ function removerFavorito($conexao, $cursoId, $token)
 
 function buscarFavoritosUsuario($conexao)
 {
-    // relaciona os cursos somente aos favoritos da conta autenticada
+
     $stmt = $conexao->prepare('SELECT c.id, c.nome, c.descricao, c.carga_horaria
         FROM favoritos AS f INNER JOIN cursos AS c
             ON c.id = f.curso_id

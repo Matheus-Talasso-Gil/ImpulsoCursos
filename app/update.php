@@ -24,7 +24,7 @@ $aluno = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['id']) || isset($_POST['nome']))) {
     try {
         if (isset($_POST['nome'])) {
-            // compara os tokens de forma segura antes de permitir a edicao
+
             if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['edicao_token'], $_POST['token'])) {
                 throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e busque o aluno novamente.');
             }
