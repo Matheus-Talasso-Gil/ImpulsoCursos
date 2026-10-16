@@ -486,7 +486,7 @@ A tabela registra conta, curso e data, com unicidade por conta e curso. As alter
 ### Estrutura inicial
 
 1. Crie o banco PostgreSQL que será usado pelo sistema.
-2. Copie `database/config.example.php` para `database/config.local.php` e configure host, nome do banco, usuário e senha. O arquivo local é ignorado pelo Git. Como alternativa, configure `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS` no ambiente do PHP.
+2. Copie `database/config.example.php` para criar `database/config.local.php` e preencha `host`, `dbname`, `user` e `pass` com os dados da sua instalação. O modelo `config.example.php` pode ser versionado; `config.local.php` contém dados locais, é ignorado pelo Git e não deve ser enviado ao GitHub. `database/connect_postgres.php` lê esse arquivo quando ele existe. Como alternativa, use `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS` no ambiente do PHP: host, banco e usuário usam o valor local quando a variável está vazia ou ausente; a senha usa o valor local somente quando `DB_PASS` está ausente.
 3. No terminal aberto na pasta que contém `impulsos_cursos`, crie as tabelas iniciais:
 
     ```powershell
