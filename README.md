@@ -25,6 +25,185 @@ A recuperação de senha é uma demonstração restrita a conexões locais (`127
 - [Diagramas de entidades e fluxos](diagrama.md)
 - [Briefing do cliente](briefing.md)
 
+## Como baixar e executar do zero
+
+Este passo a passo usa Windows e PowerShell. O projeto roda com o servidor do PHP e PostgreSQL; não precisa de Apache, Composer ou npm.
+
+### 1. Instalar as ferramentas
+
+Instale estas ferramentas, caso ainda não estejam no computador:
+
+- [Git para Windows](https://git-scm.com/install/windows), para copiar o repositório. Durante a instalação, permita o uso do Git pelo terminal.
+- [PHP para Windows](https://www.php.net/downloads.php?os=windows), em uma versão estável e mantida da linha 8. Para usar pelo terminal em Windows x64, baixe o ZIP x64 NTS, extraia em `C:\php` e instale o Visual C++ Redistributable indicado na página do PHP.
+- [PostgreSQL para Windows](https://www.postgresql.org/download/windows/), com o servidor e as ferramentas de linha de comando. Guarde a senha escolhida para o usuário `postgres` e mantenha a porta `5432` para seguir os exemplos.
+
+No Windows, procure **Editar as variáveis de ambiente da sua conta**, abra **Path > Editar > Novo** e adicione `C:\php` e a pasta `bin` da sua instalação do PostgreSQL. Ela fica dentro de `C:\Program Files\PostgreSQL\VERSAO\bin`; substitua `VERSAO` pela pasta instalada. Confirme as janelas e abra um novo PowerShell.
+
+Confira se os comandos funcionam:
+
+```powershell
+git --version
+php -v
+psql --version
+```
+
+Se algum comando não for reconhecido, confira o caminho adicionado ao `Path` e abra novamente o terminal.
+
+### 2. Habilitar a conexão do PHP com PostgreSQL
+
+Na pasta `C:\php`, copie `php.ini-development` e renomeie a cópia para `php.ini`. Se você já usa PHP, veja qual arquivo de configuração ele carrega:
+
+```powershell
+php --ini
+```
+
+Abra o `php.ini` e deixe estas opções habilitadas, sem `;` no início:
+
+```ini
+extension_dir = "ext"
+extension=pdo_pgsql
+```
+
+Salve e confira:
+
+```powershell
+php -m
+```
+
+A lista deve conter `PDO` e `pdo_pgsql`. Se houver erro ao carregar a extensão, confira `extension_dir` e se `php_pdo_pgsql.dll` está na pasta `ext` do PHP extraído.
+
+### 3. Copiar o código do GitHub
+
+Abra o PowerShell na pasta onde deseja guardar o projeto e execute:
+
+```powershell
+mkdir ImpulsoCursos
+cd ImpulsoCursos
+git clone https://github.com/Matheus-Talasso-Gil/Impulsos-Cursos.git impulsos_cursos
+```
+
+Se a pasta `ImpulsoCursos` já existir, entre nela e pule o `mkdir`. O último comando cria a pasta `impulsos_cursos` com o código.
+
+A organização deve ficar assim:
+
+```text
+ImpulsoCursos/             # abra o terminal nesta pasta para os próximos comandos
+└── impulsos_cursos/       # aqui ficam README.md, index.php, app e database
+```
+
+O nome `impulsos_cursos` é necessário porque os links e redirecionamentos usam `/impulsos_cursos/`.
+
+Se preferir baixar sem Git, abra o [repositório no GitHub](https://github.com/Matheus-Talasso-Gil/Impulsos-Cursos), clique em **Code > Download ZIP**, extraia o conteúdo e renomeie a pasta que contém `index.php` para `impulsos_cursos`. Coloque-a dentro de `ImpulsoCursos`, como no exemplo acima.
+
+### 4. Criar o banco de dados
+
+Confira se o serviço do PostgreSQL está iniciado. No PowerShell, ainda dentro de `ImpulsoCursos`, conecte-se ao banco padrão:
+
+```powershell
+psql -h localhost -p 5432 -U postgres -d postgres
+```
+
+Digite a senha definida na instalação do PostgreSQL. Ela não aparece enquanto você digita. No terminal do PostgreSQL, execute:
+
+```sql
+CREATE DATABASE impulso_cursos;
+```
+
+Depois, digite `\q` para voltar ao PowerShell. Importe a estrutura:
+
+```powershell
+psql -h localhost -p 5432 -U postgres -d impulso_cursos -v ON_ERROR_STOP=1 -f impulsos_cursos/database/table.pgsql
+```
+
+Confira as tabelas criadas:
+
+```powershell
+psql -h localhost -p 5432 -U postgres -d impulso_cursos -c "\dt"
+```
+
+Devem aparecer `alunos`, `usuarios`, `cursos`, `inscricoes`, `favoritos` e `logs_admin`. Em um banco novo, `table.pgsql` já prepara a estrutura atual e o vínculo entre aluno e conta; não é necessário executar todas as migrações separadamente. O script não inclui contas, alunos ou cursos de exemplo.
+
+### 5. Configurar a conexão do projeto
+
+Abra `impulsos_cursos/database/config.example.php` e salve uma cópia como `impulsos_cursos/database/config.local.php`. Se o arquivo local já existir no código baixado, edite essa cópia com os dados da sua instalação.
+
+Para o banco criado no passo anterior, o arquivo deve ficar assim:
+
+```php
+<?php
+return [
+    'host' => 'localhost',
+    'dbname' => 'impulso_cursos',
+    'user' => 'postgres',
+    'pass' => 'SUA_SENHA_DO_POSTGRES',
+];
+```
+
+Substitua `SUA_SENHA_DO_POSTGRES` pela senha escolhida na instalação. Esse exemplo usa `postgres` para facilitar a instalação local. Se você criou outro usuário do banco, informe-o em `user` e garanta que ele tenha acesso às tabelas e sequences.
+
+`config.example.php` é o modelo; `config.local.php` contém os dados da sua conexão. O arquivo local está versionado no estado atual do repositório, por isso confira o `git diff` antes de publicar alterações e não envie suas credenciais.
+
+Como alternativa ao arquivo local, o PHP aceita `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS` no ambiente. Essas variáveis têm prioridade. Host, banco e usuário usam a configuração local quando a variável está vazia ou ausente; a senha usa o arquivo local apenas quando `DB_PASS` está ausente.
+
+### 6. Iniciar o servidor e abrir o sistema
+
+No PowerShell, dentro de `ImpulsoCursos`, execute:
+
+```powershell
+php -S 127.0.0.1:8000
+```
+
+Deixe esse terminal aberto e acesse no navegador:
+
+```text
+http://127.0.0.1:8000/impulsos_cursos/
+```
+
+Não abra `index.php` diretamente pelo explorador de arquivos. Para encerrar o servidor, volte ao terminal e pressione `Ctrl+C`.
+
+### 7. Criar uma conta e fazer o primeiro acesso
+
+1. Abra `http://127.0.0.1:8000/impulsos_cursos/login/cadastrar.php`.
+2. Preencha nome, um CPF com dígitos verificadores válidos para teste, data de nascimento, e-mail e senha. Use apenas dados de teste.
+3. Entre com o e-mail e a senha cadastrados.
+4. O sistema abrirá o dashboard da conta comum, com o cadastro de aluno já vinculado.
+
+O banco novo começa sem cursos. Para cadastrar os primeiros, prepare uma conta administrativa seguindo o passo abaixo.
+
+### 8. Acessar como administrador
+
+O cadastro público sempre cria uma conta comum. No código atual, a constraint `usuarios_admin_email_check` permite o papel `admin` somente para `matheus321@gmail.com`.
+
+Para testar a administração localmente, cadastre uma conta de teste com esse e-mail e uma senha definida por você. Não há senha administrativa padrão. Saia da conta e, em outro PowerShell, execute:
+
+```powershell
+psql -h localhost -p 5432 -U postgres -d impulso_cursos
+```
+
+No terminal do PostgreSQL:
+
+```sql
+UPDATE usuarios
+SET tipo = 'admin'
+WHERE lower(email) = lower('matheus321@gmail.com');
+```
+
+O resultado deve ser `UPDATE 1`. Se aparecer `UPDATE 0`, a conta ainda não foi cadastrada com esse e-mail. Digite `\q`, volte ao navegador e entre novamente para atualizar a sessão.
+
+No painel administrativo, abra **Cursos** e cadastre um curso. Depois, saia e entre com outra conta comum para testar inscrições, cancelamentos e favoritos. Promover outro e-mail exige revisar a restrição do banco; trocar apenas o e-mail no `UPDATE` não funciona.
+
+### Problemas comuns na instalação
+
+| Problema | O que conferir |
+| --- | --- |
+| `php`, `git` ou `psql` não reconhecido | A instalação e o `Path`; abra um novo terminal após alterá-lo |
+| `could not find driver` | Se `pdo_pgsql` está habilitado no `php.ini` mostrado por `php --ini` |
+| Falha ao conectar ao banco | Serviço do PostgreSQL, senha, nome do banco e configuração local ou de ambiente |
+| Arquivo `table.pgsql` não encontrado | Execute a importação na pasta que contém `impulsos_cursos` |
+| Página não encontrada ou links quebrados | Nome da pasta `impulsos_cursos`, endereço usado e pasta onde iniciou o servidor |
+| Porta `8000` ocupada | Encerre o servidor anterior ou use `php -S 127.0.0.1:8001` e troque a porta no navegador |
+| Nenhum curso no catálogo | Entre como administrador e cadastre os cursos; não há carga de exemplos |
+
 ## Protótipos
 
 Para abrir e visualizar os protótipos `.excalidraw` no VS Code, instale a extensão Excalidraw.
@@ -335,91 +514,82 @@ Atualização do quadro Trello com 56 tarefas concluídas, duas a fazer e uma em
 
 ```text
 impulsos_cursos/
-├── app/
-│   ├── admin.php                 # área administrativa
-│   ├── alunos_cursos.php         # consulta dos cursos dos alunos
-│   ├── create.php                # redirecionamento para cadastro/relatório
-│   ├── curso.php                 # processamento das acoes de um curso
-│   ├── curso_create.php          # cadastro de cursos
-│   ├── curso_delete.php          # exclusão de cursos
-│   ├── curso_update.php          # edição de cursos
-│   ├── cursos.php                # catálogo de cursos
-│   ├── cursos_admin.php          # gestão administrativa de cursos
-│   ├── dashboard.php               # painel do usuario
-│   ├── favoritos.php               # cursos favoritos da conta
-│   ├── logs_admin.php              # historico administrativo
-│   ├── delete.php                # exclusão de alunos
-│   ├── meus_cursos.php           # cursos da conta autenticada
-│   ├── select.php                # relatório/listagem de alunos
-│   ├── select_w_w.php            # consulta individual
-│   ├── tabela.md                 # documentação relacionada às tabelas
-│   ├── update.php                # edição de alunos
-│   └── usuarios.php              # consulta de usuários e seus vínculos
-│
+├── app/                                            # páginas do usuário e da administração
+│   ├── admin.php                                   # painel administrativo
+│   ├── alunos_cursos.php                           # cursos vinculados aos alunos
+│   ├── create.php                                  # redireciona para cadastro ou relatório
+│   ├── curso.php                                   # processamento das ações de um curso
+│   ├── curso_create.php                            # cadastro de cursos
+│   ├── curso_delete.php                            # exclusão de cursos
+│   ├── curso_update.php                            # edição de cursos
+│   ├── cursos.php                                  # catálogo e inscrições
+│   ├── cursos_admin.php                            # gerenciamento de cursos
+│   ├── dashboard.php                               # dashboard do usuário
+│   ├── delete.php                                  # exclusão de alunos
+│   ├── favoritos.php                               # cursos favoritos
+│   ├── logs_admin.php                              # histórico administrativo
+│   ├── meus_cursos.php                             # inscrições e cancelamentos
+│   ├── select.php                                  # relatório de alunos
+│   ├── select_w_w.php                              # consulta por ID ou CPF
+│   ├── tabela.md                                   # documentação das tabelas
+│   ├── update.php                                  # edição de alunos
+│   └── usuarios.php                                # contas e vínculos com alunos
 ├── css/
-│   └── style.css                 # estilos compartilhados do sistema
-│
-├── database/
+│   └── style.css                                   # estilos compartilhados
+├── database/                                       # conexão e scripts de criação e migração
 │   ├── adicionar_created_at_usuarios.sql
 │   ├── adicionar_favoritos.sql
 │   ├── adicionar_logs_admin.sql
 │   ├── adicionar_tipo_usuario.sql
 │   ├── ajustar_senha.sql
-│   ├── config.example.php        # modelo de configuração local
-│   ├── config.local.php          # credenciais da instalacao local
-│   ├── connect_postgres.php      # conexão com PostgreSQL
+│   ├── config.example.php                          # modelo de configuração
+│   ├── config.local.php                            # credenciais da instalação local
+│   ├── connect_postgres.php                        # conexão PDO com PostgreSQL
 │   ├── garantir_campos_obrigatorios.sql
 │   ├── garantir_email_unico_usuarios.sql
-│   ├── table.pgsql               # estrutura para novas instalações
+│   ├── table.pgsql                                 # estrutura para banco novo
 │   ├── vincular_alunos_usuarios.sql
 │   └── vincular_contas_existentes.sql
-│
-├── includes/
-│   ├── acesso_negado.php          # resposta de acesso negado
-│   ├── stylesheet.php             # caminho e cache do estilo
-│   ├── curso_admin_form.php      # formulário compartilhado de gestão de cursos
-│   ├── data_conta.php            # formatação da data de criação da conta
-│   ├── footer.php                # rodapé compartilhado
-│   ├── functions.php             # funções reutilizadas pelo sistema
-│   ├── header.php                # cabeçalho e menu conforme o tipo de usuário
-│   ├── recuperacao_senha.php      # funções de recuperação de senha demonstrativa local
-│   └── session.php               # gerenciamento da sessão
-│
-├── login/
-│   ├── cadastrar.php             # cadastro público de usuário
-│   ├── login.php                 # autenticação
-│   ├── logout.php                # encerramento da sessão
-│   ├── perfil.php                # perfil do usuário
-│   ├── recuperar_senha.php       # solicitação de recuperação de senha
-│   ├── redefinir_senha.php       # definição de uma nova senha
-│   ├── verificar_admin.php       # proteção de páginas administrativas
-│   ├── verificar_cpf.php         # validação/verificação de CPF
-│   └── verificar_user.php        # proteção de páginas autenticadas
-│
-├── prototipos/
+├── imagens finais/                                 # capturas das telas implementadas
+├── includes/                                       # componentes e funções compartilhadas
+│   ├── acesso_negado.php                           # página de acesso negado
+│   ├── curso_admin_form.php                        # formulário de criação e edição de cursos
+│   ├── data_conta.php                              # formatação da data da conta
+│   ├── footer.php                                  # rodapé
+│   ├── functions.php                               # validações e operações do sistema
+│   ├── header.php                                  # cabeçalho e menus
+│   ├── recuperacao_senha.php                       # recuperação demonstrativa local
+│   ├── session.php                                 # inicialização e expiração da sessão
+│   └── stylesheet.php                              # carregamento do CSS
+├── login/                                          # cadastro autenticação e perfil
+│   ├── cadastrar.php
+│   ├── login.php
+│   ├── logout.php
+│   ├── perfil.php
+│   ├── recuperar_senha.php
+│   ├── redefinir_senha.php
+│   ├── verificar_admin.php
+│   ├── verificar_cpf.php
+│   └── verificar_user.php
+├── prototipos/                                     # arquivos Excalidraw e suas imagens
 │   ├── imagens/
-│   │   ├── tela_cadastrar_aluno.png
 │   │   ├── tela_cadastrar.png
+│   │   ├── tela_cadastrar_aluno.png
 │   │   ├── tela_confirmar_exclusao.png
 │   │   ├── tela_excluir.png
 │   │   ├── tela_inicial.png
 │   │   ├── tela_login.png
 │   │   └── tela_resultado_da_consulta.png
 │   ├── prototipo_impulso_cursos.excalidraw
-│   ├── tela_cadastrar_aluno.excalidraw
 │   ├── tela_cadastrar.excalidraw
+│   ├── tela_cadastrar_aluno.excalidraw
 │   ├── tela_confirmar_exclusao.excalidraw
 │   ├── tela_consultar.excalidraw
 │   ├── tela_excluir.excalidraw
 │   ├── tela_inicial.excalidraw
 │   ├── tela_login.excalidraw
 │   └── tela_resultado_da_consulta.excalidraw
-│
-├── imagens finais/              # capturas das telas implementadas
-│
-├── trello/
-│   ├── primeiros7commits.png
-│   ├── commits8-15.png
+├── trello/                                         # registros do acompanhamento do projeto
 │   ├── commits16-21.png
 │   ├── commits22-28.png
 │   ├── commits29-35.png
@@ -430,40 +600,22 @@ impulsos_cursos/
 │   ├── commits64-70.png
 │   ├── commits71-77.png
 │   ├── commits78-84.png
+│   ├── commits8-15.png
 │   ├── commits85-91.png
-│   └── commits92-98.png
-│
+│   ├── commits92-98.png
+│   └── primeiros7commits.png
 ├── briefing.md
 ├── diagrama.md
 ├── dicionario.md
 ├── documentacao.md
-├── privacidade.php
-├── termos.php
+├── index.php                                       # página inicial
+├── privacidade.php                                 # política de privacidade
 ├── product_backlog.md
-├── index.php
-└── README.md
+├── README.md
+└── termos.php                                      # termos de uso
 ```
 
-## Requisitos e configuração
-
-- PHP 8 ou superior, com `pdo_pgsql` habilitado; o código usa `str_contains()` e `??=`.
-- PostgreSQL e o cliente `psql` para executar os scripts pelo terminal.
-
-Copie `database/config.example.php` para `database/config.local.php` e preencha `host`, `dbname`, `user` e `pass`. O arquivo local contém credenciais e não deve ser publicado. No estado atual do repositório, ele está versionado e não há regra de ignore para protegê-lo.
-
-Como alternativa, configure `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS` no ambiente do PHP. Host, banco e usuário usam a configuração local quando a variável está vazia ou ausente. A senha usa o valor local apenas quando `DB_PASS` está ausente; uma senha vazia no ambiente é aceita como valor.
-
-### Banco novo
-
-Crie um banco PostgreSQL. No terminal aberto na pasta que contém `impulsos_cursos`, execute:
-
-```powershell
-psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/table.pgsql
-```
-
-Substitua `HOST`, `USUARIO` e `BANCO` pelos dados da instalação. O script cria as tabelas ausentes, incluindo favoritos e histórico administrativo, e prepara o vínculo entre aluno e conta. Ele não substitui todas as migrações de um banco antigo.
-
-### Banco existente
+## Atualizar um banco existente
 
 Confira quais mudanças já foram aplicadas. Os scripts disponíveis são:
 
@@ -488,32 +640,6 @@ psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/
 A migração de vínculos antigos compara e-mails sem espaços nas extremidades e sem diferenciar maiúsculas de minúsculas. Só preenche correspondências únicas nos dois lados e contas livres; preserva vínculos existentes e deixa casos ambíguos sem conta.
 
 Contas antigas recebem em `created_at` o horário da primeira execução da migração, pois sua data real não foi registrada. A data aparece no dashboard, no perfil e na consulta administrativa de usuários. Login, logout e redefinição de senha não a alteram. O PHP e a conexão não definem um fuso horário; as telas da conta exibem o horário do banco sem conversão.
-
-### Administrador
-
-O cadastro público sempre cria contas comuns. Para promover a conta autorizada, execute no banco:
-
-```sql
-UPDATE usuarios
-SET tipo = 'admin'
-WHERE lower(email) = lower('EMAIL_AUTORIZADO');
-```
-
-Use o e-mail permitido pela constraint `usuarios_admin_email_check` em `database/table.pgsql` e `database/adicionar_tipo_usuario.sql`. Outro e-mail é recusado pelo banco. Depois de mudar o papel, saia e entre novamente para atualizar a sessão.
-
-## Executar o sistema
-
-1. Prepare o banco e a configuração de conexão.
-2. Abra o terminal na pasta que contém `impulsos_cursos` e inicie o servidor:
-
-   ```powershell
-   php -S 127.0.0.1:8000
-   ```
-
-3. Acesse `http://127.0.0.1:8000/impulsos_cursos/`.
-4. Crie uma conta em `http://127.0.0.1:8000/impulsos_cursos/login/cadastrar.php` e entre com ela.
-
-Mantenha esse nome de pasta e esse caminho de acesso: os links e redirecionamentos usam `/impulsos_cursos/`.
 
 ## Segurança e limites
 
