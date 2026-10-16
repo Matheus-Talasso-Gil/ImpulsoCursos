@@ -53,7 +53,7 @@ php database/verificar_integridade.php
 
 O comando usa transação READ ONLY, mostra metadados e contagens, sem listar dados pessoais. Na revisão, retornou zero órfãos, duplicidades e cargas horárias inválidas. Confirmou PKs, FKs, índices únicos e CHECKs. Detectou seis colunas que ainda aceitam NULL no banco antigo, sem valores nulos existentes.
 
-A migration `database/garantir_campos_obrigatorios.sql` foi executada duas vezes em tabelas temporárias. Também foi testada com senha nula: recusou a aplicação, desfez todas as mudanças da transação e manteve os dados. A migration não foi aplicada ao banco configurado.
+A migration `database/garantir_campos_obrigatorios.sql` foi executada duas vezes em tabelas temporárias. Também foi testada com senha nula: recusou a aplicação, desfez todas as mudanças da transação e manteve os dados. Na revisão de 14/10/2026, a migration ainda não havia sido aplicada ao banco configurado. A aplicação posterior está registrada abaixo.
 
 ## Conferência HTTP local
 
@@ -77,6 +77,12 @@ Os testes de login válido e logout autenticado foram executados por CLI com tab
 - [ ] Excluir aluno preserva conta, inscrições e histórico; alunos sem conta/curso continuam nas listas.
 - [ ] Logout por GET mantém acesso; confirmação por POST com CSRF encerra acesso.
 - [ ] Recuperação local não inclui token na URL, expira e não aceita reutilização ou conta admin.
-- [ ] Antes de aplicar a migration, conferir os nulos e o banco escolhido; após aplicar, conferir NOT NULL e DEFAULT TRUE de ativo.
+- [x] Em 16/10/2026, conferidos os seis campos sem NULL, aplicada a migration ao banco configurado e confirmados NOT NULL e DEFAULT TRUE de ativo.
 
 Os itens manuais estão pendentes de conferência no navegador, mesmo quando a regra correspondente já passou nos testes automatizados.
+
+## Aplicação ao banco configurado em 16/10/2026
+
+Em 16/10/2026, a migration `database/garantir_campos_obrigatorios.sql` foi aplicada com sucesso ao banco configurado, via PHP/PDO e `database/connect_postgres.php`, sem psql. O arquivo SQL original foi executado integralmente em uma única transação, com BEGIN/COMMIT e sem commit parcial. Não houve preenchimento de nulos, alteração manual ou exclusão de registros, nem alteração de outras tabelas.
+
+A consulta prévia somente de leitura encontrou zero NULL em cada campo: `alunos.nome`, `alunos.turma`, `alunos.nasc`, `alunos.ativo`, `usuarios.email` e `usuarios.senha`. Após a aplicação, o information_schema confirmou NOT NULL nas seis colunas e DEFAULT TRUE em `alunos.ativo`. `php database/verificar_integridade.php` terminou com código 0 e zero problemas nos dados verificados: nenhum órfão, duplicidade ou carga horária inválida. As FKs estavam validadas e as restrições/índices UNIQUE presentes. As contagens de NULL permaneceram em zero.

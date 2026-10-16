@@ -108,7 +108,3 @@ Quero um sistema simples e confiável para organizar os alunos, as contas e os c
 2. Melhorar busca, filtros e experiência em dispositivos móveis.
 3. Implementar permissões, gestão de turmas e histórico.
 4. Manter catálogo, gestão de cursos, inscrições, cancelamento, perfil e indicadores administrativos; avaliar exportações, indicadores por turma e recuperação de senha para uso real.
-
-## Critério de conclusão
-
-Considerar uma funcionalidade concluída quando ela puder ser usada no navegador, validar os dados, apresentar retorno claro, funcionar com o banco configurado e tiver sido testada nos cenários esperados. Registrar o resultado e eventuais pendências em `acompanhamento.md`.

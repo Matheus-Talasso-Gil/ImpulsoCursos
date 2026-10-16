@@ -211,7 +211,7 @@ Os documentos de requisitos e acompanhamento também contêm planos e informaç�
 1. **Estrutura:** leia este guia e o `README.md`.
 2. **Entrada no sistema:** acompanhe `login/login.php`, `includes/session.php` e os verificadores de acesso.
 3. **Cadastro:** siga `login/cadastrar.php` até as funções de cadastro em `includes/functions.php`.
-5. **Cursos e administração:** compare `app/cursos.php`, `app/meus_cursos.php` e as páginas administrativas.
+4. **Cursos e administração:** compare `app/cursos.php`, `app/meus_cursos.php` e as páginas administrativas.
 
 ### Como os arquivos se conectam
 
