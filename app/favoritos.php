@@ -1,8 +1,7 @@
 <?php
 require_once __DIR__ . '/../login/verificar_user.php';
 require_once __DIR__ . '/../includes/functions.php';
-// mantem um token imprevisivel na sessao para proteger as alteracoes contra csrf
-$_SESSION['favoritos_token'] ??= bin2hex(random_bytes(32));
+$_SESSION['favoritos_token'] ??= bin2hex(random_bytes(32)); // protege os favoritos contra csrf
 $favoritos = [];
 $erro = '';
 $erroListagem = '';
@@ -14,8 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new InvalidArgumentException('Solicitação inválida.');
         }
         $_SESSION['favoritos_mensagem'] = removerFavorito($conexao, $_POST['curso_id'] ?? null, $_POST['token'] ?? null);
-        // evita repetir a remocao ao atualizar a pagina
-        header('Location: favoritos.php');
+        header('Location: favoritos.php'); // evita repetir a remocao ao atualizar a pagina
         exit();
     } catch (InvalidArgumentException $e) {
         $erro = $e->getMessage();

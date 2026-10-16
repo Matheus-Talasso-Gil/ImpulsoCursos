@@ -19,11 +19,9 @@ try {
         $user,
         $pass
     );
-    // transforma falhas do banco em excecoes para permitir o tratamento de erros
-    $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // transforma falhas do banco em excecoes para permitir o tratamento de erros
 } catch (PDOException $e) {
-    // registra a falha no servidor sem mostrar detalhes da conexao ao usuario
-    error_log($e->getMessage());
+    error_log($e->getMessage()); // registra a falha no servidor sem mostrar detalhes da conexao ao usuario
     http_response_code(503);
     die("Não foi possível conectar ao banco de dados. Tente novamente mais tarde.");
 }

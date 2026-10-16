@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../database/connect_postgres.php';
-// consultas fixas os indicadores nao dependem de parametros enviados pelo visitante
 $indicadores = [
     'alunos' => 'Alunos cadastrados',
     'usuarios' => 'Usuários cadastrados',
@@ -13,8 +12,7 @@ $resumo = [];
 $erroResumo = '';
 try {
     foreach ($indicadores as $tabela => $rotulo) {
-        // usa apenas nomes de tabelas da lista fixa para impedir sql externo
-        $resumo[$tabela] = (int) $conexao->query('SELECT COUNT(*) FROM ' . $tabela)->fetchColumn();
+        $resumo[$tabela] = (int) $conexao->query('SELECT COUNT(*) FROM ' . $tabela)->fetchColumn(); // usa apenas nomes de tabelas da lista fixa para impedir sql externo
     }
 } catch (PDOException $e) {
     error_log($e->getMessage());
@@ -39,7 +37,7 @@ try {
                 <p class="message-warning" role="status"><?= htmlspecialchars($erroResumo, ENT_QUOTES, 'UTF-8') ?></p>
             <?php else: ?>
                 <dl class="admin-summary-grid">
-                    <?php foreach ($indicadores as $tabela => $rotulo): ?>
+                    <?php foreach ($indicadores as $tabela => $rotulo): ?> // percorre os indicadores e mostra cada valor em um card
                         <div class="admin-card">
                             <dt><?= htmlspecialchars($rotulo, ENT_QUOTES, 'UTF-8') ?></dt>
                             <dd><?= (int) $resumo[$tabela] ?></dd>

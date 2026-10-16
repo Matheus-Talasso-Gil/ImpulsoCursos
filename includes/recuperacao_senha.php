@@ -1,6 +1,5 @@
 <?php
-// sem entrega de token por um canal verificado este fluxo e apenas uma demonstracao local
-function protegerRecuperacaoLocal()
+function protegerRecuperacaoLocal() // sem entrega de token por um canal verificado este fluxo e apenas uma demonstracao local
 {
     if (!in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)) {
         http_response_code(403);
@@ -9,16 +8,13 @@ function protegerRecuperacaoLocal()
 }
 function validarCsrfRecuperacao($token)
 {
-
     if (!is_string($token) || !isset($_SESSION['recuperacao_csrf']) || !hash_equals($_SESSION['recuperacao_csrf'], $token)) {
         throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e tente novamente.');
     }
 }
 function iniciarRecuperacaoSenha($conexao, $email)
 {
-    // invalida a recuperacao anterior a cada nova solicitacao
-    unset($_SESSION['recuperacao_senha'], $_SESSION['recuperacao_continuar']);
-    // gera um token imprevisivel para impedir tentativas de adivinhacao
+    unset($_SESSION['recuperacao_senha'], $_SESSION['recuperacao_continuar']); // invalida a recuperacao anterior a cada nova solicitacao
     $token = bin2hex(random_bytes(32));
     $email = is_string($email) ? trim($email) : '';
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -26,18 +22,15 @@ function iniciarRecuperacaoSenha($conexao, $email)
         $stmt->execute([':email' => $email]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($usuario) {
-            // guarda a recuperacao por dez minutos e somente para contas comuns
-            $_SESSION['recuperacao_senha'] = ['usuario_id' => (int) $usuario['id'], 'token' => $token, 'expira_em' => time() + 600];
+            $_SESSION['recuperacao_senha'] = ['usuario_id' => (int) $usuario['id'], 'token' => $token, 'expira_em' => time() + 600]; // guarda a recuperacao por dez minutos e somente para contas comuns
         }
     }
-    // mantem a resposta generica sem revelar se a conta existe
-    return $token;
+    return $token; // mantem a resposta generica sem revelar se a conta existe
 }
 function validarRecuperacaoSenha($conexao, $token)
 {
     $recuperacao = $_SESSION['recuperacao_senha'] ?? null;
-    // descarta a recuperacao quando os dados sao invalidos ou o prazo expirou
-    if (!is_array($recuperacao) || !is_int($recuperacao['expira_em'] ?? null) || time() > $recuperacao['expira_em']) {
+    if (!is_array($recuperacao) || !is_int($recuperacao['expira_em'] ?? null) || time() > $recuperacao['expira_em']) { // descarta a recuperacao quando os dados sao invalidos ou o prazo expirou
         unset($_SESSION['recuperacao_senha']);
         throw new InvalidArgumentException('Solicitação inválida ou expirada.');
     }
@@ -50,8 +43,7 @@ function validarRecuperacaoSenha($conexao, $token)
         unset($_SESSION['recuperacao_senha']);
         throw new InvalidArgumentException('Solicitação inválida ou expirada.');
     }
-    // confere o tipo atual da conta usando somente o id salvo na sessao
-    $stmt = $conexao->prepare("SELECT id FROM usuarios WHERE id = :id AND tipo = 'usuario'");
+    $stmt = $conexao->prepare("SELECT id FROM usuarios WHERE id = :id AND tipo = 'usuario'"); // confere o tipo atual da conta usando somente o id salvo na sessao
     $stmt->execute([':id' => $id]);
     if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
         unset($_SESSION['recuperacao_senha']);
@@ -63,8 +55,7 @@ function redefinirSenhaUsuario($conexao, $token, $csrf, $senha, $confirmacao)
 {
     validarCsrfRecuperacao($csrf);
     $id = validarRecuperacaoSenha($conexao, $token);
-    // preserva os espacos da senha e respeita o limite de 72 bytes do bcrypt
-    if (!is_string($senha) || preg_match('/^.{8,}$/us', $senha) !== 1 || strlen($senha) > 72 || str_contains($senha, "\0")) {
+    if (!is_string($senha) || preg_match('/^.{8,}$/us', $senha) !== 1 || strlen($senha) > 72 || str_contains($senha, "\0")) { // preserva os espacos da senha e respeita o limite de 72 bytes do bcrypt
         throw new InvalidArgumentException('Use uma senha de pelo menos 8 caracteres e no máximo 72 bytes.');
     }
     if (!is_string($confirmacao) || $senha !== $confirmacao) {
@@ -72,13 +63,11 @@ function redefinirSenhaUsuario($conexao, $token, $csrf, $senha, $confirmacao)
     }
 
     $hash = password_hash($senha, PASSWORD_DEFAULT);
-    // revalida o tipo ao salvar para impedir alteracao de senha administrativa
-    $stmt = $conexao->prepare("UPDATE usuarios SET senha = :senha WHERE id = :id AND tipo = 'usuario'");
+    $stmt = $conexao->prepare("UPDATE usuarios SET senha = :senha WHERE id = :id AND tipo = 'usuario'"); // revalida o tipo ao salvar para impedir alteracao de senha administrativa
     $stmt->execute([':senha' => $hash, ':id' => $id]);
     if ($stmt->rowCount() !== 1) {
         unset($_SESSION['recuperacao_senha']);
         throw new InvalidArgumentException('Solicitação inválida ou expirada.');
     }
-    // invalida o token apos a troca para impedir uma segunda utilizacao
-    unset($_SESSION['recuperacao_senha'], $_SESSION['recuperacao_continuar']);
+    unset($_SESSION['recuperacao_senha'], $_SESSION['recuperacao_continuar']); // invalida o token apos a troca para impedir uma segunda utilizacao
 }

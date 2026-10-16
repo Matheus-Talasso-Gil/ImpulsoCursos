@@ -5,7 +5,6 @@ $erro = '';
 $_SESSION['login_token'] ??= bin2hex(random_bytes(32));
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-
         if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['login_token'], $_POST['token'])) {
             throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e tente novamente.');
         }
@@ -17,10 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $senha = $_POST['senha'] ?? '';
         if ($usuario && is_string($senha) && password_verify($senha, $usuario['senha'])) {
-            // troca o id da sessao para impedir o reaproveitamento da sessao anterior
-            session_regenerate_id(true);
-            // descarta tokens e selecoes da identidade anterior
-            $_SESSION = [];
+            session_regenerate_id(true); // troca o id da sessao para impedir o reaproveitamento da sessao anterior
+            $_SESSION = []; // descarta tokens e selecoes da identidade anterior
             $_SESSION['id'] = $usuario['id'];
             $_SESSION['email'] = $usuario['email'];
             $_SESSION['tipo'] = $usuario['tipo'] ?? 'usuario';
@@ -38,8 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (InvalidArgumentException $e) {
         $erro = $e->getMessage();
     } catch (PDOException $e) {
-        // registra o erro no servidor sem expor detalhes do banco ao usuario
-        error_log($e->getMessage());
+        error_log($e->getMessage()); // registra o erro no servidor sem expor detalhes do banco ao usuario
         $erro = 'Não foi possível consultar o cadastro. Tente novamente.';
     }
 }

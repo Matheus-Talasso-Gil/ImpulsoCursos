@@ -6,8 +6,7 @@ $cursos = [];
 $erro = '';
 $mensagem = $_SESSION['cancelamento_mensagem'] ?? '';
 unset($_SESSION['cancelamento_mensagem']);
-// mantem um token imprevisivel para proteger o cancelamento contra csrf
-$_SESSION['cancelamento_token'] ??= bin2hex(random_bytes(32));
+$_SESSION['cancelamento_token'] ??= bin2hex(random_bytes(32)); // protege o cancelamento contra csrf
 $cursoCancelar = false;
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,17 +20,14 @@ try {
             throw new InvalidArgumentException('Informe um curso válido.');
         }
         if (($_POST['acao'] ?? '') === 'confirmar') {
-            // exige que o curso confirmado seja o mesmo conferido na etapa anterior
-            if (($_SESSION['cancelamento_pendente'] ?? null) !== $id) {
+            if (($_SESSION['cancelamento_pendente'] ?? null) !== $id) { // exige que o curso confirmado seja o mesmo conferido na etapa anterior
                 throw new InvalidArgumentException('Confira o curso antes de confirmar o cancelamento.');
             }
-            // o id da conta vem somente da sessao nunca remove inscricoes de outra conta
-            $stmt = $conexao->prepare('DELETE FROM inscricoes WHERE usuario_id = :usuario_id AND curso_id = :curso_id');
+            $stmt = $conexao->prepare('DELETE FROM inscricoes WHERE usuario_id = :usuario_id AND curso_id = :curso_id'); // o id da conta vem somente da sessao nunca remove inscricoes de outra conta
             $stmt->execute([':usuario_id' => (int) $_SESSION['id'], ':curso_id' => $id]);
             $_SESSION['cancelamento_mensagem'] = $stmt->rowCount() ? 'Inscrição cancelada com sucesso.' : 'Esta inscrição já não está disponível.';
             unset($_SESSION['cancelamento_pendente']);
-            // renova o token apos cancelar para invalidar formularios anteriores
-            $_SESSION['cancelamento_token'] = bin2hex(random_bytes(32));
+            $_SESSION['cancelamento_token'] = bin2hex(random_bytes(32)); // renova o token apos cancelar para invalidar formularios anteriores
             header('Location: meus_cursos.php');
             exit();
         }

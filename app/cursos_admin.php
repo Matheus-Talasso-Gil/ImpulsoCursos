@@ -5,8 +5,7 @@ require_once __DIR__ . '/../includes/functions.php';
 $cursos = [];
 $erro = '';
 try {
-    // conta apenas inscricoes existentes e mantem cursos sem inscritos
-    $cursos = $conexao->query('SELECT c.id, c.nome, c.descricao, c.carga_horaria, COUNT(i.id) AS inscritos FROM cursos c LEFT JOIN inscricoes i ON i.curso_id = c.id GROUP BY c.id ORDER BY c.id')->fetchAll(PDO::FETCH_ASSOC);
+    $cursos = $conexao->query('SELECT c.id, c.nome, c.descricao, c.carga_horaria, COUNT(i.id) AS inscritos FROM cursos c LEFT JOIN inscricoes i ON i.curso_id = c.id GROUP BY c.id ORDER BY c.id')->fetchAll(PDO::FETCH_ASSOC); // conta apenas inscricoes existentes e mantem cursos sem inscritos
 } catch (PDOException $e) {
     error_log($e->getMessage());
     $erro = 'Não foi possível carregar os cursos. Tente novamente.';

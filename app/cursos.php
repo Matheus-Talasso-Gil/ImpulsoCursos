@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_user.php';
 require_once __DIR__ . '/../includes/functions.php';
-$_SESSION['inscricao_token'] ??= bin2hex(random_bytes(32)); // mantem um token aleatorio na sessao para proteger o formulario contra csrf
+$_SESSION['inscricao_token'] ??= bin2hex(random_bytes(32)); // protege o formulario contra csrf
 $mensagem = '';
 $erro = '';
 $erroListagem = '';
@@ -25,8 +25,7 @@ try {
     $cursos = buscarCursosDisponiveis($conexao);
     if ($categoria !== 'todas') {
         $cursosFiltrados = [];
-        // identifica as areas pelos nomes pois os cursos ainda nao possuem categoria no banco
-        foreach ($cursos as $curso) {
+        foreach ($cursos as $curso) { // identifica as areas pelos nomes pois os cursos ainda nao possuem categoria no banco
             $ingles = preg_match('/ingl[eê]s/iu', $curso['nome']) === 1;
             $tecnologia = !$ingles && preg_match('/inform[aá]tica|programa[cç][aã]o|desenvolvimento|banco de dados|excel|word|powerpoint|windows|linux|redes de computadores|manuten[cç][aã]o de computadores|seguran[cç]a digital|\bgit\b|java|python|power bi|canva/iu', $curso['nome']) === 1;
             if (($categoria === 'ingles' && $ingles) || ($categoria === 'tecnologia' && $tecnologia)) {

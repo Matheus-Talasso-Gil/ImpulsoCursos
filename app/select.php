@@ -2,8 +2,7 @@
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../includes/functions.php';
-// descarta filtros inesperados antes de montar a consulta
-$cursoId = is_string($_GET['curso'] ?? null) ? $_GET['curso'] : '';
+$cursoId = is_string($_GET['curso'] ?? null) ? $_GET['curso'] : ''; // descarta filtros inesperados antes de montar a consulta
 $cursos = [];
 $situacao = $_GET['situacao'] ?? 'todas';
 if (!is_string($situacao) || !in_array($situacao, ['todas', 'ativo', 'inativo'], true)) {

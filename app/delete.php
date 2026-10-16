@@ -2,9 +2,8 @@
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../includes/functions.php';
-$_SESSION['exclusao_token'] ??= bin2hex(random_bytes(32)); // mantem um token aleatorio na sessao para proteger o formulario contra csrf
-// descarta confirmacoes anteriores ao abrir a pagina novamente
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+$_SESSION['exclusao_token'] ??= bin2hex(random_bytes(32)); // protege o formulario contra csrf
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') { // descarta confirmacoes anteriores ao abrir a pagina novamente
     unset($_SESSION['exclusao_pendente'], $_SESSION['exclusao_cursos']);
 }
 ?>
@@ -46,16 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
                 if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['exclusao_token'], $_POST['token'])) {
                     echo '<p class="message-error" role="alert">Solicitação inválida. Recarregue a página.</p>';
                 } elseif (($_SESSION['exclusao_pendente'] ?? null) !== $dados) {
-                    // exige nova conferencia se o aluno ou suas inscricoes mudaram
-                    echo '<p class="message-warning" role="alert">Confira os dados atualizados antes de confirmar.</p>';
+                    echo '<p class="message-warning" role="alert">Confira os dados atualizados antes de confirmar.</p>'; // exige nova conferencia se o aluno ou suas inscricoes mudaram
                 } elseif ($cursos && (!isset($_POST['confirmar_cursos']) || ($_SESSION['exclusao_cursos'] ?? null) !== $dados)) {
-                    // exige confirmacao adicional quando o aluno possui inscricoes
-                    $confirmacaoCursos = true;
-                    $_SESSION['exclusao_cursos'] = $dados; // guarda os dados conferidos na sessao para usar na proxima etapa
+                    $confirmacaoCursos = true; // exige confirmacao adicional quando o aluno possui inscricoes
+                    $_SESSION['exclusao_cursos'] = $dados;
                 } else {
                     try {
-                        // exclui somente o aluno e preserva a conta e suas inscricoes
-                        apagar($conexao, $id);
+                        apagar($conexao, $id); // exclui somente o aluno e preserva a conta e suas inscricoes
                         $aluno = false;
                         unset($_SESSION['exclusao_pendente'], $_SESSION['exclusao_cursos']);
                     } catch (PDOException $e) {

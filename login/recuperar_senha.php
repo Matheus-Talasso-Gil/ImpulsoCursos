@@ -5,21 +5,18 @@ if (isset($_SESSION['id'])) {
     header('Location: /impulsos_cursos/login/perfil.php');
     exit();
 }
-// sem verificacao de email este fluxo fica restrito ao proprio computador
-protegerRecuperacaoLocal();
+protegerRecuperacaoLocal(); // sem verificacao de email este fluxo fica restrito ao proprio computador
 require_once __DIR__ . '/../database/connect_postgres.php';
-// evita enviar a url como referencia e guardar a pagina em cache
-header('Referrer-Policy: no-referrer');
+header('Referrer-Policy: no-referrer'); // evita enviar a url como referencia e guardar a pagina em cache
 header('Cache-Control: no-store');
-$_SESSION['recuperacao_csrf'] ??= bin2hex(random_bytes(32));// mantem um token aleatorio na sessao para proteger o formulario contra csrf
+$_SESSION['recuperacao_csrf'] ??= bin2hex(random_bytes(32)); // protege o formulario contra csrf
 $erro = '';
 $mensagem = '';
 $tokenContinuar = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         validarCsrfRecuperacao($_POST['csrf'] ?? null);
-        // so ativa a recuperacao para usuarios comuns a resposta inicial e igual para qualquer email
-        $tokenContinuar = iniciarRecuperacaoSenha($conexao, $_POST['email'] ?? null);
+        $tokenContinuar = iniciarRecuperacaoSenha($conexao, $_POST['email'] ?? null); // so ativa a recuperacao para usuarios comuns a resposta inicial e igual para qualquer email
         $_SESSION['recuperacao_continuar'] = $tokenContinuar;
         $mensagem = 'Se existir uma conta de usuário válida com esse e-mail, será possível continuar com a recuperação.';
     } catch (InvalidArgumentException $e) {

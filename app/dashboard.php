@@ -4,8 +4,7 @@ if (($_SESSION['tipo'] ?? 'usuario') === 'admin') {
     header('Location: /impulsos_cursos/app/admin.php');
     exit();
 }
-// recusa tipos de conta inesperados mesmo quando existe uma sessao autenticada
-if (($_SESSION['tipo'] ?? 'usuario') !== 'usuario') {
+if (($_SESSION['tipo'] ?? 'usuario') !== 'usuario') { // recusa tipos de conta inesperados mesmo quando existe uma sessao autenticada
     http_response_code(403);
     exit('Acesso indisponível para esta conta.');
 }
@@ -17,8 +16,7 @@ $meusCursos = [];
 $cursosDisponiveis = [];
 $erro = '';
 try {
-    // busca somente a conta da sessao mesmo quando nao ha aluno vinculado
-    $stmt = $conexao->prepare("SELECT u.email, u.created_at, a.nome, a.ativo,
+    $stmt = $conexao->prepare( /* inclui contas sem aluno vinculado */ "SELECT u.email, u.created_at, a.nome, a.ativo,
         COALESCE((SELECT STRING_AGG(c.nome, ', ' ORDER BY c.nome, c.id)
             FROM inscricoes AS i
             INNER JOIN cursos AS c
@@ -39,8 +37,7 @@ try {
                 WHERE i.usuario_id = :id ORDER BY c.id LIMIT 3');
         $stmt->execute([':id' => (int) $_SESSION['id']]);
         $meusCursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // calcula se cada curso ja possui inscricao da conta autenticada
-        $stmt = $conexao->prepare('SELECT c.id, c.nome,
+        $stmt = $conexao->prepare( /* indica os cursos ja inscritos pela conta */ 'SELECT c.id, c.nome,
             EXISTS (SELECT 1 FROM inscricoes i WHERE i.curso_id = c.id AND i.usuario_id = :id) AS inscrito
             FROM cursos c ORDER BY c.id LIMIT 3');
         $stmt->execute([':id' => (int) $_SESSION['id']]);

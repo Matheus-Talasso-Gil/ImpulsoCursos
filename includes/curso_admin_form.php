@@ -2,16 +2,14 @@
 require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/functions.php';
-// mantem um token imprevisivel para proteger o cadastro e a edicao de cursos
-$_SESSION['curso_admin_token'] ??= bin2hex(random_bytes(32));
+$_SESSION['curso_admin_token'] ??= bin2hex(random_bytes(32)); // protege os formularios de cursos contra csrf
 $erro = '';
 $mensagem = '';
 $curso = ['nome' => '', 'descricao' => '', 'carga_horaria' => ''];
 $podeEditar = true;
 $id = false;
 if ($editarCurso) {
-    // usa o id apenas para localizar o curso sem alterar sua identidade
-    $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 2147483647]]);
+    $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 2147483647]]); // usa o id apenas para localizar o curso sem alterar sua identidade
     try {
         $curso = $id !== false ? buscarCursoAdmin($conexao, $id) : false;
         if (!$curso) {
@@ -26,8 +24,7 @@ if ($editarCurso) {
     }
 }
 if ($podeEditar && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    // preserva os campos textuais para permitir correcao apos um erro
-    foreach (['nome', 'descricao', 'carga_horaria'] as $campo) {
+    foreach (['nome', 'descricao', 'carga_horaria'] as $campo) { // preserva os campos textuais para permitir correcao apos um erro
         $curso[$campo] = is_string($_POST[$campo] ?? null) ? $_POST[$campo] : '';
     }
     try {
@@ -47,8 +44,7 @@ if ($podeEditar && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute($dados);
             $cursoId = (int) $stmt->fetchColumn();
             registrarLogAdmin($conexao, 'criou', 'curso', $cursoId, 'Criou o curso ' . $dados['nome']);
-            // redirecionamento apos criar evita duplicacao ao atualizar a pagina
-            header('Location: curso_create.php?sucesso=1');
+            header('Location: curso_create.php?sucesso=1'); // redirecionamento apos criar evita duplicacao ao atualizar a pagina
             exit();
         }
     } catch (InvalidArgumentException $e) {

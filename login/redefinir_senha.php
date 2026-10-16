@@ -7,22 +7,18 @@ if (isset($_SESSION['id'])) {
 }
 protegerRecuperacaoLocal();
 require_once __DIR__ . '/../database/connect_postgres.php';
-// evita compartilhar a origem e armazenar esta pagina no cache
-header('Referrer-Policy: no-referrer');
+header('Referrer-Policy: no-referrer'); // evita compartilhar a origem e armazenar esta pagina no cache
 header('Cache-Control: no-store');
 $_SESSION['recuperacao_csrf'] ??= bin2hex(random_bytes(32));
-// recupera o token e a identidade somente da sessao
-$token = $_SESSION['recuperacao_continuar'] ?? null;
+$token = $_SESSION['recuperacao_continuar'] ?? null; // recupera o token e a identidade somente da sessao
 $erro = '';
 $podeRedefinir = false;
 $sucesso = false;
 try {
-    // libera o formulario somente com token valido e conta permitida
-    validarRecuperacaoSenha($conexao, $token);
+    validarRecuperacaoSenha($conexao, $token); // libera o formulario somente com token valido e conta permitida
     $podeRedefinir = true;
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // altera a senha somente apos validar csrf e a recuperacao
-        redefinirSenhaUsuario($conexao, $token, $_POST['csrf'] ?? null, $_POST['senha'] ?? null, $_POST['confirmacao'] ?? null);
+        redefinirSenhaUsuario($conexao, $token, $_POST['csrf'] ?? null, $_POST['senha'] ?? null, $_POST['confirmacao'] ?? null); // altera a senha somente apos validar csrf e a recuperacao
         $sucesso = true;
         $podeRedefinir = false;
     }

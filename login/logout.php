@@ -3,8 +3,7 @@ require_once __DIR__ . '/verificar_user.php';
 $_SESSION['logout_token'] ??= bin2hex(random_bytes(32));
 $erro = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // encerra a sessao somente apos uma confirmacao protegida por csrf
-    if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['logout_token'], $_POST['token'])) {
+    if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['logout_token'], $_POST['token'])) { // encerra a sessao somente apos uma confirmacao protegida por csrf
         http_response_code(403);
         $erro = 'Solicitação inválida. Recarregue a página e tente novamente.';
     } else {

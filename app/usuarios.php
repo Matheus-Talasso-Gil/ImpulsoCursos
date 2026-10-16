@@ -6,8 +6,7 @@ require_once __DIR__ . '/../includes/data_conta.php';
 $usuariosCadastrados = [];
 $erroUsuarios = '';
 try {
-    // nao consulta senhas mostra apenas os dados da conta e seu vinculo com um aluno
-    $usuariosCadastrados = $conexao->query('SELECT u.id, u.email, u.tipo, u.created_at, a.nome AS aluno_nome FROM usuarios u LEFT JOIN alunos a ON a.usuario_id = u.id ORDER BY u.id')->fetchAll(PDO::FETCH_ASSOC);
+    $usuariosCadastrados = $conexao->query('SELECT u.id, u.email, u.tipo, u.created_at, a.nome AS aluno_nome FROM usuarios u LEFT JOIN alunos a ON a.usuario_id = u.id ORDER BY u.id')->fetchAll(PDO::FETCH_ASSOC); // nao consulta senhas mostra apenas os dados da conta e seu vinculo com um aluno
 } catch (PDOException $e) {
     error_log($e->getMessage());
     $erroUsuarios = 'Não foi possível carregar os usuários cadastrados. Tente novamente.';

@@ -5,9 +5,7 @@ require_once __DIR__ . '/../database/connect_postgres.php';
 $alunosCursos = [];
 $erroAlunosCursos = '';
 try {
-    // mantem alunos sem conta ou inscricoes na listagem
-    // identifica o vinculo pelo id da conta e nao pela igualdade de emails
-    $alunosCursos = $conexao->query('SELECT a.id, a.nome, a.turma, a.usuario_id, u.email AS conta_email, c.id AS curso_id, c.nome AS curso_nome FROM alunos a LEFT JOIN usuarios u ON u.id = a.usuario_id LEFT JOIN inscricoes i ON i.usuario_id = a.usuario_id LEFT JOIN cursos c ON c.id = i.curso_id ORDER BY a.id, c.id')->fetchAll(PDO::FETCH_ASSOC);
+    $alunosCursos = $conexao->query('SELECT a.id, a.nome, a.turma, a.usuario_id, u.email AS conta_email, c.id AS curso_id, c.nome AS curso_nome FROM alunos a LEFT JOIN usuarios u ON u.id = a.usuario_id LEFT JOIN inscricoes i ON i.usuario_id = a.usuario_id LEFT JOIN cursos c ON c.id = i.curso_id ORDER BY a.id, c.id')->fetchAll(PDO::FETCH_ASSOC); // mantem alunos sem conta ou inscricoes na listagem
 } catch (PDOException $e) {
     error_log($e->getMessage());
     $erroAlunosCursos = 'Não foi possível carregar os cursos dos alunos. Tente novamente.';
@@ -49,11 +47,11 @@ try {
                                 <tr>
                                     <td><?= (int) $alunoCurso['id'] ?></td>
                                     <td><?= htmlspecialchars($alunoCurso['nome'], ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><?= htmlspecialchars($alunoCurso['conta_email'] ?? 'Sem conta', ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars($alunoCurso['conta_email'] ?? 'Sem conta', ENT_QUOTES, 'UTF-8') ?></td> mostra o e-mail da conta; se não existir, mostra Sem conta.
                                     <td><?= htmlspecialchars($nomeCurso, ENT_QUOTES, 'UTF-8') ?></td>
                                 </tr>
                             <?php endforeach; ?>
-                            <?php if (!$alunosCursos): ?>
+                            <?php if (!$alunosCursos): ?> // mostra uma mensagem caso nao existam alunos cadastrados
                                 <tr><td colspan="4">Nenhum aluno cadastrado.</td></tr>
                             <?php endif; ?>
                         </tbody>

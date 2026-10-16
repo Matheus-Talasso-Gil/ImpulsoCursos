@@ -1,12 +1,10 @@
 <?php
-// pagina informativa nao processa formularios nem consulta o banco
-if (!in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'HEAD'], true)) {
+if (!in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'HEAD'], true)) { // pagina informativa nao processa formularios nem consulta o banco
     header('Allow: GET, HEAD');
     http_response_code(405);
     exit('Esta página é apenas informativa.');
 }
-// le uma sessao existente apenas para o menu sem atualizar dados ou renovar a atividade
-$headerSessaoSomenteLeitura = true;
+$headerSessaoSomenteLeitura = true; // le a sessao sem renovar a atividade
 require_once __DIR__ . '/includes/session.php';
 ?>
 <!DOCTYPE html>

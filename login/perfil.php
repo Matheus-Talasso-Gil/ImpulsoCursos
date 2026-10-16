@@ -13,7 +13,6 @@ try {
 }
 $aluno = false;
 $erroPerfil = '';
-// busca somente o aluno vinculado a conta autenticada
 try {
     $stmt = $conexao->prepare("SELECT a.id, a.nome, a.nasc, a.email, a.ativo,
         COALESCE((SELECT STRING_AGG(c.nome, ', ' ORDER BY c.nome, c.id)
@@ -31,11 +30,9 @@ $ehAdmin = ($_SESSION['tipo'] ?? 'usuario') === 'admin';
 $tipoConta = $ehAdmin ? 'Administrador' : 'Usuário';
 $cursos = [];
 $erroCursos = '';
-// evita consultar cursos que nao aparecem no perfil administrativo
-if (!$ehAdmin) {
+if (!$ehAdmin) { // evita consultar cursos que nao aparecem no perfil administrativo
     try {
-        // mantem os tres primeiros cursos como previa o link do perfil leva a lista completa
-        $cursos = array_slice(buscarCursosDoUsuario($conexao), 0, 3);
+        $cursos = array_slice(buscarCursosDoUsuario($conexao), 0, 3); // mantem os tres primeiros cursos como previa o link do perfil leva a lista completa
     } catch (PDOException $e) {
         error_log($e->getMessage());
         $erroCursos = 'Não foi possível carregar seus cursos. Tente novamente.';

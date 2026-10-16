@@ -10,8 +10,7 @@ function buscarAlunoPorCpf($conexao, $cpf) {
     if ($cpf === '') {
         return false;
     }
-    // compara apenas os digitos para encontrar cpfs salvos com ou sem mascara
-    $stmt = $conexao->prepare("SELECT * FROM alunos WHERE regexp_replace(cpf, '[^0-9]', '', 'g') = :cpf LIMIT 1");
+    $stmt = $conexao->prepare("SELECT * FROM alunos WHERE regexp_replace(cpf, '[^0-9]', '', 'g') = :cpf LIMIT 1"); // compara apenas os digitos para encontrar cpfs salvos com ou sem mascara
     $stmt->bindParam(':cpf', $cpf);
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);

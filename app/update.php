@@ -2,8 +2,7 @@
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../includes/functions.php';
-// mantem um token imprevisivel para proteger a edicao contra csrf
-$_SESSION['edicao_token'] ??= bin2hex(random_bytes(32));
+$_SESSION['edicao_token'] ??= bin2hex(random_bytes(32)); // protege a edicao contra csrf
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -18,19 +17,15 @@ $_SESSION['edicao_token'] ??= bin2hex(random_bytes(32));
 <main>
 <h1>Atualizar aluno</h1>
 <?php
-// distingue a busca inicial do envio que salva a edicao
-// usa a identidade salva na sessao para impedir alteracoes pelo formulario
-$aluno = false;
+$aluno = false; // usa a identidade salva na sessao para impedir alteracoes pelo formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['id']) || isset($_POST['nome']))) {
     try {
         if (isset($_POST['nome'])) {
-
             if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['edicao_token'], $_POST['token'])) {
                 throw new InvalidArgumentException('Solicitação inválida. Recarregue a página e busque o aluno novamente.');
             }
             $idFormulario = filter_var($_POST['aluno_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 2147483647]]);
-            // impede salvar em outro aluno quando a selecao mudou em outra aba
-            if ($idFormulario === false || $idFormulario !== (int) ($_SESSION['aluno_edicao_id'] ?? 0)) {
+            if ($idFormulario === false || $idFormulario !== (int) ($_SESSION['aluno_edicao_id'] ?? 0)) { // impede salvar em outro aluno quando a selecao mudou em outra aba
                 throw new InvalidArgumentException('O aluno em edição mudou em outra aba. Busque novamente antes de salvar.');
             }
         }
@@ -66,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['id']) || isset($_POS
                     throw new InvalidArgumentException('Informe nome com até 255 caracteres, um e-mail válido e a situação do aluno.');
                 }
                 Atualizar($conexao, $id, $nome, $aluno['turma'], $nasc, $ativo, $email, $cpf);
-                // reconsulta para preencher o formulario com os valores ja atualizados no banco
                 $stmt->execute([':id' => $id]);
                 $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
             }
