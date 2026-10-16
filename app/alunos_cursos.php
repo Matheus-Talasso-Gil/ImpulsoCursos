@@ -47,11 +47,11 @@ try {
                                 <tr>
                                     <td><?= (int) $alunoCurso['id'] ?></td>
                                     <td><?= htmlspecialchars($alunoCurso['nome'], ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><?= htmlspecialchars($alunoCurso['conta_email'] ?? 'Sem conta', ENT_QUOTES, 'UTF-8') ?></td> mostra o e-mail da conta; se não existir, mostra Sem conta.
+                                    <td><?= htmlspecialchars($alunoCurso['conta_email'] ?? 'Sem conta', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($nomeCurso, ENT_QUOTES, 'UTF-8') ?></td>
                                 </tr>
                             <?php endforeach; ?>
-                            <?php if (!$alunosCursos): ?> // mostra uma mensagem caso nao existam alunos cadastrados
+                            <?php if (!$alunosCursos): ?>
                                 <tr><td colspan="4">Nenhum aluno cadastrado.</td></tr>
                             <?php endif; ?>
                         </tbody>

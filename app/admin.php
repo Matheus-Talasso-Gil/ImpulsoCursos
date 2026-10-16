@@ -37,7 +37,7 @@ try {
                 <p class="message-warning" role="status"><?= htmlspecialchars($erroResumo, ENT_QUOTES, 'UTF-8') ?></p>
             <?php else: ?>
                 <dl class="admin-summary-grid">
-                    <?php foreach ($indicadores as $tabela => $rotulo): ?> // percorre os indicadores e mostra cada valor em um card
+                    <?php foreach ($indicadores as $tabela => $rotulo): ?>
                         <div class="admin-card">
                             <dt><?= htmlspecialchars($rotulo, ENT_QUOTES, 'UTF-8') ?></dt>
                             <dd><?= (int) $resumo[$tabela] ?></dd>
