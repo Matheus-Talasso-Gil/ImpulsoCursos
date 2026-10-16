@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/session.php';
-if (($_SESSION['tipo'] ?? '') === 'admin') { // redireciona o admin para a listagem e os outros usuarios para o cadastro
+if (($_SESSION['tipo'] ?? '') === 'admin') {
     $destino = '/impulsos_cursos/app/select.php';
 } else {
     $destino = '/impulsos_cursos/login/cadastrar.php';

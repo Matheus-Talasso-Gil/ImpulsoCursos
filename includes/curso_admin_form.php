@@ -9,7 +9,7 @@ $curso = ['nome' => '', 'descricao' => '', 'carga_horaria' => ''];
 $podeEditar = true;
 $id = false;
 if ($editarCurso) {
-    $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 2147483647]]); // usa o id apenas para localizar o curso sem alterar sua identidade
+    $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 2147483647]]); // aceita apenas ids positivos dentro do limite do banco
     try {
         $curso = $id !== false ? buscarCursoAdmin($conexao, $id) : false;
         if (!$curso) {
@@ -24,7 +24,7 @@ if ($editarCurso) {
     }
 }
 if ($podeEditar && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    foreach (['nome', 'descricao', 'carga_horaria'] as $campo) { // preserva os campos textuais para permitir correcao apos um erro
+    foreach (['nome', 'descricao', 'carga_horaria'] as $campo) { // preserva os valores para correcao apos um erro
         $curso[$campo] = is_string($_POST[$campo] ?? null) ? $_POST[$campo] : '';
     }
     try {
@@ -44,7 +44,7 @@ if ($podeEditar && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute($dados);
             $cursoId = (int) $stmt->fetchColumn();
             registrarLogAdmin($conexao, 'criou', 'curso', $cursoId, 'Criou o curso ' . $dados['nome']);
-            header('Location: curso_create.php?sucesso=1'); // redirecionamento apos criar evita duplicacao ao atualizar a pagina
+            header('Location: curso_create.php?sucesso=1'); // evita repetir o cadastro ao atualizar a pagina
             exit();
         }
     } catch (InvalidArgumentException $e) {

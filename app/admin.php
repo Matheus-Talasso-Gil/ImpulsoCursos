@@ -12,7 +12,7 @@ $resumo = [];
 $erroResumo = '';
 try {
     foreach ($indicadores as $tabela => $rotulo) {
-        $resumo[$tabela] = (int) $conexao->query('SELECT COUNT(*) FROM ' . $tabela)->fetchColumn(); // usa apenas nomes de tabelas da lista fixa para impedir sql externo
+        $resumo[$tabela] = (int) $conexao->query('SELECT COUNT(*) FROM ' . $tabela)->fetchColumn(); // os nomes das tabelas vem de uma lista fixa
     }
 } catch (PDOException $e) {
     error_log($e->getMessage());

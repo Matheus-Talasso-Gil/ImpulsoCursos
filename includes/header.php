@@ -1,5 +1,5 @@
 <?php
-if (!($headerSessaoSomenteLeitura ?? false)) { // a politica publica le a sessao antes do html sem alterar o fluxo das demais paginas
+if (!($headerSessaoSomenteLeitura ?? false)) { // paginas informativas ja leram a sessao sem renovar a atividade
     require_once __DIR__ . '/session.php';
 }
 ?>

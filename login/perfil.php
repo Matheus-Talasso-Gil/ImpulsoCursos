@@ -32,7 +32,7 @@ $cursos = [];
 $erroCursos = '';
 if (!$ehAdmin) { // evita consultar cursos que nao aparecem no perfil administrativo
     try {
-        $cursos = array_slice(buscarCursosDoUsuario($conexao), 0, 3); // mantem os tres primeiros cursos como previa o link do perfil leva a lista completa
+        $cursos = array_slice(buscarCursosDoUsuario($conexao), 0, 3); // limita a previa a tres cursos
     } catch (PDOException $e) {
         error_log($e->getMessage());
         $erroCursos = 'Não foi possível carregar seus cursos. Tente novamente.';

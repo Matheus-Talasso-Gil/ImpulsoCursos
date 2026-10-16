@@ -25,7 +25,7 @@ try {
     $cursos = buscarCursosDisponiveis($conexao);
     if ($categoria !== 'todas') {
         $cursosFiltrados = [];
-        foreach ($cursos as $curso) { // identifica as areas pelos nomes pois os cursos ainda nao possuem categoria no banco
+        foreach ($cursos as $curso) { // identifica a area pelo nome pois nao ha categoria no banco
             $ingles = preg_match('/ingl[eê]s/iu', $curso['nome']) === 1;
             $tecnologia = !$ingles && preg_match('/inform[aá]tica|programa[cç][aã]o|desenvolvimento|banco de dados|excel|word|powerpoint|windows|linux|redes de computadores|manuten[cç][aã]o de computadores|seguran[cç]a digital|\bgit\b|java|python|power bi|canva/iu', $curso['nome']) === 1;
             if (($categoria === 'ingles' && $ingles) || ($categoria === 'tecnologia' && $tecnologia)) {

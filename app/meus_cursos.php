@@ -20,14 +20,14 @@ try {
             throw new InvalidArgumentException('Informe um curso válido.');
         }
         if (($_POST['acao'] ?? '') === 'confirmar') {
-            if (($_SESSION['cancelamento_pendente'] ?? null) !== $id) { // exige que o curso confirmado seja o mesmo conferido na etapa anterior
+            if (($_SESSION['cancelamento_pendente'] ?? null) !== $id) { // confirma apenas o curso escolhido na etapa anterior
                 throw new InvalidArgumentException('Confira o curso antes de confirmar o cancelamento.');
             }
-            $stmt = $conexao->prepare('DELETE FROM inscricoes WHERE usuario_id = :usuario_id AND curso_id = :curso_id'); // o id da conta vem somente da sessao nunca remove inscricoes de outra conta
+            $stmt = $conexao->prepare('DELETE FROM inscricoes WHERE usuario_id = :usuario_id AND curso_id = :curso_id'); // remove apenas a inscricao da conta da sessao
             $stmt->execute([':usuario_id' => (int) $_SESSION['id'], ':curso_id' => $id]);
             $_SESSION['cancelamento_mensagem'] = $stmt->rowCount() ? 'Inscrição cancelada com sucesso.' : 'Esta inscrição já não está disponível.';
             unset($_SESSION['cancelamento_pendente']);
-            $_SESSION['cancelamento_token'] = bin2hex(random_bytes(32)); // renova o token apos cancelar para invalidar formularios anteriores
+            $_SESSION['cancelamento_token'] = bin2hex(random_bytes(32)); // invalida formularios anteriores apos cancelar
             header('Location: meus_cursos.php');
             exit();
         }

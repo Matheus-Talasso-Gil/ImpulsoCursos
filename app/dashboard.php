@@ -4,7 +4,7 @@ if (($_SESSION['tipo'] ?? 'usuario') === 'admin') {
     header('Location: /impulsos_cursos/app/admin.php');
     exit();
 }
-if (($_SESSION['tipo'] ?? 'usuario') !== 'usuario') { // recusa tipos de conta inesperados mesmo quando existe uma sessao autenticada
+if (($_SESSION['tipo'] ?? 'usuario') !== 'usuario') { // recusa tipos de conta inesperados
     http_response_code(403);
     exit('Acesso indisponível para esta conta.');
 }

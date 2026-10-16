@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    ini_set('session.use_strict_mode', '1'); // usa somente cookies e recusa identificadores de sessao nao inicializados
+    ini_set('session.use_strict_mode', '1'); // recusa ids de sessao nao inicializados
     ini_set('session.use_only_cookies', '1');
     session_set_cookie_params([
         'httponly' => true,
@@ -17,7 +17,7 @@ if (session_status() === PHP_SESSION_NONE) {
     }
 }
 
-if (!($headerSessaoSomenteLeitura ?? false) && isset($_SESSION['id'])) { // visitantes nao tem controle de inatividade o horario e mantido apenas no servidor
+if (!($headerSessaoSomenteLeitura ?? false) && isset($_SESSION['id'])) { // controla a inatividade apenas de contas autenticadas
     $agora = time();
 
     if (isset($_SESSION['ultima_atividade']) && $agora - $_SESSION['ultima_atividade'] > 1800) { // verifica a inatividade antes de gerar a pagina
@@ -27,5 +27,5 @@ if (!($headerSessaoSomenteLeitura ?? false) && isset($_SESSION['id'])) { // visi
         exit();
     }
 
-    $_SESSION['ultima_atividade'] = $agora; // renova a atividade e inclui sessoes que ainda nao tinham esse controle
+    $_SESSION['ultima_atividade'] = $agora;
 }

@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dados[$campo] = is_string($_POST[$campo] ?? null) ? $_POST[$campo] : '';
     }
     try {
-        if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['cadastro_token'], $_POST['token'])) { // compara os tokens de forma segura antes de salvar o cadastro
+        if (!is_string($_POST['token'] ?? null) || !hash_equals($_SESSION['cadastro_token'], $_POST['token'])) { // confere o csrf antes de salvar
             throw new InvalidArgumentException('Solicitação inválida. Recarregue a página.');
         }
         cadastrar_aluno_usuario($conexao, $dados);

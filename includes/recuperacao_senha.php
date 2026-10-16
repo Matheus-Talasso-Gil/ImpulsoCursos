@@ -1,5 +1,5 @@
 <?php
-function protegerRecuperacaoLocal() // sem entrega de token por um canal verificado este fluxo e apenas uma demonstracao local
+function protegerRecuperacaoLocal() // restringe a demonstracao local pois nao verifica identidade
 {
     if (!in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)) {
         http_response_code(403);
@@ -30,7 +30,7 @@ function iniciarRecuperacaoSenha($conexao, $email)
 function validarRecuperacaoSenha($conexao, $token)
 {
     $recuperacao = $_SESSION['recuperacao_senha'] ?? null;
-    if (!is_array($recuperacao) || !is_int($recuperacao['expira_em'] ?? null) || time() > $recuperacao['expira_em']) { // descarta a recuperacao quando os dados sao invalidos ou o prazo expirou
+    if (!is_array($recuperacao) || !is_int($recuperacao['expira_em'] ?? null) || time() > $recuperacao['expira_em']) { // descarta dados invalidos ou recuperacao expirada
         unset($_SESSION['recuperacao_senha']);
         throw new InvalidArgumentException('Solicitação inválida ou expirada.');
     }
@@ -43,7 +43,7 @@ function validarRecuperacaoSenha($conexao, $token)
         unset($_SESSION['recuperacao_senha']);
         throw new InvalidArgumentException('Solicitação inválida ou expirada.');
     }
-    $stmt = $conexao->prepare("SELECT id FROM usuarios WHERE id = :id AND tipo = 'usuario'"); // confere o tipo atual da conta usando somente o id salvo na sessao
+    $stmt = $conexao->prepare("SELECT id FROM usuarios WHERE id = :id AND tipo = 'usuario'"); // confere o tipo atual da conta salva na sessao
     $stmt->execute([':id' => $id]);
     if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
         unset($_SESSION['recuperacao_senha']);
@@ -63,11 +63,11 @@ function redefinirSenhaUsuario($conexao, $token, $csrf, $senha, $confirmacao)
     }
 
     $hash = password_hash($senha, PASSWORD_DEFAULT);
-    $stmt = $conexao->prepare("UPDATE usuarios SET senha = :senha WHERE id = :id AND tipo = 'usuario'"); // revalida o tipo ao salvar para impedir alteracao de senha administrativa
+    $stmt = $conexao->prepare("UPDATE usuarios SET senha = :senha WHERE id = :id AND tipo = 'usuario'"); // impede redefinir senha de administrador
     $stmt->execute([':senha' => $hash, ':id' => $id]);
     if ($stmt->rowCount() !== 1) {
         unset($_SESSION['recuperacao_senha']);
         throw new InvalidArgumentException('Solicitação inválida ou expirada.');
     }
-    unset($_SESSION['recuperacao_senha'], $_SESSION['recuperacao_continuar']); // invalida o token apos a troca para impedir uma segunda utilizacao
+    unset($_SESSION['recuperacao_senha'], $_SESSION['recuperacao_continuar']); // impede reutilizar o token apos a troca
 }

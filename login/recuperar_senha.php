@@ -7,8 +7,8 @@ if (isset($_SESSION['id'])) {
 }
 protegerRecuperacaoLocal(); // sem verificacao de email este fluxo fica restrito ao proprio computador
 require_once __DIR__ . '/../database/connect_postgres.php';
-header('Referrer-Policy: no-referrer'); // evita enviar a url como referencia e guardar a pagina em cache
-header('Cache-Control: no-store');
+header('Referrer-Policy: no-referrer'); // evita enviar a url como referencia
+header('Cache-Control: no-store'); // impede guardar a pagina em cache
 $_SESSION['recuperacao_csrf'] ??= bin2hex(random_bytes(32)); // protege o formulario contra csrf
 $erro = '';
 $mensagem = '';
@@ -16,7 +16,7 @@ $tokenContinuar = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         validarCsrfRecuperacao($_POST['csrf'] ?? null);
-        $tokenContinuar = iniciarRecuperacaoSenha($conexao, $_POST['email'] ?? null); // so ativa a recuperacao para usuarios comuns a resposta inicial e igual para qualquer email
+        $tokenContinuar = iniciarRecuperacaoSenha($conexao, $_POST['email'] ?? null); // mantem a resposta inicial igual para qualquer email
         $_SESSION['recuperacao_continuar'] = $tokenContinuar;
         $mensagem = 'Se existir uma conta de usuário válida com esse e-mail, será possível continuar com a recuperação.';
     } catch (InvalidArgumentException $e) {

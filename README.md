@@ -1,21 +1,22 @@
 # Impulso Cursos
 
-Sistema web fictício de gestão de alunos, desenvolvido com PHP, PDO e PostgreSQL.
+Sistema web fictício de gestão de alunos e cursos. O PHP se conecta ao PostgreSQL usando PDO. As páginas usam HTML e CSS, e o projeto é versionado com Git e GitHub.
 
-## Funcionalidades
+## Funcionalidades e acesso
 
-- Cadastro público de conta e aluno em Cadastre-se; consulta, edição e exclusão administrativas
-- Pesquisa de aluno por ID ou CPF
-- Relatório com filtros por curso e situação
-- Validação matemática dos dígitos verificadores do CPF
-- Cadastro e autenticação de usuários com senha protegida por hash
-- Menus e páginas separados para usuário e administrador
-- Gestão administrativa de cursos e consulta de usuários e vínculos
-- Catálogo, detalhes, inscrição e consulta de Meus cursos
-- Dashboard do usuário com dados da conta, totais, prévias de cursos e atalhos
-- Recuperação de senha demonstrativa local para contas comuns de teste
-- Política de Privacidade pública em `privacidade.php`, acessível pelo rodapé de todas as páginas
-- Termos de Uso públicos em `termos.php`, com regras da plataforma e link no rodapé
+- Visitantes podem entrar, criar uma conta e consultar os Termos de Uso e a Política de Privacidade.
+- O cadastro público cria uma conta `usuario` e um aluno vinculado na mesma transação. Se houver falha, nenhum dos dois registros é salvo.
+- Usuários comuns acessam o dashboard, o perfil, o catálogo com filtros por área, Meus cursos e Favoritos. Podem se inscrever e cancelar uma inscrição após confirmação.
+- O dashboard mostra dados da conta, totais, prévias de cursos e favoritos. Também funciona sem aluno vinculado ou inscrições.
+- Administradores consultam alunos por ID ou CPF, editam nome, e-mail e situação, geram relatórios com filtros por curso e situação e consultam contas e cursos dos alunos.
+- Administradores cadastram e editam cursos. Só podem excluir cursos sem inscrições; os favoritos desses cursos são removidos em cascata.
+- O histórico administrativo mostra as últimas 100 ações registradas de criação, edição e exclusão de cursos e de edição e exclusão de alunos. Não registra navegação.
+
+O login leva usuários comuns a `app/dashboard.php` e administradores a `app/admin.php`. Páginas administrativas exigem o papel `admin`; uma conta comum recebe HTTP 403 ao tentar acessá-las. O perfil consulta o aluno pelo ID da conta na sessão.
+
+O relatório reúne os cursos das inscrições em uma linha por aluno. Alunos sem inscrições aparecem com **Sem curso**. Excluir um aluno preserva a conta e suas inscrições; quando há inscrições, uma segunda confirmação lista os cursos envolvidos. ID, CPF, nascimento e vínculo já preenchido são protegidos pelo banco.
+
+A recuperação de senha é uma demonstração restrita a conexões locais (`127.0.0.1` ou `::1`) e contas comuns de teste. Não envia e-mail nem verifica identidade. Veja as [limitações do fluxo](documentacao.md#recuperação-de-senha-demonstração-local).
 
 ## Documentação do projeto
 
@@ -23,37 +24,6 @@ Sistema web fictício de gestão de alunos, desenvolvido com PHP, PDO e PostgreS
 - [Dicionário de dados](dicionario.md)
 - [Diagramas de entidades e fluxos](diagrama.md)
 - [Briefing do cliente](briefing.md)
-
-A recuperação de senha funciona somente em conexões locais (`127.0.0.1` ou `::1`). Não envia e-mail nem verifica identidade: use apenas contas de teste. O fluxo e suas limitações estão descritos na [documentação](documentacao.md#recuperação-de-senha-demonstração-local).
-
-## Perfis de acesso
-
-| Perfil        | Acesso                                             |
-| ------------- | -------------------------------------------------- |
-| Visitante     | Login e cadastro de conta com dados do aluno       |
-| Usuário       | Início, perfil, cursos e sair                      |
-| Administrador | Gestão de alunos, relatório, cursos, perfil e sair |
-
-O cadastro público sempre cria contas do tipo `usuario`. A conta admin é promovida diretamente no banco e uma constraint limita esse papel ao e-mail autorizado. Após mudar o papel no banco, saia e entre novamente para atualizar a sessão. O perfil exibe os dados do aluno vinculado à conta ou informa que ainda não existe vínculo.
-
-## Dashboard do usuário
-
-O login de uma conta `usuario` abre `app/dashboard.php`; o link Início e o acesso ao index autenticado também levam ao dashboard. Administradores entram em `app/admin.php` e são redirecionados para esse painel se tentarem abrir o dashboard do usuário. Visitantes continuam vendo o index público.
-
-O dashboard mostra os dados da conta logada, incluindo a data de criação. Funciona mesmo sem aluno vinculado ou inscrições. Para conferir, teste os totais e atalhos com uma conta comum; um `usuario_id` enviado pela URL não deve mudar os dados exibidos. Sem login, a página abre o login; com admin, abre o painel administrativo.
-
-## Requisitos
-
-- PHP com `pdo_pgsql` habilitado
-- PostgreSQL
-- `psql` para executar os scripts SQL pelo terminal
-
-## Tecnologias
-
-- PHP e PDO
-- PostgreSQL
-- HTML e CSS
-- Git e GitHub
 
 ## Protótipos
 
@@ -363,20 +333,21 @@ Atualização do quadro Trello com 56 tarefas concluídas, duas a fazer e uma em
 
 ## Estrutura principal
 
-A estrutura abaixo apresenta os arquivos atuais do projeto, incluindo a recuperação de senha, a gestão de cursos, os protótipos e as capturas do sistema final e as imagens do Trello até os commits 92–98.
-
 ```text
 impulsos_cursos/
 ├── app/
 │   ├── admin.php                 # área administrativa
 │   ├── alunos_cursos.php         # consulta dos cursos dos alunos
 │   ├── create.php                # redirecionamento para cadastro/relatório
-│   ├── curso.php                 # detalhes e inscrição em um curso
+│   ├── curso.php                 # processamento das acoes de um curso
 │   ├── curso_create.php          # cadastro de cursos
 │   ├── curso_delete.php          # exclusão de cursos
 │   ├── curso_update.php          # edição de cursos
 │   ├── cursos.php                # catálogo de cursos
 │   ├── cursos_admin.php          # gestão administrativa de cursos
+│   ├── dashboard.php               # painel do usuario
+│   ├── favoritos.php               # cursos favoritos da conta
+│   ├── logs_admin.php              # historico administrativo
 │   ├── delete.php                # exclusão de alunos
 │   ├── meus_cursos.php           # cursos da conta autenticada
 │   ├── select.php                # relatório/listagem de alunos
@@ -395,6 +366,7 @@ impulsos_cursos/
 │   ├── adicionar_tipo_usuario.sql
 │   ├── ajustar_senha.sql
 │   ├── config.example.php        # modelo de configuração local
+│   ├── config.local.php          # credenciais da instalacao local
 │   ├── connect_postgres.php      # conexão com PostgreSQL
 │   ├── garantir_campos_obrigatorios.sql
 │   ├── garantir_email_unico_usuarios.sql
@@ -403,6 +375,8 @@ impulsos_cursos/
 │   └── vincular_contas_existentes.sql
 │
 ├── includes/
+│   ├── acesso_negado.php          # resposta de acesso negado
+│   ├── stylesheet.php             # caminho e cache do estilo
 │   ├── curso_admin_form.php      # formulário compartilhado de gestão de cursos
 │   ├── data_conta.php            # formatação da data de criação da conta
 │   ├── footer.php                # rodapé compartilhado
@@ -463,59 +437,61 @@ impulsos_cursos/
 ├── diagrama.md
 ├── dicionario.md
 ├── documentacao.md
+├── privacidade.php
+├── termos.php
+├── product_backlog.md
 ├── index.php
 └── README.md
 ```
 
-## Preparar o banco de dados
+## Requisitos e configuração
 
-Nas consultas, `INNER JOIN` reúne registros relacionados. `LEFT JOIN` também mantém registros sem relação, como contas sem aluno e cursos sem inscrições. Os exemplos estão na [documentação](documentacao.md#relacionamentos-nas-consultas).
+- PHP 8 ou superior, com `pdo_pgsql` habilitado; o código usa `str_contains()` e `??=`.
+- PostgreSQL e o cliente `psql` para executar os scripts pelo terminal.
 
-### Favoritos de cursos
+Copie `database/config.example.php` para `database/config.local.php` e preencha `host`, `dbname`, `user` e `pass`. O arquivo local contém credenciais e não deve ser publicado. No estado atual do repositório, ele está versionado e não há regra de ignore para protegê-lo.
 
-Nos detalhes de um curso, a conta logada pode adicioná-lo ou removê-lo dos favoritos. A página **Favoritos** lista os cursos salvos por nome; o dashboard mostra o total e até três deles.
+Como alternativa, configure `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS` no ambiente do PHP. Host, banco e usuário usam a configuração local quando a variável está vazia ou ausente. A senha usa o valor local apenas quando `DB_PASS` está ausente; uma senha vazia no ambiente é aceita como valor.
 
-Novas instalações já incluem `favoritos` em `database/table.pgsql`. Para bancos existentes, execute a migração antes de usar o recurso:
+### Banco novo
 
-```powershell
-psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/adicionar_favoritos.sql
-```
-
-A tabela registra conta, curso e data, com unicidade por conta e curso. As alterações exigem POST e CSRF e usam somente o ID da sessão. Excluir um curso sem inscrições remove seus favoritos em cascata; cursos com inscrições continuam protegidos contra exclusão.
-
-### Estrutura inicial
-
-1. Crie o banco PostgreSQL que será usado pelo sistema.
-2. Copie `database/config.example.php` para criar `database/config.local.php` e preencha `host`, `dbname`, `user` e `pass` com os dados da sua instalação. O modelo `config.example.php` pode ser versionado; `config.local.php` contém dados locais, é ignorado pelo Git e não deve ser enviado ao GitHub. `database/connect_postgres.php` lê esse arquivo quando ele existe. Como alternativa, use `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS` no ambiente do PHP: host, banco e usuário usam o valor local quando a variável está vazia ou ausente; a senha usa o valor local somente quando `DB_PASS` está ausente.
-3. No terminal aberto na pasta que contém `impulsos_cursos`, crie as tabelas iniciais:
-
-    ```powershell
-    psql -h HOST -U USUARIO -d BANCO -f impulsos_cursos/database/table.pgsql
-    ```
-
-Substitua `HOST`, `USUARIO` e `BANCO` pelos valores da sua instalação. `table.pgsql` cria tabelas ausentes sem apagar dados e aplica a estrutura de vínculo entre alunos e usuários.
-
-Para atualizar um banco existente e preparar a relação usada no cadastro automático e em **Meu perfil**, execute:
+Crie um banco PostgreSQL. No terminal aberto na pasta que contém `impulsos_cursos`, execute:
 
 ```powershell
-psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/vincular_alunos_usuarios.sql
+psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/table.pgsql
 ```
 
-Essa migração adiciona `alunos.usuario_id`, suas restrições e a proteção de identidade, sem apagar registros ou alterar IDs e sequences. Os alunos antigos ficam sem conta e continuam no relatório. A execução pode ser repetida sem duplicar a relação.
+Substitua `HOST`, `USUARIO` e `BANCO` pelos dados da instalação. O script cria as tabelas ausentes, incluindo favoritos e histórico administrativo, e prepara o vínculo entre aluno e conta. Ele não substitui todas as migrações de um banco antigo.
 
-Novos cadastros preenchem automaticamente o vínculo único entre aluno e conta. ID, CPF, nascimento e vínculo preenchido continuam protegidos pelo banco.
+### Banco existente
 
-Em **Cadastre-se**, conta e aluno são gravados na mesma transação. O INSERT da conta usa RETURNING id; esse ID é salvo em alunos.usuario_id. Falhas desfazem ambos os registros. O relatório reúne os cursos reais de inscricoes e cursos, sem copiar nomes para alunos.turma.
+Confira quais mudanças já foram aplicadas. Os scripts disponíveis são:
 
-A exclusão administrativa remove somente o cadastro de aluno e desfaz o vínculo por exclusão. A conta e suas inscrições são preservadas. Quando existem inscrições em cursos, uma segunda tela lista os cursos e exige confirmação adicional. Cancelar mantém o cadastro.
+| Script em `database/` | Uso |
+| --- | --- |
+| `ajustar_senha.sql` | Amplia o campo de senha para os hashes; não converte senhas antigas |
+| `adicionar_tipo_usuario.sql` | Adiciona o papel da conta e restringe o administrador ao e-mail autorizado |
+| `vincular_alunos_usuarios.sql` | Prepara o vínculo único e a proteção de identidade do aluno |
+| `vincular_contas_existentes.sql` | Vincula registros antigos por e-mail após a migração estrutural |
+| `adicionar_created_at_usuarios.sql` | Adiciona a data de criação das contas |
+| `adicionar_favoritos.sql` | Cria os favoritos por conta e curso |
+| `adicionar_logs_admin.sql` | Cria o histórico administrativo |
+| `garantir_email_unico_usuarios.sql` | Garante e-mails únicos e interrompe a execução se houver duplicatas |
+| `garantir_campos_obrigatorios.sql` | Aplica campos obrigatórios e interrompe a transação se houver valores nulos |
 
-Para atualizar um banco existente com o campo de papel, execute a migração:
+Execute cada script necessário seguindo este formato:
 
 ```powershell
-psql -h HOST -U USUARIO -d BANCO -f impulsos_cursos/database/adicionar_tipo_usuario.sql
+psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/NOME_DO_SCRIPT.sql
 ```
 
-O papel padrão é `usuario`. Para promover a conta autorizada, conecte-se ao banco e execute:
+A migração de vínculos antigos compara e-mails sem espaços nas extremidades e sem diferenciar maiúsculas de minúsculas. Só preenche correspondências únicas nos dois lados e contas livres; preserva vínculos existentes e deixa casos ambíguos sem conta.
+
+Contas antigas recebem em `created_at` o horário da primeira execução da migração, pois sua data real não foi registrada. A data aparece no dashboard, no perfil e na consulta administrativa de usuários. Login, logout e redefinição de senha não a alteram. O PHP e a conexão não definem um fuso horário; as telas da conta exibem o horário do banco sem conversão.
+
+### Administrador
+
+O cadastro público sempre cria contas comuns. Para promover a conta autorizada, execute no banco:
 
 ```sql
 UPDATE usuarios
@@ -523,67 +499,43 @@ SET tipo = 'admin'
 WHERE lower(email) = lower('EMAIL_AUTORIZADO');
 ```
 
-A constraint `usuarios_admin_email_check` limita `admin` ao e-mail autorizado nos scripts de schema. Se trocar a conta autorizada, atualize essa constraint na migração e nos scripts de criação.
-
-## Data de criação das contas
-
-Novas instalações incluem `usuarios.created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP`. Para bancos existentes, execute antes de usar as telas atualizadas:
-
-```powershell
-psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/adicionar_created_at_usuarios.sql
-```
-
-A migration não recria tabelas nem altera IDs, senhas ou tipos. Pode ser executada novamente: `IF NOT EXISTS` preserva a coluna já criada. Contas antigas recebem o horário da primeira execução, pois sua data real de criação não foi registrada.
-
-Nos novos cadastros, o INSERT omite `created_at` e o PostgreSQL usa automaticamente `CURRENT_TIMESTAMP` (início da transação). A informação aparece em **Meu perfil** e **Usuários cadastrados**, somente para leitura; campos enviados por GET ou POST não são usados. Login, logout e redefinição de senha não alteram esse valor.
-
-O projeto não define o fuso horário do PHP ou da conexão. `TIMESTAMP` guarda o horário usado pelo PostgreSQL, sem informação de fuso, e a tela o exibe sem conversão. Se houver diferença de horários, confira `SHOW timezone;` no banco e `date_default_timezone_get()` no PHP. Datas ausentes ou inválidas aparecem como **Não informada**.
-
-Para conferir, cadastre uma conta de teste e veja a data no perfil e na listagem administrativa. Login, troca de senha e nova execução da migration devem preservar essa data. Mesmo que o formulário envie `created_at`, o banco deve preencher o valor.
+Use o e-mail permitido pela constraint `usuarios_admin_email_check` em `database/table.pgsql` e `database/adicionar_tipo_usuario.sql`. Outro e-mail é recusado pelo banco. Depois de mudar o papel, saia e entre novamente para atualizar a sessão.
 
 ## Executar o sistema
 
-1. Confirme que PHP está com `pdo_pgsql` habilitado e que `connect_postgres.php` está configurado.
-2. No terminal aberto na pasta que contém `impulsos_cursos`, inicie o servidor:
+1. Prepare o banco e a configuração de conexão.
+2. Abra o terminal na pasta que contém `impulsos_cursos` e inicie o servidor:
 
-    ```powershell
-    php -S 127.0.0.1:8000
-    ```
+   ```powershell
+   php -S 127.0.0.1:8000
+   ```
 
 3. Acesse `http://127.0.0.1:8000/impulsos_cursos/`.
-4. Cadastre um usuário em `http://127.0.0.1:8000/impulsos_cursos/login/cadastrar.php`. O cadastro público sempre cria uma conta comum.
+4. Crie uma conta em `http://127.0.0.1:8000/impulsos_cursos/login/cadastrar.php` e entre com ela.
 
-## Acesso e segurança
+Mantenha esse nome de pasta e esse caminho de acesso: os links e redirecionamentos usam `/impulsos_cursos/`.
 
-- Visitantes veem somente Login e Cadastre-se no menu.
-- Usuários comuns podem abrir perfil e cursos; tentativas de abrir páginas administrativas diretamente recebem HTTP 403.
-- Administradores acessam as rotas de gestão protegidas por `login/verificar_admin.php`.
-- O login verifica a senha com `password_verify()` e regenera o ID da sessão após autenticar.
-- O CPF é validado matematicamente no cadastro e na edição. Isso confere os dígitos verificadores, mas não consulta a Receita Federal nem confirma titularidade.
-- Cursos permitem inscrição pela conta logada e o perfil consulta o aluno pelo ID da sessão.
+## Segurança e limites
 
-## Testes
+As senhas usam `password_hash()` e `password_verify()`. Consultas com dados externos usam prepared statements, e as telas escapam dados com `htmlspecialchars()`.
 
-Para testar manualmente, confira o menu deslogado, crie uma conta comum, tente abrir `/impulsos_cursos/app/select.php` com ela e depois autentique com a conta admin autorizada.
+Login, cadastro, recuperação, inscrições, cancelamentos, favoritos e gravações administrativas validam tokens CSRF. Sair pede confirmação por POST com CSRF. A sessão troca de ID após o login, limpa dados da identidade anterior e expira após mais de 30 minutos sem atividade. Os cookies usam HttpOnly, SameSite=Lax e Secure em HTTPS.
 
-Após aplicar a migration de vínculo, confira também:
+O CPF tem os dígitos verificadores conferidos no cadastro. Isso não consulta a Receita Federal nem confirma titularidade. Na edição administrativa, o CPF original é preservado.
 
-1. Alunos antigos continuam no relatório com os mesmos IDs, CPFs e nascimentos. Sem inscrições, aparecem com **Sem curso**.
-2. O perfil de uma conta sem aluno informa ausência de vínculo.
-3. Cadastre uma conta pública e confira o aluno já associado; inscreva em dois cursos e veja ambos em uma única linha no relatório.
-4. Uma conta não pode ser vinculada a outro aluno e um aluno vinculado não pode receber outra conta.
-5. A edição permite nome, e-mail e situação sem alterar ID, CPF, nascimento ou vínculo.
-6. Em um cadastro de teste com inscrições, a primeira confirmação de exclusão mostra os cursos. Cancelar mantém o aluno; confirmar novamente remove somente o cadastro e preserva a conta e as inscrições.
+A recuperação de senha serve apenas para demonstração local. Há credenciais no arquivo local versionado e no histórico Git; elas precisam ser trocadas antes de usar dados reais. Veja os [detalhes da revisão de segurança](documentacao.md#revisão-de-segurança-e-banco-em-14102026).
 
-Esse roteiro orienta testes manuais; não afirma que eles foram executados no banco real.
+## Conferência manual
 
-## Senhas
+Confira o cadastro e o login, o dashboard, os filtros do catálogo, a inscrição e seu cancelamento, os favoritos e o perfil. Com uma conta comum, tente abrir `app/select.php` e confira a resposta HTTP 403.
 
-As senhas são armazenadas com `password_hash()` e verificadas com `password_verify()`. A senha original não é gravada no banco.
+Com a conta administrativa, confira consultas, filtros do relatório, edição e exclusão de alunos, gestão de cursos e histórico das ações. Alunos sem conta devem continuar no relatório; excluir um aluno deve preservar a conta e suas inscrições. Cursos com inscrições não devem ser excluídos.
+
+O [roteiro completo](documentacao.md#8-conferência-manual) traz outros cenários. Estas instruções não significam que os testes foram executados no banco real.
 
 ## Publicar alterações no GitHub
 
-Adicione apenas os arquivos que devem entrar no commit:
+Adicione apenas os arquivos que devem entrar no commit, sem credenciais locais:
 
 ```powershell
 git add caminho/do/arquivo
@@ -593,30 +545,4 @@ git push origin main
 
 ## Autor
 
-### Matheus Gil
-
-## Cadastro automático e relatório de cursos
-
-O cadastro usa RETURNING id e salva alunos.usuario_id na mesma transação. O relatório mostra **Cursos**, com STRING_AGG e uma linha por aluno; sem inscrições mostra **Sem curso**. O filtro usa cursos cadastrados e EXISTS, mantendo visíveis todos os cursos do aluno encontrado. A coluna Conta e a etapa administrativa de vinculação foram removidas.
-
-Para registros antigos, [vincular_contas_existentes.sql](database/vincular_contas_existentes.sql) compara lower(trim(email)). Somente correspondências únicas nos dois lados e contas livres são preenchidas. Vínculos existentes, casos ambíguos e dados pessoais são preservados. Execute após a migration estrutural, se o banco for antigo:
-
-```powershell
-psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/vincular_contas_existentes.sql
-```
-
-## Segurança implementada
-
-As consultas usam prepared statements para dados externos; as senhas são gravadas com `password_hash()` e conferidas com `password_verify()`. Dados de usuários e do banco são escapados com `htmlspecialchars()` nas telas.
-
-Login, cadastro, recuperação, inscrições, cancelamentos, favoritos e operações administrativas de gravação validam tokens CSRF. Sair mantém o link do menu e pede confirmação por POST com CSRF. A sessão regenera o ID após login, descarta dados da identidade anterior e expira após mais de 30 minutos de inatividade. Cookies usam HttpOnly, SameSite=Lax e Secure quando a conexão é HTTPS. Rotas administrativas exigem o papel admin no servidor.
-
-PKs, FKs, UNIQUE e NOT NULL protegem a integridade. Na revisão de 14/10/2026, o banco configurado não apresentou órfãos ou duplicidades nas relações verificadas, mas seis campos de bancos antigos ainda aceitavam NULL. A migration abaixo alinha esses campos ao schema, abortando integralmente se houver valores nulos, sem apagar ou preencher dados:
-
-```powershell
-psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/garantir_campos_obrigatorios.sql
-```
-
-Em 16/10/2026, a migration foi aplicada ao banco configurado pela conexão PDO do projeto, em uma única transação. Os seis campos estavam sem NULL e ficaram obrigatórios; `alunos.ativo` ficou com DEFAULT TRUE. A verificação posterior não encontrou órfãos, duplicidades ou cargas horárias inválidas. Nenhum registro foi preenchido ou apagado.
-
-A recuperação de senha continua sendo uma demonstração local, sem verificação de identidade. Credenciais antigas permanecem no histórico Git e precisam ser trocadas antes de usar o projeto com dados reais. Os detalhes de segurança estão na [documentação](documentacao.md#revisão-de-segurança-e-banco-em-14102026).
+Matheus Gil

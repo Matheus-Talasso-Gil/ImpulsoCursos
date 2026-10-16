@@ -17,7 +17,7 @@ $_SESSION['edicao_token'] ??= bin2hex(random_bytes(32)); // protege a edicao con
 <main>
 <h1>Atualizar aluno</h1>
 <?php
-$aluno = false; // usa a identidade salva na sessao para impedir alteracoes pelo formulario
+$aluno = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['id']) || isset($_POST['nome']))) {
     try {
         if (isset($_POST['nome'])) {
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['id']) || isset($_POS
             }
         }
         if (isset($_POST['nome'])) {
-            $id = (int) $_SESSION['aluno_edicao_id'];
+            $id = (int) $_SESSION['aluno_edicao_id']; // usa o aluno selecionado na sessao
         } else {
             $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 2147483647]]);
             if ($id === false) {

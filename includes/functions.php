@@ -108,7 +108,7 @@ function Consultar($conexao, $id)
         echo "Aluno não encontrado.";
     }
 }
-function Atualizar($conexao, $id, $nome, $turma, $nasc, $ativo, $email, $cpf) // preserva cpf e nascimento mesmo recebendo esses campos por compatibilidade
+function Atualizar($conexao, $id, $nome, $turma, $nasc, $ativo, $email, $cpf) // recebe cpf e nascimento por compatibilidade mas nao os altera
 {
     $sql = "UPDATE alunos SET nome = :nome,
             ativo = :ativo, email = :email WHERE id = :id";
@@ -208,7 +208,7 @@ function cadastrar_user($conexao, $email, $senha)
     if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $senha === '') {
         throw new InvalidArgumentException('Informe um e-mail válido e uma senha.');
     }
-    if (strlen($email) > 255 || strlen($senha) > 72 || str_contains($senha, "\0")) { // impede senhas que excedem o limite do hash ou contem caracteres nulos
+    if (strlen($email) > 255 || strlen($senha) > 72 || str_contains($senha, "\0")) { // limita a senha a 72 bytes e rejeita caracteres nulos
         throw new InvalidArgumentException('Use um e-mail com até 255 caracteres e uma senha com até 72 bytes, sem caracteres nulos.');
     }
     if (consultar_user($conexao, $email)) {
@@ -266,7 +266,7 @@ function inscreverUsuarioNoCurso($conexao, $cursoId, $token)
     if ($cursoId === false) {
         throw new InvalidArgumentException('Informe um curso válido.');
     }
-    $stmt = $conexao->prepare('INSERT INTO inscricoes (usuario_id, curso_id) SELECT :usuario_id, id FROM cursos WHERE id = :curso_id ON CONFLICT (usuario_id, curso_id) DO NOTHING'); // inscreve apenas em cursos existentes e evita duplicatas em envios simultaneos
+    $stmt = $conexao->prepare('INSERT INTO inscricoes (usuario_id, curso_id) SELECT :usuario_id, id FROM cursos WHERE id = :curso_id ON CONFLICT (usuario_id, curso_id) DO NOTHING'); // exige curso existente e evita inscricoes duplicadas simultaneas
     $stmt->execute([':usuario_id' => (int) $_SESSION['id'], ':curso_id' => $cursoId]);
     if ($stmt->rowCount()) {
         return 'Inscrição realizada com sucesso.';
@@ -298,14 +298,14 @@ function validarTokenCursoAdmin($token)
 }
 function buscarCursoAdmin($conexao, $id)
 {
-    $stmt = $conexao->prepare('SELECT c.id, c.nome, c.descricao, c.carga_horaria, (SELECT COUNT(*) FROM inscricoes i WHERE i.curso_id = c.id) AS inscritos FROM cursos c WHERE c.id = :id'); // a subconsulta conta inscricoes sem depender da conta autenticada
+    $stmt = $conexao->prepare('SELECT c.id, c.nome, c.descricao, c.carga_horaria, (SELECT COUNT(*) FROM inscricoes i WHERE i.curso_id = c.id) AS inscritos FROM cursos c WHERE c.id = :id'); // conta inscritos de todas as contas
     $stmt->execute([':id' => $id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 function validarFavorito($cursoId, $token)
 {
-    $usuarioId = filter_var($_SESSION['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]); // usa somente a identidade da sessao para impedir operacoes em outra conta
+    $usuarioId = filter_var($_SESSION['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]); // usa apenas a conta da sessao
     if ($usuarioId === false) {
         throw new InvalidArgumentException('Entre em sua conta para alterar os favoritos.');
     }
@@ -330,7 +330,7 @@ function cursoEstaFavoritado($conexao, $cursoId)
 function adicionarFavorito($conexao, $cursoId, $token)
 {
     $cursoId = validarFavorito($cursoId, $token);
-    $stmt = $conexao->prepare('INSERT INTO favoritos (usuario_id, curso_id) SELECT :usuario_id, id FROM cursos WHERE id = :curso_id ON CONFLICT (usuario_id, curso_id) DO NOTHING'); // insere apenas cursos existentes e usa a restricao unique para evitar duplicatas simultaneas
+    $stmt = $conexao->prepare('INSERT INTO favoritos (usuario_id, curso_id) SELECT :usuario_id, id FROM cursos WHERE id = :curso_id ON CONFLICT (usuario_id, curso_id) DO NOTHING'); // exige curso existente e evita favoritos duplicados simultaneos
     $stmt->execute([':usuario_id' => (int) $_SESSION['id'], ':curso_id' => $cursoId]);
     if ($stmt->rowCount() > 0) {
         return 'Curso adicionado aos favoritos.';
@@ -347,7 +347,7 @@ function removerFavorito($conexao, $cursoId, $token)
     if (!buscarCursoPorId($conexao, $cursoId)) {
         throw new InvalidArgumentException('Curso não encontrado.');
     }
-    $stmt = $conexao->prepare('DELETE FROM favoritos WHERE usuario_id = :usuario_id AND curso_id = :curso_id'); // restringe a exclusao a conta da sessao mesmo se outra conta favoritou o mesmo curso
+    $stmt = $conexao->prepare('DELETE FROM favoritos WHERE usuario_id = :usuario_id AND curso_id = :curso_id'); // remove apenas o favorito da conta da sessao
     $stmt->execute([':usuario_id' => (int) $_SESSION['id'], ':curso_id' => $cursoId]);
     if ($stmt->rowCount() > 0) {
         return 'Curso removido dos favoritos.';
@@ -401,7 +401,7 @@ function registrarLogAdmin($conexao, $acao, $entidade, $entidadeId, $descricao)
                 error_log('Nao foi possivel recuperar o ponto de salvamento do historico administrativo');
             }
         }
-        error_log('Nao foi possivel registrar o historico administrativo'); // evita enviar dados do registro ou detalhes internos ao navegador
+        error_log('Nao foi possivel registrar o historico administrativo'); // registra a falha sem expor dados do historico
         return false;
     }
 }

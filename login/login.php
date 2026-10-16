@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $senha = $_POST['senha'] ?? '';
         if ($usuario && is_string($senha) && password_verify($senha, $usuario['senha'])) {
-            session_regenerate_id(true); // troca o id da sessao para impedir o reaproveitamento da sessao anterior
+            session_regenerate_id(true); // invalida o id da sessao anterior
             $_SESSION = []; // descarta tokens e selecoes da identidade anterior
             $_SESSION['id'] = $usuario['id'];
             $_SESSION['email'] = $usuario['email'];
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (InvalidArgumentException $e) {
         $erro = $e->getMessage();
     } catch (PDOException $e) {
-        error_log($e->getMessage()); // registra o erro no servidor sem expor detalhes do banco ao usuario
+        error_log($e->getMessage()); // registra detalhes apenas no servidor
         $erro = 'Não foi possível consultar o cadastro. Tente novamente.';
     }
 }
