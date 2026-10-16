@@ -54,7 +54,7 @@ As explicações seguem o PHP e o SQL do projeto. Os resultados de verificaçõe
 
 1. Tenha PHP com PDO e o driver PostgreSQL habilitados.
 2. Tenha acesso ao servidor PostgreSQL e às tabelas necessárias.
-3. Copie `database/config.example.php` para `database/config.local.php` e preencha os dados do banco, como explicado no [README](README.md#estrutura-inicial).
+3. Copie `database/config.example.php` para `database/config.local.php` e preencha os dados do banco, como explicado no [README](README.md#5-configurar-a-conexão-do-projeto).
 4. Mantenha a pasta do projeto com o nome `impulsos_cursos`, usado nos links.
 5. Abra o terminal na pasta que contém `impulsos_cursos` e execute:
 
@@ -65,7 +65,7 @@ As explicações seguem o PHP e o SQL do projeto. Os resultados de verificaçõe
 6. Abra `http://localhost:8000/impulsos_cursos/index.php`.
 7. Faça login para acessar as páginas de gestão.
 
-Para instalações novas use `database/table.pgsql`. Em bancos existentes execute `database/vincular_alunos_usuarios.sql`; o comando está no [README](README.md#preparar-o-banco-de-dados). Essa migration adiciona o vínculo sem criar contas para alunos antigos ou mudar seus dados e identificadores.
+Para instalações novas use `database/table.pgsql`. Em bancos existentes execute `database/vincular_alunos_usuarios.sql`; o comando está no [README](README.md#atualizar-um-banco-existente). Essa migration adiciona o vínculo sem criar contas para alunos antigos ou mudar seus dados e identificadores.
 
 Abrir o PHP diretamente como arquivo no navegador não executa o código. O servidor PHP precisa estar rodando.
 
@@ -199,7 +199,7 @@ Esse diagrama resume as operações protegidas. Algumas páginas carregam a cone
 
 ### 4.3. Conexão com o banco
 
-**`connect_postgres.php`** lê a configuração de `database/config.local.php`, ignorado pelo Git, ou das variáveis `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS`. Cria `$conexao` com PDO e registra falhas técnicas no servidor, exibindo apenas uma mensagem genérica. Para uma instalação nova, copie `database/config.example.php` para o arquivo local e preencha os valores.
+**`connect_postgres.php`** lê a configuração de `database/config.local.php`, que está versionado e deve ser preenchido com as credenciais locais, ou das variáveis `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS`. Cria `$conexao` com PDO e registra falhas técnicas no servidor, exibindo apenas uma mensagem genérica. Para uma instalação nova, copie `database/config.example.php` para o arquivo local e preencha os valores.
 
 ### 4.4. Acesso e sessão
 
@@ -277,14 +277,16 @@ Catálogo, detalhes e Meus cursos aceitam contas comuns e administradores. As de
 
 ### 5.1. Dados utilizados
 
-O código utiliza quatro tabelas:
+O código utiliza seis tabelas:
 
 | Tabela       | Campos usados                                                        | Finalidade                         |
 | ------------ | -------------------------------------------------------------------- | ---------------------------------- |
 | `alunos`     | `id`, `nome`, `cpf`, `nasc`, `turma`, `ativo`, `email`, `usuario_id` | Cadastro com conta opcional.       |
-| `usuarios`   | `id`, `email`, `senha`, `tipo`                                       | Contas e níveis de acesso.         |
+| `usuarios`   | `id`, `email`, `senha`, `tipo`, `created_at`                         | Contas e níveis de acesso.         |
 | `cursos`     | `id`, `nome`, `descricao`, `carga_horaria`                           | Cursos disponíveis.                |
 | `inscricoes` | `id`, `usuario_id`, `curso_id`                                       | Relação única entre conta e curso. |
+| `favoritos` | `id`, `usuario_id`, `curso_id`, `created_at` | Cursos salvos pela conta. |
+| `logs_admin` | `id`, `admin_id`, `acao`, `entidade`, `entidade_id`, `descricao`, `created_at` | Histórico de ações administrativas. |
 
 O campo `ativo` representa a situação do aluno e não determina acesso à conta. `alunos.turma` é texto e não gera inscrições. `usuario_id` aceita NULL e possui FK e índice único parcial; alunos antigos continuam no relatório sem conta. Consulte o [dicionário](dicionario.md) e os [diagramas](diagrama.md).
 
@@ -484,8 +486,6 @@ Este roteiro é uma orientação de teste, não um registro de testes executados
 - A atualização não confere as linhas afetadas antes de mostrar sucesso; exclusão e vínculo conferem.
 - Atualizar a página após um POST pode solicitar o reenvio do formulário, pois não há redirecionamento após todas as operações.
 
-Essas observações descrevem a implementação encontrada; gerar esta documentação não modifica esses comportamentos.
-
 ---
 
 ## 11. Histórico e backup
@@ -499,7 +499,7 @@ O Git registra versões dos arquivos e o GitHub pode armazenar uma cópia do rep
 Uma ordem prática para entender o código é começar pela tela e acompanhar o caminho dos dados:
 
 1. Leia `index.php`, `header.php` e `footer.php` para entender a montagem das páginas.
-2. Leia `create.php` e identifique como o atributo `name` vira uma chave em `$_POST`.
+2. Leia `login/cadastrar.php` e identifique como o atributo `name` vira uma chave em `$_POST`.
 3. Leia `connect_postgres.php` e acompanhe `prepare`, `bindParam` e `execute` no cadastro.
 4. Leia `select.php` e `listarAlunos()` para entender o `foreach` e a ordem dos IDs.
 5. Siga o botão Editar até `update.php` e separe a etapa de carregar da etapa de salvar.
@@ -509,7 +509,7 @@ Uma ordem prática para entender o código é começar pela tela e acompanhar o 
 ### Perguntas para conferir o entendimento
 
 - Qual é a diferença entre cadastrar um aluno e cadastrar um usuário?
-- Por que o banco recebe `ING-01`, e não o texto inteiro da opção?
+- Como o cadastro associa o aluno à conta criada?
 - Qual comando ordena o relatório por ID?
 - Por que o botão Editar não salva imediatamente?
 - O que acontece ao clicar em Cancelar na exclusão?
@@ -558,7 +558,7 @@ Login valida e-mail e CSRF, confere `password_verify()`, regenera o ID da sessã
 
 Rotas de aluno, usuários, gestão de cursos e logs exigem admin no servidor. Perfil, cursos próprios, inscrições, cancelamentos e favoritos usam o ID da sessão. A seleção de um curso por URL é legítima no catálogo; não permite escolher a conta que será inscrita. O papel administrativo fica na sessão: alterações de papel no banco exigem novo login para serem refletidas.
 
-As gravações de cadastro, edição, exclusão, inscrição, cancelamento, favoritos e recuperação já exigiam CSRF. A revisão acrescentou CSRF ao login e à confirmação de logout. GET em Sair apenas mostra a confirmação; POST sem token válido mantém a sessão. O token de recuperação deixou a URL e fica somente na sessão; mantém expiração, uso único e validação do tipo da conta. Formulários de consulta sem gravação não precisam de token para alterar dados, pois não alteram registros.
+As gravações de cadastro, edição, exclusão, inscrição, cancelamento, favoritos e recuperação já exigiam CSRF. A revisão acrescentou CSRF ao login e à confirmação de logout. GET em Sair apenas mostra a confirmação; POST sem token válido mantém a sessão. O token de recuperação deixou a URL e fica somente na sessão; mantém expiração, uso único e validação do tipo da conta. As consultas que apenas exibem dados não alteram registros.
 
 ### Integridade e exclusões
 
@@ -569,9 +569,9 @@ Todas as seis tabelas possuem PK. E-mail de conta e CPF possuem UNIQUE; `alunos.
 - `favoritos.usuario_id -> usuarios.id` e `favoritos.curso_id -> cursos.id`: ON DELETE CASCADE remove apenas favoritos quando o registro referenciado é excluído.
 - `logs_admin.admin_id -> usuarios.id`: sem CASCADE; preserva o administrador referenciado. `entidade_id` não é FK, preservando histórico após excluir o alvo.
 
-A ação padrão dessas FKs sem ON DELETE explícito é NO ACTION. Os CHECKs existentes limitam o tipo da conta e o e-mail autorizado para admin. O trigger de alunos protege ID, CPF, nascimento e vínculo já preenchido. Carga horária positiva é validada no PHP; não foi acrescentado CHECK ao banco.
+A ação padrão dessas FKs sem ON DELETE explícito é NO ACTION. Os CHECKs existentes limitam o tipo da conta e o e-mail autorizado para admin. O trigger de alunos protege ID, CPF, nascimento e vínculo já preenchido. A carga horária positiva é validada no PHP, sem CHECK no banco.
 
-Os índices de PK, e-mail, CPF, pares conta/curso e vínculo único de aluno foram mantidos. Os pares cobrem buscas pelo primeiro campo, `usuario_id`. Não foram criados índices adicionais sem evidência de necessidade ou de lentidão; buscas por `curso_id` e ordenação de logs podem ser avaliadas com o crescimento dos dados.
+Os índices existentes atendem às chaves e aos vínculos únicos. Nos pares conta/curso, o primeiro campo é `usuario_id`. Com mais dados, vale avaliar as buscas por `curso_id` e a ordenação do histórico.
 
 ### Diferença em bancos antigos
 
@@ -581,6 +581,6 @@ No banco revisado, `alunos.nome`, `turma`, `nasc`, `ativo`, `usuarios.email` e `
 
 ### Validação e limites
 
-Na revisão, a consulta de integridade usou uma transação READ ONLY; os testes de operações usaram tabelas temporárias. Não houve gravação em registros reais nem alteração do CSS.
+A consulta de integridade foi feita em uma transação READ ONLY. Os testes de operações usaram tabelas temporárias.
 
-A recuperação local permite redefinir contas comuns conhecendo o e-mail: deve continuar limitada a contas de teste. Credenciais removidas do arquivo rastreado permanecem no histórico Git; a revisão não troca a senha do servidor. Também não acrescenta limite de tentativas de login ou invalidação imediata de sessões ao mudar senha ou papel. Não há upload no sistema.
+A recuperação local permite redefinir contas comuns conhecendo o e-mail: deve continuar limitada a contas de teste. Há credenciais no arquivo local versionado e no histórico Git. Elas precisam ser trocadas antes de usar dados reais. O sistema não limita tentativas de login nem encerra imediatamente as sessões ao mudar senha ou papel. Não há upload no sistema.

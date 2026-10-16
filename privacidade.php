@@ -22,7 +22,7 @@ require_once __DIR__ . '/includes/session.php';
     <p class="privacy-updated">Última atualização: <time datetime="2026-10-07">7 de outubro de 2026</time>.</p>
     <section aria-labelledby="sobre-politica">
         <h2 id="sobre-politica">1. Sobre esta política</h2>
-        <p>Esta página explica quais dados o Impulso Cursos utiliza e como eles ajudam no funcionamento do sistema. A política pode ser consultada por visitantes, usuários e administradores.</p>
+        <p>Esta página explica quais dados o Impulso Cursos guarda e para que são usados. Qualquer pessoa pode consultá-la.</p>
     </section>
     <section aria-labelledby="dados-coletados">
         <h2 id="dados-coletados">2. Dados coletados</h2>
@@ -45,15 +45,15 @@ require_once __DIR__ . '/includes/session.php';
         <p>Os cadastros e as inscrições ficam armazenados no banco PostgreSQL utilizado pelo sistema. O acesso às áreas internas depende de login, e as páginas administrativas exigem uma conta de administrador.</p>
         <p>As senhas cadastradas pelo sistema não são armazenadas em texto puro. Elas são transformadas em um hash, uma representação protegida usada para conferir a senha no login. Para isso, o sistema utiliza <code>password_hash()</code> no cadastro e <code>password_verify()</code> na autenticação.</p>
         <p>O sistema possui uma demonstração local de redefinição de senha para contas comuns. Esse recurso é destinado a testes acadêmicos.</p>
-        <p>O projeto busca seguir boas práticas de proteção e uso responsável de dados. Essas medidas não representam uma garantia de segurança absoluta.</p>
+        <p>Essas proteções reduzem os riscos, mas não garantem segurança absoluta.</p>
     </section>
     <section aria-labelledby="compartilhamento">
         <h2 id="compartilhamento">5. Compartilhamento</h2>
-        <p>No contexto atual deste projeto, os dados não são vendidos nem compartilhados com anunciantes. Não há integração com serviços externos de marketing. A administração utiliza os dados nas atividades de gerenciamento previstas no sistema.</p>
+        <p>Os dados não são vendidos nem compartilhados com anunciantes. O sistema não usa serviços de marketing. A administração consulta os dados para gerenciar alunos e cursos.</p>
     </section>
     <section aria-labelledby="direitos-usuario">
         <h2 id="direitos-usuario">6. Direitos do usuário</h2>
-        <p>Ao entrar em sua conta, você pode consultar seus próprios dados pelo Meu perfil. Para solicitar a correção de dados permitidos ou tratar de dúvidas relacionadas à conta, procure a administração responsável pelo projeto.</p>
+        <p>Ao entrar em sua conta, você pode consultar seus próprios dados pelo Meu perfil. Para corrigir dados que podem ser editados ou tirar dúvidas sobre sua conta, procure a administração.</p>
         <p>Este sistema não oferece exclusão automática de conta nem exportação de dados.</p>
     </section>
     <section aria-labelledby="projeto-academico">

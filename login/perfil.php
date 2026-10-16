@@ -53,7 +53,7 @@ if (!$ehAdmin) { // evita consultar cursos que nao aparecem no perfil administra
         <div class="profile-heading">
             <p class="profile-eyebrow">MINHA CONTA</p>
             <h1>Meu perfil</h1>
-            <p>Seus dados e sua jornada na Impulso Cursos, em um só lugar.</p>
+            <p>Consulte os dados da sua conta e seus cursos.</p>
         </div>
         <section class="profile-account" aria-labelledby="profile-account-title">
             <div class="profile-avatar" aria-hidden="true">
@@ -90,11 +90,11 @@ if (!$ehAdmin) { // evita consultar cursos que nao aparecem no perfil administra
         </section>
         <?php if (!$ehAdmin): ?>
         <section class="profile-panel profile-courses" aria-labelledby="seus-cursos">
-            <div class="profile-section-heading"><h2 id="seus-cursos">Seus cursos</h2><p>Continue aprendendo e dando o próximo passo.</p></div>
+            <div class="profile-section-heading"><h2 id="seus-cursos">Seus cursos</h2><p>Veja os cursos em que você está inscrito.</p></div>
             <?php if ($erroCursos !== ''): ?>
                 <p class="message-error" role="alert"><?= htmlspecialchars($erroCursos, ENT_QUOTES, 'UTF-8') ?></p>
             <?php elseif (!$cursos): ?>
-                <div class="profile-empty"><h3>Sua jornada começa aqui</h3><p>Você ainda não está inscrito em nenhum curso.</p></div>
+                <div class="profile-empty"><h3>Nenhum curso inscrito</h3><p>Você ainda não está inscrito em nenhum curso.</p></div>
             <?php else: ?>
                 <ul class="profile-course-list">
                     <?php foreach ($cursos as $curso): ?>

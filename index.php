@@ -24,7 +24,7 @@ if (isset($_SESSION['id']) && ($_SESSION['tipo'] ?? 'usuario') === 'usuario') {
         <?php ?>
         <?php if (!isset($_SESSION['id'])): ?>
             <section class="courses" aria-labelledby="acesso-title">
-                <h2 id="acesso-title">Comece sua jornada</h2>
+                <h2 id="acesso-title">Acesse sua conta</h2>
                 <p>Para visualizar nossos cursos e realizar inscrições, entre em sua conta ou cadastre-se.</p>
                 <div class="admin-action-links">
                     <a class="report-link" href="/impulsos_cursos/login/login.php">Entrar</a>

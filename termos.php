@@ -27,8 +27,8 @@ require_once __DIR__ . '/includes/session.php';
     </section>
     <section aria-labelledby="cadastro-conta">
         <h2 id="cadastro-conta">2. Cadastro e conta</h2>
-        <p>O cadastro solicita nome, CPF, data de nascimento, e-mail e senha. Você é responsável por fornecer informações válidas e corretas para o contexto de uso.</p>
-        <p>Em atividades acadêmicas de teste, utilize dados fictícios com formatos válidos, conforme a orientação responsável pelo projeto. Não utilize dados de terceiros nem se passe por outra pessoa.</p>
+        <p>O cadastro solicita nome, CPF, data de nascimento, e-mail e senha. Preencha os campos corretamente usando dados de teste.</p>
+        <p>Use dados fictícios com formatos válidos nos testes. Não utilize dados de terceiros nem se passe por outra pessoa.</p>
         <p>Utilize sua própria conta. Não use a conta de outra pessoa, compartilhe senhas ou tente modificar o tipo da conta para obter permissões adicionais.</p>
     </section>
     <section aria-labelledby="responsabilidades-usuario">
@@ -49,17 +49,17 @@ require_once __DIR__ . '/includes/session.php';
     <section aria-labelledby="uso-administrativo">
         <h2 id="uso-administrativo">5. Uso administrativo</h2>
         <p>Contas administrativas possuem acesso adicional para consultar alunos e usuários, editar informações permitidas, excluir registros quando permitido, gerenciar cursos e realizar vínculos entre contas e alunos.</p>
-        <p>A administração deve utilizar essas funções de forma responsável, conferir os dados antes de confirmar alterações e respeitar as restrições do sistema.</p>
+        <p>Antes de confirmar uma alteração, a administração deve conferir os dados e respeitar as restrições do sistema.</p>
     </section>
     <section aria-labelledby="seguranca-conta">
         <h2 id="seguranca-conta">6. Segurança da conta</h2>
         <p>Mantenha sua senha em segurança e não a compartilhe. Ao terminar de usar a plataforma em um computador compartilhado, utilize a opção Sair.</p>
-        <p>O sistema armazena as senhas de forma protegida. Caso perceba uso não autorizado da sua conta, procure a administração responsável pelo projeto.</p>
+        <p>O sistema armazena as senhas de forma protegida. Caso perceba uso não autorizado da sua conta, procure a administração.</p>
     </section>
     <section aria-labelledby="uso-inadequado">
         <h2 id="uso-inadequado">7. Uso inadequado do sistema</h2>
         <p>Não tente burlar a autenticação, acessar páginas administrativas sem autorização, explorar falhas para manipular dados de terceiros ou prejudicar o sistema.</p>
-        <p>A aplicação restringe o acesso a áreas sem permissão. No contexto acadêmico, o uso inadequado pode resultar em restrição de acesso às atividades do projeto pela administração responsável.</p>
+        <p>O sistema bloqueia áreas que sua conta não pode acessar. O uso indevido também pode levar a administração a restringir sua participação nas atividades do projeto.</p>
     </section>
     <section aria-labelledby="limitacoes-projeto">
         <h2 id="limitacoes-projeto">8. Limitações do projeto</h2>

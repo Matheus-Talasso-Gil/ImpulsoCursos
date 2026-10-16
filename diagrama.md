@@ -213,7 +213,7 @@ Não há envio de e-mail nem verificação de identidade. Use somente contas de 
 
 ## Fluxograma geral do sistema
 
-Os diagramas abaixo complementam os fluxos técnicos anteriores e representam as páginas atuais de `login/`, `app/`, os menus de `includes/header.php`, o controle de `includes/session.php` e as funções compartilhadas. O código foi usado para resolver diferenças nas descrições antigas da documentação.
+Os diagramas abaixo mostram a navegação e as ações de visitantes, usuários e administradores.
 
 ### Visitante, cadastro e entrada
 
@@ -342,7 +342,7 @@ graph LR
 
 A edição altera somente nome, situação e e-mail. O servidor valida os campos, o token CSRF e o aluno selecionado na sessão. ID, CPF, nascimento, turma e vínculo já preenchido são preservados. Para editar, use o relatório ou `update.php`; para excluir, use `delete.php`.
 
-O fluxo de exclusão de aluno foi preservado em **Exclusão com confirmação**: exige confirmação inicial e, se a conta vinculada tiver inscrições, uma segunda confirmação com a lista de cursos. Cancelar mantém o cadastro; excluir remove somente o aluno e seu vínculo, preservando conta e inscrições.
+Veja as etapas para excluir um aluno em **Exclusão com confirmação**.
 
 ### Cadastro e edição de cursos
 
@@ -507,4 +507,4 @@ graph LR
 - **Usuário:** conta comum autenticada, com acesso ao dashboard, cursos, inscrições, cancelamento, favoritos e próprio perfil. Não gerencia alunos, contas, vínculos ou cursos administrativos.
 - **Admin:** conta administrativa responsável por consultas e gestão de alunos e cursos, com acesso ao próprio perfil. Também pode consultar o histórico e usar as rotas de cursos e favoritos da própria conta; não participa da recuperação de senha.
 
-Ver perfil e consultar dados próprios são aspectos da mesma página, não telas distintas. A criação de aluno ocorre no cadastro público com vínculo automático na mesma transação. A exclusão de aluno preserva a conta e suas inscrições; a exclusão de curso é bloqueada se houver inscrições.
+O cadastro público cria a conta e o aluno juntos. As confirmações e restrições de exclusão estão nos fluxos de alunos e cursos acima.

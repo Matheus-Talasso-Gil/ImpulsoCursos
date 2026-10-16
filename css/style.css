@@ -26,7 +26,7 @@
     --space-7: 48px;
 }
 
-/* reset and page foundation */
+/* estilos gerais */
 *, *::before, *::after { box-sizing: border-box; }
 html { min-width: 320px; scroll-behavior: smooth; }
 body {
@@ -43,7 +43,7 @@ body {
 img { max-width: 100%; height: auto; }
 button, input, select { font: inherit; }
 
-/* type hierarchy */
+/* titulos e textos */
 h1, h2, h3, p { margin-top: 0; }
 h1, h2, h3 { color: var(--primary-dark); line-height: 1.25; }
 h1 { margin-bottom: var(--space-5); font-size: 32px; }
@@ -52,7 +52,7 @@ h3 { margin-bottom: var(--space-3); font-size: 19px; }
 p { margin-bottom: var(--space-4); }
 small { color: var(--text-secondary); }
 
-/* header and navigation */
+/* cabecalho e navegacao */
 header {
     padding: var(--space-3) 20px;
     color: #fff;
@@ -78,7 +78,7 @@ nav a {
     transition: background-color 180ms ease, color 180ms ease;
 }
 nav a:hover { background: rgba(255, 255, 255, .12); }
-/* Agrupa a gestão de alunos e contas em menus que funcionam com mouse, toque e teclado. */
+/* menus de alunos e contas */
 nav .nav-group { position: relative; }
 nav .nav-group summary { min-height: 42px; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
 nav .nav-group summary:hover, nav .nav-group[open] > summary { background: rgba(255, 255, 255, .12); }
@@ -94,7 +94,7 @@ nav a[href$="/login/login.php"] { background: var(--primary); }
 nav a[href$="/login/login.php"]:hover { background: #2875b5; }
 nav a[href$="/login/logout.php"]:hover { background: var(--danger); }
 
-/* main layout and reusable surfaces */
+/* estrutura das paginas */
 main {
     width: min(100% - 40px, 1120px);
     margin: 40px auto;
@@ -136,7 +136,7 @@ form.danger-confirmation { border-color: #f0c5ca; }
 .profile-course-list li { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2); padding: var(--space-3) 0; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
 .profile-course-list span { color: var(--text-secondary); }
 
-/* Meu perfil */
+/* perfil */
 .profile-page { max-width: 1000px; }
 .profile-heading { margin-bottom: 24px; }
 .profile-eyebrow { margin-bottom: 8px; color: var(--primary); font-size: 12px; font-weight: 750; letter-spacing: 1.5px; }
@@ -189,7 +189,7 @@ form.danger-confirmation { border-color: #f0c5ca; }
     .profile-details { grid-template-columns: 1fr; }
 }
 
-/* Painel administrativo: reaproveita as cores e os espaçamentos do sistema. */
+/* painel administrativo */
 .admin-dashboard > section { margin-bottom: var(--space-6); }
 .admin-summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); margin: 0; }
 .admin-card { padding: var(--space-5); background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--primary); border-radius: 8px; box-shadow: var(--shadow-sm); overflow-wrap: anywhere; }
@@ -198,7 +198,7 @@ form.danger-confirmation { border-color: #f0c5ca; }
 .admin-action-links { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 .admin-action-links a.report-link { margin-top: 0; }
 
-/* Dashboard da conta comum, com as mesmas variáveis do sistema. */
+/* dashboard do usuario */
 .dashboard-greeting { color: var(--primary-dark); font-size: 24px; font-weight: 700; }
 .dashboard-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
 .dashboard-card { min-width: 0; padding: var(--space-5); background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-sm); overflow-wrap: anywhere; }
@@ -221,7 +221,7 @@ form.danger-confirmation { border-color: #f0c5ca; }
     .dashboard-card { padding: var(--space-4); }
 }
 
-/* forms and controls */
+/* formularios */
 form:not(.edit-action) {
     width: 100%;
     max-width: 640px;
@@ -295,7 +295,7 @@ form input[name="confirmar"]:hover { background: var(--danger-dark); }
 form.edit-action { width: auto; max-width: none; margin: 0; padding: 0; background: transparent; border: 0; box-shadow: none; }
 form.edit-action input[type="submit"] { min-height: 40px; margin: 0; padding: 7px 16px; }
 
-/* authentication and deletion states */
+/* login e confirmacao de exclusao */
 .auth-page { width: min(100% - 32px, 560px); margin-top: 48px; }
 .auth-page > h1, .auth-page > p { text-align: center; }
 .auth-page > form { margin: var(--space-5) auto; padding: var(--space-6); }
@@ -307,7 +307,7 @@ form.edit-action input[type="submit"] { min-height: 40px; margin: 0; padding: 7p
 .delete-page .cancel-link { display: inline-flex; align-items: center; min-height: 44px; margin: 8px 0 0 4px; padding: 8px 14px; color: var(--text); background: #edf1f5; border-radius: 6px; text-decoration: none; }
 .delete-page .cancel-link:hover { background: #e1e8ef; }
 
-/* tables and report */
+/* tabelas e relatorio */
 .table-wrapper { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); }
 table { width: 100%; min-width: 760px; border-collapse: collapse; text-align: left; }
 caption { padding: var(--space-4); color: var(--text-secondary); text-align: left; }
@@ -336,7 +336,7 @@ tbody tr:last-child td { border-bottom: 0; }
 .filters-button::after { content: ""; width: 0; height: 0; border-top: 5px solid currentColor; border-right: 4px solid transparent; border-left: 4px solid transparent; }
 .filters-button:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
 
-/* feedback statuses and links */
+/* mensagens e links */
 .message-success, .message-error, .message-warning, .lookup-empty {
     margin: var(--space-4) 0;
     padding: 14px 16px;
@@ -355,7 +355,7 @@ a:hover { color: var(--primary-dark); }
 main a.report-link { display: inline-flex; align-items: center; min-height: 42px; margin-top: var(--space-3); padding: 8px 14px; color: #fff; background: var(--primary); border-radius: 6px; text-decoration: none; font-weight: 600; }
 main a.report-link:hover { color: #fff; background: var(--primary-dark); }
 
-/* student lookup */
+/* consulta de aluno */
 .lookup-page { max-width: 760px; }
 .lookup-heading { margin-bottom: 28px; }
 .lookup-heading .lookup-eyebrow { margin: 0 0 8px; color: var(--primary); font-size: 12px; font-weight: 750; letter-spacing: 1px; }
@@ -388,7 +388,7 @@ main a.report-link:hover { color: #fff; background: var(--primary-dark); }
 .student-courses dd { line-height: 1.6; }
 .lookup-home-link { display: inline-block; margin-top: 18px; }
 
-/* Acesso restrito às páginas administrativas. */
+/* pagina de acesso negado */
 main.access-denied {
     display: grid;
     place-items: center;
@@ -445,13 +445,13 @@ main.access-denied {
     .access-denied-actions a { width: 100%; }
 }
 
-/* footer */
+/* rodape */
 footer { margin-top: auto; padding: var(--space-5) 20px; color: var(--text-secondary); background: var(--surface); border-top: 1px solid var(--border); text-align: center; }
 footer .footer-copyright { margin: 0; color: var(--text-secondary); font-size: 13px; font-weight: 500; }
 .footer-privacy-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
 .footer-privacy-link:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
 
-/* Política pública: largura confortável para leitura e espaçamento do sistema. */
+/* privacidade e termos de uso */
 main.privacy-page, main.terms-page { max-width: 840px; padding: clamp(20px, 4vw, 40px); background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-sm); overflow-wrap: anywhere; }
 .privacy-updated { color: var(--text-secondary); font-size: 14px; }
 .privacy-page section, .terms-page section { margin-top: var(--space-6); }
@@ -460,7 +460,7 @@ main.privacy-page, main.terms-page { max-width: 840px; padding: clamp(20px, 4vw,
 .privacy-page li + li, .terms-page li + li { margin-top: var(--space-2); }
 .privacy-page section:last-child p:last-child, .terms-page section:last-child p:last-child { margin-bottom: 0; }
 
-/* responsive layout */
+/* ajustes para telas menores */
 @media (max-width: 760px) {
     .admin-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     main { margin: 32px auto; }
