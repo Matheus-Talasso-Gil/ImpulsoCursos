@@ -97,18 +97,18 @@ impulsos_cursos/
 │   └── style.css                 # estilos compartilhados do sistema
 │
 ├── database/
-│   ├── auto_destruicao/
-│   │   └── reset_database.pgsql  # recriação destrutiva do banco em desenvolvimento
-│   ├── adicionar_tipo_usuario.sql # adiciona nível de acesso aos usuários
-│   ├── adicionar_created_at_usuarios.sql # adiciona a data de criação das contas
-│   ├── ajustar_senha.sql         # ajustes relacionados às senhas
+│   ├── adicionar_created_at_usuarios.sql
+│   ├── adicionar_favoritos.sql
+│   ├── adicionar_logs_admin.sql
+│   ├── adicionar_tipo_usuario.sql
+│   ├── ajustar_senha.sql
+│   ├── config.example.php        # modelo de configuração local
 │   ├── connect_postgres.php      # conexão com PostgreSQL
-│   ├── table.pgsql               # criação das tabelas
-│   ├── verificar_created_at.php  # teste isolado da data de criação das contas
-│   ├── vincular_contas_existentes.sql # associa emails antigos sem ambiguidades
-│   ├── verificar_cadastro_relatorio.php # regressao do cadastro e relatorio
-│   ├── vincular_alunos_usuarios.sql # migração do vínculo opcional
-│   └── verificar_user.php        # teste de cadastro e autenticação
+│   ├── garantir_campos_obrigatorios.sql
+│   ├── garantir_email_unico_usuarios.sql
+│   ├── table.pgsql               # estrutura para novas instalações
+│   ├── vincular_alunos_usuarios.sql
+│   └── vincular_contas_existentes.sql
 │
 ├── includes/
 │   ├── curso_admin_form.php      # formulário compartilhado de gestão de cursos
@@ -479,7 +479,6 @@ Este roteiro é uma orientação de teste, não um registro de testes executados
 
 - Novas senhas são gravadas com `password_hash()` e verificadas com `password_verify()`. Antes de usar, execute `database/ajustar_senha.sql` para ampliar o campo para `VARCHAR(255)`. Senhas antigas em texto precisam ser convertidas ou redefinidas; o login não aceita texto puro armazenado no banco.
 - A edição de aluno valida nome, e-mail e situação no servidor. Os formulários de busca, edição e exclusão aceitam IDs positivos até 2147483647.
-- Para verificar as correções de edição, CSRF, abas diferentes, CPF com pontuação e entradas inválidas, execute `php impulsos_cursos/database/verificar_alunos.php` a partir da pasta pai do projeto. O teste usa tabelas temporárias e rollback, preservando os cadastros reais.
 - O cadastro inicia o campo legado turma como Sem turma; esse campo não determina inscrições.
 - Cadastro, edição e exclusão de aluno, vínculo, inscrição em cursos, gestão de cursos e recuperação de senha possuem token CSRF. A edição também confere se o aluno do formulário continua sendo o selecionado na sessão, impedindo salvar em outro aluno ao alternar abas. A cobertura não inclui todos os formulários do sistema.
 - A atualização não confere as linhas afetadas antes de mostrar sucesso; exclusão e vínculo conferem.
@@ -539,7 +538,6 @@ Para registros antigos, [vincular_contas_existentes.sql](database/vincular_conta
 
 ```powershell
 psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/vincular_contas_existentes.sql
-php impulsos_cursos/database/verificar_cadastro_relatorio.php
 ```
 
 ### Relacionamentos nas consultas
@@ -579,10 +577,10 @@ Os índices de PK, e-mail, CPF, pares conta/curso e vínculo único de aluno for
 
 No banco revisado, `alunos.nome`, `turma`, `nasc`, `ativo`, `usuarios.email` e `senha` ainda aceitavam NULL, apesar de serem obrigatórios no schema. Não havia valores nulos nesses campos. `database/garantir_campos_obrigatorios.sql` aplica NOT NULL e o padrão TRUE de ativo dentro de uma transação. Não modifica valores, tipos, PKs ou FKs; qualquer NULL aborta a aplicação inteira. Foi testada somente em tabelas temporárias.
 
-`CREATE TABLE IF NOT EXISTS` não corrige automaticamente tabelas já existentes. Aplique as migrations documentadas em instalações antigas. O script destrutivo de reset é legado e não é um instalador das seis tabelas atuais; não foi executado nem ampliado com CASCADE.
+`CREATE TABLE IF NOT EXISTS` não corrige automaticamente tabelas já existentes. Aplique as migrations documentadas em instalações antigas.
 
 ### Validação e limites
 
-O roteiro completo e os comandos estão em [testes.md](testes.md). A consulta de integridade usa uma transação READ ONLY; os testes de operações usam tabelas temporárias. Não houve gravação em registros reais nem alteração do CSS.
+Na revisão, a consulta de integridade usou uma transação READ ONLY; os testes de operações usaram tabelas temporárias. Não houve gravação em registros reais nem alteração do CSS.
 
 A recuperação local permite redefinir contas comuns conhecendo o e-mail: deve continuar limitada a contas de teste. Credenciais removidas do arquivo rastreado permanecem no histórico Git; a revisão não troca a senha do servidor. Também não acrescenta limite de tentativas de login ou invalidação imediata de sessões ao mudar senha ou papel. Não há upload no sistema.

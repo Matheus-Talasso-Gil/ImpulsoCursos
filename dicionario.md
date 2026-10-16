@@ -91,7 +91,6 @@ A aplicação registra ações apenas para uma sessão administrativa válida. A
 - [table.pgsql](database/table.pgsql) cria tabelas ausentes e aplica a estrutura de vínculo sem apagar registros.
 - [vincular_alunos_usuarios.sql](database/vincular_alunos_usuarios.sql) adiciona a relação opcional e as proteções sem preencher vínculos ou alterar IDs e sequences. Confere FK e índice equivalentes antes de criar novos. Estrutura incompatível ou dados inválidos interrompem a transação.
 - [adicionar_tipo_usuario.sql](database/adicionar_tipo_usuario.sql) adiciona o papel da conta e suas restrições.
-- [reset_database.pgsql](database/auto_destruicao/reset_database.pgsql) é destrutivo: ao executá-lo, reinicia os dados do banco de dados do zero, apagando e recriando vazias as tabelas `alunos` e `usuarios`. Não apaga o banco PostgreSQL inteiro, mas todos os registros dessas tabelas são perdidos. Use somente em desenvolvimento, após confirmar o banco e fazer backup.
 
 ## Legenda
 

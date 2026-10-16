@@ -389,18 +389,18 @@ impulsos_cursos/
 │   └── style.css                 # estilos compartilhados do sistema
 │
 ├── database/
-│   ├── auto_destruicao/
-│   │   └── reset_database.pgsql  # recriação destrutiva do banco em desenvolvimento
-│   ├── adicionar_tipo_usuario.sql # adiciona nível de acesso aos usuários
-│   ├── adicionar_created_at_usuarios.sql # adiciona a data de criação das contas
-│   ├── ajustar_senha.sql         # ajustes relacionados às senhas
+│   ├── adicionar_created_at_usuarios.sql
+│   ├── adicionar_favoritos.sql
+│   ├── adicionar_logs_admin.sql
+│   ├── adicionar_tipo_usuario.sql
+│   ├── ajustar_senha.sql
+│   ├── config.example.php        # modelo de configuração local
 │   ├── connect_postgres.php      # conexão com PostgreSQL
-│   ├── table.pgsql               # criação das tabelas
-│   ├── verificar_created_at.php  # teste isolado da data de criação das contas
-│   ├── vincular_contas_existentes.sql # associa emails antigos sem ambiguidades
-│   ├── verificar_cadastro_relatorio.php # regressao do cadastro e relatorio
-│   ├── vincular_alunos_usuarios.sql # migração do vínculo opcional
-│   └── verificar_user.php        # teste de cadastro e autenticação
+│   ├── garantir_campos_obrigatorios.sql
+│   ├── garantir_email_unico_usuarios.sql
+│   ├── table.pgsql               # estrutura para novas instalações
+│   ├── vincular_alunos_usuarios.sql
+│   └── vincular_contas_existentes.sql
 │
 ├── includes/
 │   ├── curso_admin_form.php      # formulário compartilhado de gestão de cursos
@@ -483,12 +483,6 @@ psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/
 
 A tabela registra conta, curso e data, com unicidade por conta e curso. As alterações exigem POST e CSRF e usam somente o ID da sessão. Excluir um curso sem inscrições remove seus favoritos em cascata; cursos com inscrições continuam protegidos contra exclusão.
 
-Teste pelo terminal, com tabelas temporárias e sem alterar os registros reais:
-
-```powershell
-php impulsos_cursos/database/verificar_favoritos.php
-```
-
 ### Estrutura inicial
 
 1. Crie o banco PostgreSQL que será usado pelo sistema.
@@ -529,9 +523,7 @@ SET tipo = 'admin'
 WHERE lower(email) = lower('EMAIL_AUTORIZADO');
 ```
 
-A constraint `usuarios_admin_email_check` limita `admin` ao e-mail autorizado nos scripts de schema. Se trocar a conta autorizada, atualize essa constraint na migração e nos scripts de criação/reset.
-
-> **Atenção:** `database/auto_destruicao/reset_database.pgsql` apaga e recria `alunos` e `usuarios`, perdendo os registros. Use somente em desenvolvimento e após confirmar o banco e fazer backup.
+A constraint `usuarios_admin_email_check` limita `admin` ao e-mail autorizado nos scripts de schema. Se trocar a conta autorizada, atualize essa constraint na migração e nos scripts de criação.
 
 ## Data de criação das contas
 
@@ -546,12 +538,6 @@ A migration não recria tabelas nem altera IDs, senhas ou tipos. Pode ser execut
 Nos novos cadastros, o INSERT omite `created_at` e o PostgreSQL usa automaticamente `CURRENT_TIMESTAMP` (início da transação). A informação aparece em **Meu perfil** e **Usuários cadastrados**, somente para leitura; campos enviados por GET ou POST não são usados. Login, logout e redefinição de senha não alteram esse valor.
 
 O projeto não configura explicitamente o fuso da conexão nem o do PHP. No teste deste ambiente, PostgreSQL 18.6 informou `America/Sao_Paulo` e PHP informou `UTC`. `TIMESTAMP` não guarda fuso: o valor usa o horário da sessão PostgreSQL e é exibido sem conversão. Confira `SHOW timezone;` no banco e `date_default_timezone_get()` no PHP antes de comparar horários em outra instalação; configurações diferentes podem produzir horários locais diferentes. Esta tarefa não muda configurações globais. Datas ausentes ou inválidas aparecem como **Não informada**.
-
-Teste automatizado com tabelas temporárias, sem modificar contas reais:
-
-```powershell
-php impulsos_cursos/database/verificar_created_at.php
-```
 
 Para validar as telas, aplique a migration, cadastre uma conta pelo **Cadastre-se** e confira a data no perfil e na listagem administrativa. Anote `created_at`, faça logout/login e redefina a senha pela demonstração local; o valor deve permanecer igual. Envie também um campo extra `created_at` no POST de cadastro: o horário deve continuar sendo preenchido pelo banco. Reexecute a migration e confirme que os valores existentes foram preservados.
 
@@ -578,13 +564,7 @@ Para validar as telas, aplique a migration, cadastre uma conta pelo **Cadastre-s
 
 ## Testes
 
-Com o terminal na pasta que contém `impulsos_cursos`, rode o teste de cadastro/autenticação:
-
-```powershell
-php impulsos_cursos/database/verificar_user.php
-```
-
-O teste usa uma tabela temporária e faz rollback ao terminar. Para testar manualmente, confira o menu deslogado, crie uma conta comum, tente abrir `/impulsos_cursos/app/select.php` com ela e depois autentique com a conta admin autorizada.
+Para testar manualmente, confira o menu deslogado, crie uma conta comum, tente abrir `/impulsos_cursos/app/select.php` com ela e depois autentique com a conta admin autorizada.
 
 Após aplicar a migration de vínculo, confira também:
 
@@ -623,7 +603,6 @@ Para registros antigos, [vincular_contas_existentes.sql](database/vincular_conta
 
 ```powershell
 psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/vincular_contas_existentes.sql
-php impulsos_cursos/database/verificar_cadastro_relatorio.php
 ```
 
 ## Segurança implementada
@@ -638,4 +617,4 @@ PKs, FKs, UNIQUE e NOT NULL protegem a integridade. Na revisão de 14/10/2026, o
 psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/garantir_campos_obrigatorios.sql
 ```
 
-Em 16/10/2026, a migration `database/garantir_campos_obrigatorios.sql` foi aplicada com sucesso ao banco configurado, via PHP/PDO e `database/connect_postgres.php`, sem psql. O arquivo SQL original foi executado integralmente em uma única transação, com BEGIN/COMMIT e sem commit parcial. Não houve preenchimento de nulos, alteração manual ou exclusão de registros, nem alteração de outras tabelas. A consulta prévia somente de leitura encontrou zero NULL em cada campo: `alunos.nome`, `alunos.turma`, `alunos.nasc`, `alunos.ativo`, `usuarios.email` e `usuarios.senha`. Após a aplicação, o information_schema confirmou NOT NULL nas seis colunas e DEFAULT TRUE em `alunos.ativo`. `php database/verificar_integridade.php` terminou com código 0 e zero problemas nos dados verificados: nenhum órfão, duplicidade ou carga horária inválida. As FKs estavam validadas e as restrições/índices UNIQUE presentes. As contagens de NULL permaneceram em zero. Veja os resultados e o checklist em [testes.md](testes.md). A recuperação permanece uma demonstração local para contas de teste, sem verificação de identidade; seu token fica na sessão e não na URL. Credenciais antigas continuam no histórico Git e precisam ser trocadas antes de usar o projeto com dados reais.
+Em 16/10/2026, a migration `database/garantir_campos_obrigatorios.sql` foi aplicada com sucesso ao banco configurado, via PHP/PDO e `database/connect_postgres.php`, sem psql. O arquivo SQL original foi executado integralmente em uma única transação, com BEGIN/COMMIT e sem commit parcial. Não houve preenchimento de nulos, alteração manual ou exclusão de registros, nem alteração de outras tabelas. A consulta prévia somente de leitura encontrou zero NULL em cada campo: `alunos.nome`, `alunos.turma`, `alunos.nasc`, `alunos.ativo`, `usuarios.email` e `usuarios.senha`. Após a aplicação, o information_schema confirmou NOT NULL nas seis colunas e DEFAULT TRUE em `alunos.ativo`. A verificação de integridade realizada após a aplicação terminou sem problemas nos dados verificados: nenhum órfão, duplicidade ou carga horária inválida. As FKs estavam validadas e as restrições/índices UNIQUE presentes. As contagens de NULL permaneceram em zero. A recuperação permanece uma demonstração local para contas de teste, sem verificação de identidade; seu token fica na sessão e não na URL. Credenciais antigas continuam no histórico Git e precisam ser trocadas antes de usar o projeto com dados reais.
