@@ -1,4 +1,4 @@
-# Impulso Cursos
+# ImpulsoCursos
 
 Sistema web fictício de gestão de alunos e cursos. O PHP se conecta ao PostgreSQL usando PDO. As páginas usam HTML e CSS, e o projeto é versionado com Git e GitHub.
 
@@ -79,21 +79,21 @@ Abra o PowerShell na pasta onde deseja guardar o projeto e execute:
 ```powershell
 mkdir ImpulsoCursos
 cd ImpulsoCursos
-git clone https://github.com/Matheus-Talasso-Gil/Impulsos-Cursos.git impulsos_cursos
+git clone https://github.com/Matheus-Talasso-Gil/ImpulsoCursos.git impulsocursos
 ```
 
-Se a pasta `ImpulsoCursos` já existir, entre nela e pule o `mkdir`. O último comando cria a pasta `impulsos_cursos` com o código.
+Se a pasta `ImpulsoCursos` já existir, entre nela e pule o `mkdir`. O último comando cria a subpasta `impulsocursos` com o código.
 
 A organização deve ficar assim:
 
 ```text
 ImpulsoCursos/             # abra o terminal nesta pasta para os próximos comandos
-└── impulsos_cursos/       # aqui ficam README.md, index.php, app e database
+└── impulsocursos/       # aqui ficam README.md, index.php, app e database
 ```
 
-O nome `impulsos_cursos` é necessário porque os links e redirecionamentos usam `/impulsos_cursos/`.
+O nome da subpasta `impulsocursos` é necessário porque os links e redirecionamentos usam `/impulsocursos/`.
 
-Se preferir baixar sem Git, abra o [repositório no GitHub](https://github.com/Matheus-Talasso-Gil/Impulsos-Cursos), clique em **Code > Download ZIP**, extraia o conteúdo e renomeie a pasta que contém `index.php` para `impulsos_cursos`. Coloque-a dentro de `ImpulsoCursos`, como no exemplo acima.
+Se preferir baixar sem Git, abra o [repositório no GitHub](https://github.com/Matheus-Talasso-Gil/ImpulsoCursos), clique em **Code > Download ZIP**, extraia o conteúdo e renomeie a pasta que contém `index.php` para `impulsocursos`. Coloque-a dentro de `ImpulsoCursos`, como no exemplo acima.
 
 ### 4. Criar o banco de dados
 
@@ -112,7 +112,7 @@ CREATE DATABASE impulso_cursos;
 Depois, digite `\q` para voltar ao PowerShell. Importe a estrutura:
 
 ```powershell
-psql -h localhost -p 5432 -U postgres -d impulso_cursos -v ON_ERROR_STOP=1 -f impulsos_cursos/database/table.pgsql
+psql -h localhost -p 5432 -U postgres -d impulso_cursos -v ON_ERROR_STOP=1 -f impulsocursos/database/table.pgsql
 ```
 
 Confira as tabelas criadas:
@@ -125,7 +125,7 @@ Devem aparecer `alunos`, `usuarios`, `cursos`, `inscricoes`, `favoritos` e `logs
 
 ### 5. Configurar a conexão do projeto
 
-Abra `impulsos_cursos/database/config.example.php` e salve uma cópia como `impulsos_cursos/database/config.local.php`. Se o arquivo local já existir no código baixado, edite essa cópia com os dados da sua instalação.
+Abra `impulsocursos/database/config.example.php` e salve uma cópia como `impulsocursos/database/config.local.php`. Se o arquivo local já existir no código baixado, edite essa cópia com os dados da sua instalação.
 
 Para o banco criado no passo anterior, o arquivo deve ficar assim:
 
@@ -156,14 +156,14 @@ php -S 127.0.0.1:8000
 Deixe esse terminal aberto e acesse no navegador:
 
 ```text
-http://127.0.0.1:8000/impulsos_cursos/
+http://127.0.0.1:8000/impulsocursos/
 ```
 
 Não abra `index.php` diretamente pelo explorador de arquivos. Para encerrar o servidor, volte ao terminal e pressione `Ctrl+C`.
 
 ### 7. Criar uma conta e fazer o primeiro acesso
 
-1. Abra `http://127.0.0.1:8000/impulsos_cursos/login/cadastrar.php`.
+1. Abra `http://127.0.0.1:8000/impulsocursos/login/cadastrar.php`.
 2. Preencha nome, um CPF com dígitos verificadores válidos para teste, data de nascimento, e-mail e senha. Use apenas dados de teste.
 3. Entre com o e-mail e a senha cadastrados.
 4. O sistema abrirá o dashboard da conta comum, com o cadastro de aluno já vinculado.
@@ -199,8 +199,8 @@ No painel administrativo, abra **Cursos** e cadastre um curso. Depois, saia e en
 | `php`, `git` ou `psql` não reconhecido | A instalação e o `Path`; abra um novo terminal após alterá-lo |
 | `could not find driver` | Se `pdo_pgsql` está habilitado no `php.ini` mostrado por `php --ini` |
 | Falha ao conectar ao banco | Serviço do PostgreSQL, senha, nome do banco e configuração local ou de ambiente |
-| Arquivo `table.pgsql` não encontrado | Execute a importação na pasta que contém `impulsos_cursos` |
-| Página não encontrada ou links quebrados | Nome da pasta `impulsos_cursos`, endereço usado e pasta onde iniciou o servidor |
+| Arquivo `table.pgsql` não encontrado | Execute a importação na pasta `ImpulsoCursos` que contém `impulsocursos` |
+| Página não encontrada ou links quebrados | Nome da subpasta `impulsocursos`, endereço usado e pasta onde iniciou o servidor |
 | Porta `8000` ocupada | Encerre o servidor anterior ou use `php -S 127.0.0.1:8001` e troque a porta no navegador |
 | Nenhum curso no catálogo | Entre como administrador e cadastre os cursos; não há carga de exemplos |
 
@@ -249,7 +249,7 @@ Para abrir e visualizar os protótipos `.excalidraw` no VS Code, instale a exten
 
 ## Telas do sistema final
 
-Capturas das telas implementadas no Impulso Cursos. Clique no título de cada tela para visualizar a imagem.
+Capturas das telas implementadas no ImpulsoCursos. Clique no título de cada tela para visualizar a imagem.
 
 <details>
 <summary>Tela inicial pública</summary>
@@ -379,7 +379,7 @@ Capturas das telas implementadas no Impulso Cursos. Clique no título de cada te
 
 ## Evolução do projeto no Trello
 
-O desenvolvimento do **Impulso Cursos** foi acompanhado por um quadro Kanban no Trello.
+O desenvolvimento do **ImpulsoCursos** foi acompanhado por um quadro Kanban no Trello.
 
 As imagens abaixo registram a evolução das tarefas conforme os commits do projeto avançaram.
 
@@ -513,7 +513,7 @@ Atualização do quadro Trello com 56 tarefas concluídas, duas a fazer e uma em
 ## Estrutura principal
 
 ```text
-impulsos_cursos/
+impulsocursos/
 ├── app/                                            # páginas do usuário e da administração
 │   ├── admin.php                                   # painel administrativo
 │   ├── alunos_cursos.php                           # cursos vinculados aos alunos
@@ -580,7 +580,7 @@ impulsos_cursos/
 │   │   ├── tela_inicial.png
 │   │   ├── tela_login.png
 │   │   └── tela_resultado_da_consulta.png
-│   ├── prototipo_impulso_cursos.excalidraw
+│   ├── prototipo_ImpulsoCursos.excalidraw
 │   ├── tela_cadastrar.excalidraw
 │   ├── tela_cadastrar_aluno.excalidraw
 │   ├── tela_confirmar_exclusao.excalidraw
@@ -634,7 +634,7 @@ Confira quais mudanças já foram aplicadas. Os scripts disponíveis são:
 Execute cada script necessário seguindo este formato:
 
 ```powershell
-psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/NOME_DO_SCRIPT.sql
+psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsocursos/database/NOME_DO_SCRIPT.sql
 ```
 
 A migração de vínculos antigos compara e-mails sem espaços nas extremidades e sem diferenciar maiúsculas de minúsculas. Só preenche correspondências únicas nos dois lados e contas livres; preserva vínculos existentes e deixa casos ambíguos sem conta.

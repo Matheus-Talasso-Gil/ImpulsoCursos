@@ -12,7 +12,7 @@ require_once __DIR__ . '/includes/session.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Política de Privacidade | Impulso Cursos</title>
+    <title>Política de Privacidade | ImpulsoCursos</title>
     <?php require __DIR__ . '/includes/stylesheet.php'; ?>
 </head>
 <body>
@@ -22,7 +22,7 @@ require_once __DIR__ . '/includes/session.php';
     <p class="privacy-updated">Última atualização: <time datetime="2026-10-07">7 de outubro de 2026</time>.</p>
     <section aria-labelledby="sobre-politica">
         <h2 id="sobre-politica">1. Sobre esta política</h2>
-        <p>Esta página explica quais dados o Impulso Cursos guarda e para que são usados. Qualquer pessoa pode consultá-la.</p>
+        <p>Esta página explica quais dados o ImpulsoCursos guarda e para que são usados. Qualquer pessoa pode consultá-la.</p>
     </section>
     <section aria-labelledby="dados-coletados">
         <h2 id="dados-coletados">2. Dados coletados</h2>
@@ -58,13 +58,13 @@ require_once __DIR__ . '/includes/session.php';
     </section>
     <section aria-labelledby="projeto-academico">
         <h2 id="projeto-academico">7. Projeto acadêmico</h2>
-        <p>O Impulso Cursos é um sistema fictício desenvolvido para fins educacionais e demonstração acadêmica. Para atividades de teste, utilize dados fictícios.</p>
+        <p>O ImpulsoCursos é um sistema fictício desenvolvido para fins educacionais e demonstração acadêmica. Para atividades de teste, utilize dados fictícios.</p>
         <p>Esta política descreve o funcionamento atual do projeto e não afirma conformidade jurídica completa com a Lei Geral de Proteção de Dados (LGPD).</p>
     </section>
     <section aria-labelledby="atualizacoes-politica">
         <h2 id="atualizacoes-politica">8. Atualizações desta política</h2>
         <p>Esta política poderá ser atualizada quando o funcionamento do projeto mudar. A data da última atualização aparece no início desta página.</p>
-        <p>Para conhecer as regras de utilização da plataforma, consulte os <a href="/impulsos_cursos/termos.php">Termos de Uso</a>.</p>
+        <p>Para conhecer as regras de utilização da plataforma, consulte os <a href="/impulsocursos/termos.php">Termos de Uso</a>.</p>
     </section>
 </main>
 <?php include __DIR__ . '/includes/footer.php'; ?>

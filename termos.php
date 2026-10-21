@@ -12,7 +12,7 @@ require_once __DIR__ . '/includes/session.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Termos de Uso | Impulso Cursos</title>
+    <title>Termos de Uso | ImpulsoCursos</title>
     <?php require __DIR__ . '/includes/stylesheet.php'; ?>
 </head>
 <body>
@@ -22,7 +22,7 @@ require_once __DIR__ . '/includes/session.php';
     <p class="privacy-updated">Última atualização: <time datetime="2026-10-07">7 de outubro de 2026</time>.</p>
     <section aria-labelledby="sobre-sistema">
         <h2 id="sobre-sistema">1. Sobre o sistema</h2>
-        <p>O Impulso Cursos é uma plataforma fictícia desenvolvida para fins educacionais. Conforme o perfil de acesso, permite cadastro de usuário, autenticação, consulta e inscrição em cursos, consulta de perfil e gerenciamento administrativo.</p>
+        <p>O ImpulsoCursos é uma plataforma fictícia desenvolvida para fins educacionais. Conforme o perfil de acesso, permite cadastro de usuário, autenticação, consulta e inscrição em cursos, consulta de perfil e gerenciamento administrativo.</p>
         <p>Os acessos disponíveis são visitante, usuário e administrador. Visitantes podem consultar as páginas públicas e acessar login e cadastro. As áreas internas dependem de autenticação e do tipo da conta.</p>
     </section>
     <section aria-labelledby="cadastro-conta">
@@ -65,7 +65,7 @@ require_once __DIR__ . '/includes/session.php';
         <h2 id="limitacoes-projeto">8. Limitações do projeto</h2>
         <p>Este sistema foi desenvolvido para fins acadêmicos e de demonstração. Ele não representa uma empresa real nem oferece garantia de disponibilidade permanente.</p>
         <p>A plataforma pode ficar indisponível para manutenção, e suas funcionalidades podem ser alteradas durante o desenvolvimento. Estes termos descrevem o uso do projeto e não substituem os termos de um serviço comercial real.</p>
-        <p>Para entender como os dados são utilizados, consulte a <a href="/impulsos_cursos/privacidade.php">Política de Privacidade</a>.</p>
+        <p>Para entender como os dados são utilizados, consulte a <a href="/impulsocursos/privacidade.php">Política de Privacidade</a>.</p>
     </section>
     <section aria-labelledby="alteracoes-termos">
         <h2 id="alteracoes-termos">9. Alterações nos termos</h2>

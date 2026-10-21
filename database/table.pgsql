@@ -134,5 +134,5 @@ $$;
 COMMIT;
 
 -- para atualizar bancos existentes execute no terminal
--- psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/vincular_alunos_usuarios.sql
+-- psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f ImpulsoCursos/database/vincular_alunos_usuarios.sql
 

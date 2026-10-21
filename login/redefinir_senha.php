@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../includes/recuperacao_senha.php';
 if (isset($_SESSION['id'])) {
-    header('Location: /impulsos_cursos/login/perfil.php');
+    header('Location: /impulsocursos/login/perfil.php');
     exit();
 }
 protegerRecuperacaoLocal();
@@ -35,7 +35,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redefinir senha | Impulso Cursos</title>
+    <title>Redefinir senha | ImpulsoCursos</title>
     <?php require __DIR__ . '/../includes/stylesheet.php'; ?>
 </head>
 <body>

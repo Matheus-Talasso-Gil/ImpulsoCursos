@@ -1,4 +1,4 @@
-# Impulso Cursos — Documentação do sistema
+# ImpulsoCursos — Documentação do sistema
 
 Guia para executar, entender e apresentar o projeto.
 
@@ -34,7 +34,7 @@ Guia para executar, entender e apresentar o projeto.
 
 ## 1. Visão geral
 
-A Impulso Cursos é uma empresa fictícia de educação. O sistema apresenta os cursos e permite cadastrar, consultar, atualizar e excluir alunos. Os usuários que acessam a gestão fazem login com e-mail e senha.
+A ImpulsoCursos é uma empresa fictícia de educação. O sistema apresenta os cursos e permite cadastrar, consultar, atualizar e excluir alunos. Os usuários que acessam a gestão fazem login com e-mail e senha.
 
 As explicações seguem o PHP e o SQL do projeto. Os resultados de verificações anteriores aparecem nas seções de revisão.
 
@@ -55,14 +55,14 @@ As explicações seguem o PHP e o SQL do projeto. Os resultados de verificaçõe
 1. Tenha PHP com PDO e o driver PostgreSQL habilitados.
 2. Tenha acesso ao servidor PostgreSQL e às tabelas necessárias.
 3. Copie `database/config.example.php` para `database/config.local.php` e preencha os dados do banco, como explicado no [README](README.md#5-configurar-a-conexão-do-projeto).
-4. Mantenha a pasta do projeto com o nome `impulsos_cursos`, usado nos links.
-5. Abra o terminal na pasta que contém `impulsos_cursos` e execute:
+4. Mantenha o código na subpasta `impulsocursos`, dentro de `ImpulsoCursos`, conforme os links.
+5. Abra o terminal na pasta `ImpulsoCursos` que contém `impulsocursos` e execute:
 
    ```powershell
    php -S localhost:8000
    ```
 
-6. Abra `http://localhost:8000/impulsos_cursos/index.php`.
+6. Abra `http://localhost:8000/impulsocursos/index.php`.
 7. Faça login para acessar as páginas de gestão.
 
 Para instalações novas use `database/table.pgsql`. Em bancos existentes execute `database/vincular_alunos_usuarios.sql`; o comando está no [README](README.md#atualizar-um-banco-existente). Essa migration adiciona o vínculo sem criar contas para alunos antigos ou mudar seus dados e identificadores.
@@ -74,7 +74,7 @@ Abrir o PHP diretamente como arquivo no navegador não executa o código. O serv
 ## 3. Estrutura e fluxo de dados
 
 ```text
-impulsos_cursos/
+impulsocursos/
 ├── app/
 │   ├── admin.php                 # área administrativa
 │   ├── alunos_cursos.php         # consulta dos cursos dos alunos
@@ -139,7 +139,7 @@ impulsos_cursos/
 │   │   ├── tela_inicial.png
 │   │   ├── tela_login.png
 │   │   └── tela_resultado_da_consulta.png
-│   ├── prototipo_impulso_cursos.excalidraw
+│   ├── prototipo_ImpulsoCursos.excalidraw
 │   ├── tela_cadastrar_aluno.excalidraw
 │   ├── tela_cadastrar.excalidraw
 │   ├── tela_confirmar_exclusao.excalidraw
@@ -412,7 +412,7 @@ require_once __DIR__ . '/../includes/functions.php';
 Esse caminho é resolvido no computador que executa o PHP. `..` significa subir uma pasta.
 
 ```php
-header('Location: /impulsos_cursos/index.php');
+header('Location: /impulsocursos/index.php');
 exit();
 ```
 
@@ -466,7 +466,7 @@ Este roteiro é uma orientação de teste, não um registro de testes executados
 | Situação                                                 | Explicação e verificação                                                                                            |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Clicar em Cadastrar, Excluir ou Relatório volta ao login | As páginas exigem `$_SESSION['id']`. Entre antes de usá-las.                                                        |
-| O endereço muda, mas a página não abre corretamente      | Confira se o servidor foi iniciado na pasta que contém `impulsos_cursos`. Os links começam com `/impulsos_cursos/`. |
+| O endereço muda, mas a página não abre corretamente      | Confira se o servidor foi iniciado na pasta `ImpulsoCursos` que contém `impulsocursos`. Os links começam com `/impulsocursos/`. |
 | Depois de atualizar, continuo com os campos preenchidos  | Esse é o fluxo atual. Confira a mensagem de sucesso e volte ao relatório para ver o registro salvo.                 |
 | O formulário não envia                                   | Confira campos obrigatórios, formato de e-mail e limites numéricos indicados pelo navegador.                        |
 | Não consigo localizar um aluno por ID                    | Informe um inteiro positivo até 2147483647 e confira se o cadastro ainda existe.                                    |
@@ -537,7 +537,7 @@ O cadastro usa RETURNING id e salva alunos.usuario_id na mesma transação. O re
 Para registros antigos, [vincular_contas_existentes.sql](database/vincular_contas_existentes.sql) compara lower(trim(email)). Somente correspondências únicas nos dois lados e contas livres são preenchidas. Vínculos existentes, casos ambíguos e dados pessoais são preservados. Execute após a migration estrutural, se o banco for antigo:
 
 ```powershell
-psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsos_cursos/database/vincular_contas_existentes.sql
+psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsocursos/database/vincular_contas_existentes.sql
 ```
 
 ### Relacionamentos nas consultas

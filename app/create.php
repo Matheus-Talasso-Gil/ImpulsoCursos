@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/../includes/session.php';
 if (($_SESSION['tipo'] ?? '') === 'admin') {
-    $destino = '/impulsos_cursos/app/select.php';
+    $destino = '/impulsocursos/app/select.php';
 } else {
-    $destino = '/impulsos_cursos/login/cadastrar.php';
+    $destino = '/impulsocursos/login/cadastrar.php';
 }
 header('Location: ' . $destino);
 exit();

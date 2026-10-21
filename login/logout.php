@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'samesite' => $cookie['samesite'],
         ]);
         session_destroy();
-        header('Location: /impulsos_cursos/index.php');
+        header('Location: /impulsocursos/index.php');
         exit();
     }
 }
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sair | Impulso Cursos</title>
+    <title>Sair | ImpulsoCursos</title>
     <?php require __DIR__ . '/../includes/stylesheet.php'; ?>
 </head>
 <body>

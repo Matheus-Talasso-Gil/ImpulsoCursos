@@ -44,7 +44,7 @@ if (!$ehAdmin) { // evita consultar cursos que nao aparecem no perfil administra
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu perfil | Impulso Cursos</title>
+    <title>Meu perfil | ImpulsoCursos</title>
     <?php require __DIR__ . '/../includes/stylesheet.php'; ?>
 </head>
 <body>
@@ -98,11 +98,11 @@ if (!$ehAdmin) { // evita consultar cursos que nao aparecem no perfil administra
             <?php else: ?>
                 <ul class="profile-course-list">
                     <?php foreach ($cursos as $curso): ?>
-                        <li><a href="/impulsos_cursos/app/curso.php?id=<?= (int) $curso['id'] ?>"><span class="profile-course-name"><?= htmlspecialchars((string) $curso['nome'], ENT_QUOTES, 'UTF-8') ?></span><span class="profile-course-duration"><?= (int) $curso['carga_horaria'] ?> horas de aprendizado</span><span class="profile-course-arrow" aria-hidden="true">&rarr;</span></a></li>
+                        <li><a href="/impulsocursos/app/curso.php?id=<?= (int) $curso['id'] ?>"><span class="profile-course-name"><?= htmlspecialchars((string) $curso['nome'], ENT_QUOTES, 'UTF-8') ?></span><span class="profile-course-duration"><?= (int) $curso['carga_horaria'] ?> horas de aprendizado</span><span class="profile-course-arrow" aria-hidden="true">&rarr;</span></a></li>
                     <?php endforeach; ?>
                 </ul>
             <?php endif; ?>
-            <a class="report-link" href="/impulsos_cursos/app/meus_cursos.php">Ver todos os meus cursos</a>
+            <a class="report-link" href="/impulsocursos/app/meus_cursos.php">Ver todos os meus cursos</a>
         </section>
         <?php endif; ?>
         </div>

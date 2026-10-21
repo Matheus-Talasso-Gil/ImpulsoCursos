@@ -23,7 +23,7 @@ if (!($headerSessaoSomenteLeitura ?? false) && isset($_SESSION['id'])) { // cont
     if (isset($_SESSION['ultima_atividade']) && $agora - $_SESSION['ultima_atividade'] > 1800) { // verifica a inatividade antes de gerar a pagina
         $_SESSION = [];
         session_destroy();
-        header('Location: /impulsos_cursos/login/login.php?expirou=1');
+        header('Location: /impulsocursos/login/login.php?expirou=1');
         exit();
     }
 

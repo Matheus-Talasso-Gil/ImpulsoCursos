@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/session.php';
 if (isset($_SESSION['id']) && ($_SESSION['tipo'] ?? 'usuario') === 'usuario') {
-    header('Location: /impulsos_cursos/app/dashboard.php');
+    header('Location: /impulsocursos/app/dashboard.php');
     exit();
 }
 ?>
@@ -10,16 +10,16 @@ if (isset($_SESSION['id']) && ($_SESSION['tipo'] ?? 'usuario') === 'usuario') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Impulso Cursos</title>
+    <title>ImpulsoCursos</title>
     <?php require __DIR__ . '/includes/stylesheet.php'; ?>
 </head>
 <body>
     <?php include __DIR__ . '/includes/header.php'; ?>
     <main>
         <article>
-            <h1>Impulso Cursos</h1>
+            <h1>ImpulsoCursos</h1>
             <h2>Seu próximo passo começa aqui.</h2>
-            <p>A Impulso Cursos é uma empresa de educação que oferece cursos de informática, inglês e administração. Nossa proposta é ajudar os alunos a desenvolver habilidades para o dia a dia e se preparar para novas oportunidades profissionais.</p>
+            <p>A ImpulsoCursos é uma empresa de educação que oferece cursos de informática, inglês e administração. Nossa proposta é ajudar os alunos a desenvolver habilidades para o dia a dia e se preparar para novas oportunidades profissionais.</p>
         </article>
         <?php ?>
         <?php if (!isset($_SESSION['id'])): ?>
@@ -27,15 +27,15 @@ if (isset($_SESSION['id']) && ($_SESSION['tipo'] ?? 'usuario') === 'usuario') {
                 <h2 id="acesso-title">Acesse sua conta</h2>
                 <p>Para visualizar nossos cursos e realizar inscrições, entre em sua conta ou cadastre-se.</p>
                 <div class="admin-action-links">
-                    <a class="report-link" href="/impulsos_cursos/login/login.php">Entrar</a>
-                    <a class="report-link" href="/impulsos_cursos/login/cadastrar.php">Cadastre-se</a>
+                    <a class="report-link" href="/impulsocursos/login/login.php">Entrar</a>
+                    <a class="report-link" href="/impulsocursos/login/cadastrar.php">Cadastre-se</a>
                 </div>
             </section>
         <?php else: ?>
             <section class="courses" aria-labelledby="courses-title">
                 <h2 id="courses-title">Explore nossos cursos</h2>
                 <p>Confira os cursos disponíveis na plataforma.</p>
-                <a class="report-link" href="/impulsos_cursos/app/cursos.php">Ver todos os cursos</a>
+                <a class="report-link" href="/impulsocursos/app/cursos.php">Ver todos os cursos</a>
             </section>
         <?php endif; ?>
     </main>

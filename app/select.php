@@ -29,7 +29,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório | Impulso Cursos</title>
+    <title>Relatório | ImpulsoCursos</title>
     <?php require __DIR__ . '/../includes/stylesheet.php'; ?>
 </head>
 <body>
@@ -66,7 +66,7 @@ try {
         </div>
         <div class="table-wrapper" tabindex="0" role="region" aria-label="Relatório de alunos">
             <table>
-                <caption>Relatório de alunos da Impulso Cursos</caption>
+                <caption>Relatório de alunos da ImpulsoCursos</caption>
                 <thead>
                     <tr>
                         <th scope="col">ID</th><th scope="col">Nome</th>

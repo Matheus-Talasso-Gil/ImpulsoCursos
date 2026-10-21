@@ -1,8 +1,8 @@
-# Briefing do projeto Impulso Cursos
+# Briefing do projeto ImpulsoCursos
 
 ## Visão do proprietário
 
-Quero um sistema para organizar alunos, contas e cursos da Impulso Cursos. Os alunos devem criar o próprio cadastro e acompanhar suas inscrições. A equipe precisa consultar e atualizar os dados com facilidade. O site deve proteger esses dados e funcionar em computadores e celulares.
+Quero um sistema para organizar alunos, contas e cursos da ImpulsoCursos. Os alunos devem criar o próprio cadastro e acompanhar suas inscrições. A equipe precisa consultar e atualizar os dados com facilidade. O site deve proteger esses dados e funcionar em computadores e celulares.
 
 ## Objetivos
 

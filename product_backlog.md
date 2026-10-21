@@ -1,6 +1,6 @@
-# 📋 Product Backlog — Impulso Cursos
+# 📋 Product Backlog — ImpulsoCursos
 
-Esta lista reúne as funcionalidades e melhorias planejadas para o **Impulso Cursos**. Algumas já foram concluídas; a prioridade indica a ordem do planejamento.
+Esta lista reúne as funcionalidades e melhorias planejadas para o **ImpulsoCursos**. Algumas já foram concluídas; a prioridade indica a ordem do planejamento.
 
 | Prioridade | Item do Product Backlog            | Descrição                                                              |
 | ---------- | ---------------------------------- | ---------------------------------------------------------------------- |

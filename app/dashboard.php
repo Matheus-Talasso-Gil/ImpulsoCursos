@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../login/verificar_user.php';
 if (($_SESSION['tipo'] ?? 'usuario') === 'admin') {
-    header('Location: /impulsos_cursos/app/admin.php');
+    header('Location: /impulsocursos/app/admin.php');
     exit();
 }
 if (($_SESSION['tipo'] ?? 'usuario') !== 'usuario') { // recusa tipos de conta inesperados
@@ -64,7 +64,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Impulso Cursos</title>
+    <title>Dashboard | ImpulsoCursos</title>
     <?php require __DIR__ . '/../includes/stylesheet.php'; ?>
 </head>
 <body>

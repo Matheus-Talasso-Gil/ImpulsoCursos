@@ -34,7 +34,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Favoritos | Impulso Cursos</title>
+    <title>Favoritos | ImpulsoCursos</title>
     <?php require __DIR__ . '/../includes/stylesheet.php'; ?>
 </head>
 <body>
@@ -55,7 +55,7 @@ try {
         <section class="profile-empty favorites-empty" aria-labelledby="favoritos-vazios-titulo">
             <h2 id="favoritos-vazios-titulo">Nenhum curso favoritado ainda</h2>
             <p>Você ainda não favoritou nenhum curso. Escolha um curso e use Favoritar para guardá-lo aqui.</p>
-            <a class="report-link" href="/impulsos_cursos/app/cursos.php">Ver todos os cursos</a>
+            <a class="report-link" href="/impulsocursos/app/cursos.php">Ver todos os cursos</a>
         </section>
     <?php else: ?>
         <section class="courses" aria-label="Cursos favoritos">

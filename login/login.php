@@ -45,14 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrar | Impulso Cursos</title>
+    <title>Entrar | ImpulsoCursos</title>
     <?php require __DIR__ . '/../includes/stylesheet.php'; ?>
 </head>
 <body>
 <?php include __DIR__ . '/../includes/header.php'; ?>
 <main class="auth-page">
     <h1>Entrar</h1>
-    <p>Entre com seu e-mail e senha para acessar sua conta na Impulso Cursos.</p>
+    <p>Entre com seu e-mail e senha para acessar sua conta na ImpulsoCursos.</p>
     <?php if (($_GET['expirou'] ?? '') === '1'): ?>
         <p class="message-warning" role="status">Sua sessão expirou por inatividade. Entre novamente.</p>
     <?php endif; ?>
