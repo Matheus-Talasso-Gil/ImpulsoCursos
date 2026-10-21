@@ -2,7 +2,7 @@
 
 Guia para executar, entender e apresentar o projeto.
 
-**Início rápido:** [README](README.md) · **Página inicial:** [index.php](index.php) · **Estilos:** [style.css](css/style.css)
+**Início rápido:** [README](../README.md) · **Página inicial (local esperado):** `../index.php` · **Estilos:** [style.css](../css/style.css)
 
 ## Como usar este guia
 
@@ -52,9 +52,11 @@ As explicações seguem o PHP e o SQL do projeto. Os resultados de verificaçõe
 
 ## 2. Preparação e execução
 
+Os caminhos de código citados neste guia partem da raiz `impulsocursos/`; a documentação fica em `escrito.md/`. Antes de executar, devolva `index.php`, `privacidade.php` e `termos.php` à raiz: a movimentação dessas páginas para a pasta de documentação impede o funcionamento dos caminhos atuais.
+
 1. Tenha PHP com PDO e o driver PostgreSQL habilitados.
 2. Tenha acesso ao servidor PostgreSQL e às tabelas necessárias.
-3. Copie `database/config.example.php` para `database/config.local.php` e preencha os dados do banco, como explicado no [README](README.md#3-configurar-a-conexão).
+3. Copie `database/config.example.php` para `database/config.local.php` e preencha os dados do banco, como explicado no [README](../README.md#3-configurar-a-conexão).
 4. Mantenha o código na subpasta `impulsocursos`, dentro de `ImpulsoCursos`, conforme os links.
 5. Abra o terminal na pasta `ImpulsoCursos` que contém `impulsocursos` e execute:
 
@@ -65,7 +67,7 @@ As explicações seguem o PHP e o SQL do projeto. Os resultados de verificaçõe
 6. Abra `http://localhost:8000/impulsocursos/index.php`.
 7. Faça login para acessar as páginas de gestão.
 
-Para instalações novas use `database/table.pgsql`. Em bancos existentes execute `database/vincular_alunos_usuarios.sql`; o comando está no [README](README.md#atualizar-um-banco-existente). Essa migration adiciona o vínculo sem criar contas para alunos antigos ou mudar seus dados e identificadores.
+Para instalações novas use `database/table.pgsql`. Em bancos existentes execute `database/vincular_alunos_usuarios.sql`; o comando está no [README](../README.md#atualizar-um-banco-existente). Essa migration adiciona o vínculo sem criar contas para alunos antigos ou mudar seus dados e identificadores.
 
 Abrir o PHP diretamente como arquivo no navegador não executa o código. O servidor PHP precisa estar rodando.
 
@@ -74,102 +76,26 @@ Abrir o PHP diretamente como arquivo no navegador não executa o código. O serv
 ## 3. Estrutura e fluxo de dados
 
 ```text
-impulsocursos/
-├── app/
-│   ├── admin.php                 # área administrativa
-│   ├── alunos_cursos.php         # consulta dos cursos dos alunos
-│   ├── create.php                # redirecionamento para cadastro/relatório
-│   ├── curso.php                 # detalhes e inscrição em um curso
-│   ├── curso_create.php          # cadastro de cursos
-│   ├── curso_delete.php          # exclusão de cursos
-│   ├── curso_update.php          # edição de cursos
-│   ├── cursos.php                # catálogo de cursos
-│   ├── cursos_admin.php          # gestão administrativa de cursos
-│   ├── delete.php                # exclusão de alunos
-│   ├── meus_cursos.php           # cursos da conta autenticada
-│   ├── select.php                # relatório/listagem de alunos
-│   ├── select_w_w.php            # consulta individual
-│   ├── tabela.md                 # documentação relacionada às tabelas
-│   ├── update.php                # edição de alunos
-│   └── usuarios.php              # consulta de usuários e seus vínculos
-│
-├── css/
-│   └── style.css                 # estilos compartilhados do sistema
-│
-├── database/
-│   ├── adicionar_created_at_usuarios.sql
-│   ├── adicionar_favoritos.sql
-│   ├── adicionar_logs_admin.sql
-│   ├── adicionar_tipo_usuario.sql
-│   ├── ajustar_senha.sql
-│   ├── config.example.php        # modelo de configuração local
-│   ├── connect_postgres.php      # conexão com PostgreSQL
-│   ├── garantir_campos_obrigatorios.sql
-│   ├── garantir_email_unico_usuarios.sql
-│   ├── table.pgsql               # estrutura para novas instalações
-│   ├── vincular_alunos_usuarios.sql
-│   └── vincular_contas_existentes.sql
-│
-├── includes/
-│   ├── curso_admin_form.php      # formulário compartilhado de gestão de cursos
-│   ├── data_conta.php            # formatação da data de criação da conta
-│   ├── footer.php                # rodapé compartilhado
-│   ├── functions.php             # funções reutilizadas pelo sistema
-│   ├── header.php                # cabeçalho e menu conforme o tipo de usuário
-│   ├── recuperacao_senha.php      # funções de recuperação de senha demonstrativa local
-│   └── session.php               # gerenciamento da sessão
-│
-├── login/
-│   ├── cadastrar.php             # cadastro público de usuário
-│   ├── login.php                 # autenticação
-│   ├── logout.php                # encerramento da sessão
-│   ├── perfil.php                # perfil do usuário
-│   ├── recuperar_senha.php       # solicitação de recuperação de senha
-│   ├── redefinir_senha.php       # definição de uma nova senha
-│   ├── verificar_admin.php       # proteção de páginas administrativas
-│   ├── verificar_cpf.php         # validação/verificação de CPF
-│   └── verificar_user.php        # proteção de páginas autenticadas
-│
-├── prototipos/
-│   ├── imagens/
-│   │   ├── tela_cadastrar_aluno.png
-│   │   ├── tela_cadastrar.png
-│   │   ├── tela_confirmar_exclusao.png
-│   │   ├── tela_excluir.png
-│   │   ├── tela_inicial.png
-│   │   ├── tela_login.png
-│   │   └── tela_resultado_da_consulta.png
-│   ├── prototipo_ImpulsoCursos.excalidraw
-│   ├── tela_cadastrar_aluno.excalidraw
-│   ├── tela_cadastrar.excalidraw
-│   ├── tela_confirmar_exclusao.excalidraw
-│   ├── tela_consultar.excalidraw
-│   ├── tela_excluir.excalidraw
-│   ├── tela_inicial.excalidraw
-│   ├── tela_login.excalidraw
-│   └── tela_resultado_da_consulta.excalidraw
-│
-├── trello/
-│   ├── primeiros7commits.png
-│   ├── commits8-15.png
-│   ├── commits16-21.png
-│   ├── commits22-28.png
-│   ├── commits29-35.png
-│   ├── commits36-42.png
-│   ├── commits43-49.png
-│   ├── commits50-56.png
-│   ├── commits57-63.png
-│   ├── commits64-70.png
-│   ├── commits71-77.png
-│   ├── commits78-84.png
-│   └── commits85-91.png
-│
-├── briefing.md
-├── diagrama.md
-├── dicionario.md
-├── documentacao.md
-├── index.php
-└── README.md
+ImpulsoCursos/
+└── impulsocursos/
+    ├── app/                 # páginas de alunos, cursos e administração
+    ├── css/                 # estilos do site
+    ├── database/            # conexão, configuração e scripts SQL
+    ├── escrito.md/          # documentação do projeto
+    │   ├── briefing.md
+    │   ├── diagrama.md
+    │   ├── dicionario.md
+    │   ├── documentacao.md
+    │   ├── product_backlog.md
+    │   ├── index.php        # movido para cá; precisa voltar à raiz
+    │   ├── privacidade.php  # movido para cá; precisa voltar à raiz
+    │   └── termos.php      # movido para cá; precisa voltar à raiz
+    ├── imagens finais/      # capturas das telas
+    ├── includes/            # componentes e funções compartilhadas
+    ├── login/               # autenticação, cadastro e perfil
+    ├── prototipos/          # arquivos Excalidraw e imagens
+    ├── trello/              # acompanhamento do projeto
+    └── README.md            # apresentação e instalação
 ```
 
 A árvore destaca os arquivos explicados neste guia; arquivos auxiliares de SQL e anotações não estão representados.
@@ -292,7 +218,7 @@ O campo `ativo` representa a situação do aluno e não determina acesso à cont
 
 ### 5.2. Funções de acesso aos dados
 
-Arquivo: [includes/functions.php](includes/functions.php).
+Arquivo: [includes/functions.php](../includes/functions.php).
 
 | Função                                                                 | O que faz                                                                                                   |
 | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -479,7 +405,7 @@ Este roteiro é uma orientação de teste, não um registro de testes executados
 
 ## 10. Limitações da versão atual
 
-- Novas senhas são gravadas com `password_hash()` e verificadas com `password_verify()`. Antes de usar, execute `database/ajustar_senha.sql` para ampliar o campo para `VARCHAR(255)`. Senhas antigas em texto precisam ser convertidas ou redefinidas; o login não aceita texto puro armazenado no banco.
+- Novas senhas são gravadas com `password_hash()` e verificadas com `password_verify()`. Em bancos antigos, confira se `usuarios.senha` é `VARCHAR(255)`, como definido em `database/table.pgsql`; o antigo script `ajustar_senha.sql` não está mais no projeto. Senhas antigas em texto precisam ser convertidas ou redefinidas; o login não aceita texto puro armazenado no banco.
 - A edição de aluno valida nome, e-mail e situação no servidor. Os formulários de busca, edição e exclusão aceitam IDs positivos até 2147483647.
 - O cadastro inicia o campo legado turma como Sem turma; esse campo não determina inscrições.
 - Cadastro, edição e exclusão de aluno, vínculo, inscrição em cursos, gestão de cursos e recuperação de senha possuem token CSRF. A edição também confere se o aluno do formulário continua sendo o selecionado na sessão, impedindo salvar em outro aluno ao alternar abas. A cobertura não inclui todos os formulários do sistema.
@@ -534,7 +460,7 @@ Para testar no próprio computador: abra o site por `localhost`, saia da conta, 
 
 O cadastro usa RETURNING id e salva alunos.usuario_id na mesma transação. O relatório mostra **Cursos**, com STRING_AGG e uma linha por aluno; sem inscrições mostra **Sem curso**. O filtro usa cursos cadastrados e EXISTS, mantendo visíveis todos os cursos do aluno encontrado. A coluna Conta e a etapa administrativa de vinculação foram removidas.
 
-Para registros antigos, [vincular_contas_existentes.sql](database/vincular_contas_existentes.sql) compara lower(trim(email)). Somente correspondências únicas nos dois lados e contas livres são preenchidas. Vínculos existentes, casos ambíguos e dados pessoais são preservados. Execute após a migration estrutural, se o banco for antigo:
+Para registros antigos, [vincular_contas_existentes.sql](../database/vincular_contas_existentes.sql) compara lower(trim(email)). Somente correspondências únicas nos dois lados e contas livres são preenchidas. Vínculos existentes, casos ambíguos e dados pessoais são preservados. Execute após a migration estrutural, se o banco for antigo:
 
 ```powershell
 psql -h HOST -U USUARIO -d BANCO -v ON_ERROR_STOP=1 -f impulsocursos/database/vincular_contas_existentes.sql

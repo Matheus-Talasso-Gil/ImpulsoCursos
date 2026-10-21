@@ -8,7 +8,7 @@ O ImpulsoCursos é uma aplicação web para organizar alunos, contas e cursos de
 - **Organização:** alunos, contas e inscrições reunidos no mesmo sistema.
 - **Controle de acesso:** funções específicas para usuários e administradores.
 
-O planejamento das entregas está no [Product Backlog](product_backlog.md).
+O planejamento das entregas está no [Product Backlog](escrito.md/product_backlog.md).
 
 ## Tecnologias utilizadas
 
@@ -38,9 +38,13 @@ O planejamento das entregas está no [Product Backlog](product_backlog.md).
 | Usuário | Dashboard, perfil, catálogo, inscrições e favoritos. |
 | Administrador | Painel, alunos, contas, gerenciamento de cursos e histórico. |
 
-A recuperação de senha é uma demonstração local para contas comuns de teste. Não envia e-mail nem verifica identidade. Veja as [limitações do fluxo](documentacao.md#recuperação-de-senha-demonstração-local).
+A recuperação de senha é uma demonstração local para contas comuns de teste. Não envia e-mail nem verifica identidade. Veja as [limitações do fluxo](escrito.md/documentacao.md#recuperação-de-senha-demonstração-local).
 
 ## Como executar o projeto localmente
+
+### Organização dos arquivos antes de executar
+
+A pasta `escrito.md/` reúne os documentos Markdown. Atualmente, `index.php`, `privacidade.php` e `termos.php` também foram movidos para ela. Essas três páginas precisam voltar à raiz de `impulsocursos/` para que os includes e os links atuais do site funcionem. Os passos abaixo pressupõem essa correção.
 
 ### Pré-requisitos
 
@@ -130,10 +134,12 @@ Entre novamente para acessar o painel e cadastrar os primeiros cursos. Use outra
 
 ## Documentação do projeto
 
-- [Documentação técnica e roteiro de testes](documentacao.md)
-- [Dicionário de dados](dicionario.md)
-- [Diagramas de entidades e fluxos](diagrama.md)
-- [Briefing do cliente](briefing.md)
+Os documentos estão na pasta `escrito.md/`. O `README.md` permanece na raiz como guia de apresentação e instalação.
+
+- [Documentação técnica e roteiro de testes](escrito.md/documentacao.md)
+- [Dicionário de dados](escrito.md/dicionario.md)
+- [Diagramas de entidades e fluxos](escrito.md/diagrama.md)
+- [Briefing do cliente](escrito.md/briefing.md)
 
 ## Protótipos
 
@@ -444,75 +450,26 @@ Atualização do quadro Trello com 56 tarefas concluídas, duas a fazer e uma em
 ## Estrutura principal
 
 ```text
-impulsocursos/
-├── app/                                            # páginas do usuário e da administração
-│   ├── admin.php                                   # painel administrativo
-│   ├── alunos_cursos.php                           # cursos vinculados aos alunos
-│   ├── create.php                                  # redireciona para cadastro ou relatório
-│   ├── curso.php                                   # processamento das ações de um curso
-│   ├── curso_create.php                            # cadastro de cursos
-│   ├── curso_delete.php                            # exclusão de cursos
-│   ├── curso_update.php                            # edição de cursos
-│   ├── cursos.php                                  # catálogo e inscrições
-│   ├── cursos_admin.php                            # gerenciamento de cursos
-│   ├── dashboard.php                               # dashboard do usuário
-│   ├── delete.php                                  # exclusão de alunos
-│   ├── favoritos.php                               # cursos favoritos
-│   ├── logs_admin.php                              # histórico administrativo
-│   ├── meus_cursos.php                             # inscrições e cancelamentos
-│   ├── select.php                                  # relatório de alunos
-│   ├── select_w_w.php                              # consulta por ID ou CPF
-│   ├── tabela.md                                   # documentação das tabelas
-│   ├── update.php                                  # edição de alunos
-│   └── usuarios.php                                # contas e vínculos com alunos
-├── css/
-│   └── style.css                                   # estilos compartilhados
-├── database/                                       # conexão e scripts de criação e migração
-│   ├── adicionar_created_at_usuarios.sql
-│   ├── adicionar_favoritos.sql
-│   ├── adicionar_logs_admin.sql
-│   ├── adicionar_tipo_usuario.sql
-│   ├── config.example.php                          # modelo de configuração
-│   ├── config.local.php                            # credenciais da instalação local
-│   ├── connect_postgres.php                        # conexão PDO com PostgreSQL
-│   ├── garantir_campos_obrigatorios.sql
-│   ├── garantir_email_unico_usuarios.sql
-│   ├── table.pgsql                                 # estrutura para banco novo
-│   ├── vincular_alunos_usuarios.sql
-│   └── vincular_contas_existentes.sql
-├── imagens finais/                                 # capturas das telas implementadas
-├── includes/                                       # componentes e funções compartilhadas
-│   ├── acesso_negado.php                           # página de acesso negado
-│   ├── curso_admin_form.php                        # formulário de criação e edição de cursos
-│   ├── data_conta.php                              # formatação da data da conta
-│   ├── footer.php                                  # rodapé
-│   ├── functions.php                               # validações e operações do sistema
-│   ├── header.php                                  # cabeçalho e menus
-│   ├── recuperacao_senha.php                       # recuperação demonstrativa local
-│   ├── session.php                                 # inicialização e expiração da sessão
-│   └── stylesheet.php                              # carregamento do CSS
-├── login/                                          # cadastro autenticação e perfil
-│   ├── cadastrar.php
-│   ├── login.php
-│   ├── logout.php
-│   ├── perfil.php
-│   ├── recuperar_senha.php
-│   ├── redefinir_senha.php
-│   ├── verificar_admin.php
-│   ├── verificar_cpf.php
-│   └── verificar_user.php
-├── prototipos/                                     # arquivos Excalidraw e suas imagens
-│   ├── imagens/
-├── trello/                                         # registros do acompanhamento do projeto
-├── briefing.md
-├── diagrama.md
-├── dicionario.md
-├── documentacao.md
-├── index.php                                       # página inicial
-├── privacidade.php                                 # política de privacidade
-├── product_backlog.md
-├── README.md
-└── termos.php                                      # termos de uso
+ImpulsoCursos/
+└── impulsocursos/
+    ├── app/                 # páginas de alunos, cursos e administração
+    ├── css/                 # estilos do site
+    ├── database/            # conexão, configuração e scripts SQL
+    ├── escrito.md/          # documentação do projeto
+    │   ├── briefing.md
+    │   ├── diagrama.md
+    │   ├── dicionario.md
+    │   ├── documentacao.md
+    │   ├── product_backlog.md
+    │   ├── index.php        # movido para cá; precisa voltar à raiz
+    │   ├── privacidade.php  # movido para cá; precisa voltar à raiz
+    │   └── termos.php      # movido para cá; precisa voltar à raiz
+    ├── imagens finais/      # capturas das telas
+    ├── includes/            # componentes e funções compartilhadas
+    ├── login/               # autenticação, cadastro e perfil
+    ├── prototipos/          # arquivos Excalidraw e imagens
+    ├── trello/              # acompanhamento do projeto
+    └── README.md            # apresentação e instalação
 ```
 
 ## Atualizar um banco existente
@@ -548,7 +505,7 @@ Login, cadastro, recuperação, inscrições, cancelamentos, favoritos e gravaç
 
 O CPF tem os dígitos verificadores conferidos no cadastro. Isso não consulta a Receita Federal nem confirma titularidade. Na edição administrativa, o CPF original é preservado.
 
-A recuperação de senha serve apenas para demonstração local. Há credenciais no arquivo local versionado e no histórico Git; elas precisam ser trocadas antes de usar dados reais. Veja os [detalhes da revisão de segurança](documentacao.md#revisão-de-segurança-e-banco-em-14102026).
+A recuperação de senha serve apenas para demonstração local. Há credenciais no arquivo local versionado e no histórico Git; elas precisam ser trocadas antes de usar dados reais. Veja os [detalhes da revisão de segurança](escrito.md/documentacao.md#revisão-de-segurança-e-banco-em-14102026).
 
 ## Conferência manual
 
@@ -556,7 +513,7 @@ Confira o cadastro e o login, o dashboard, os filtros do catálogo, a inscriçã
 
 Com a conta administrativa, confira consultas, filtros do relatório, edição e exclusão de alunos, gestão de cursos e histórico das ações. Alunos sem conta devem continuar no relatório; excluir um aluno deve preservar a conta e suas inscrições. Cursos com inscrições não devem ser excluídos.
 
-O [roteiro completo](documentacao.md#8-conferência-manual) traz outros cenários. Estas instruções não significam que os testes foram executados no banco real.
+O [roteiro completo](escrito.md/documentacao.md#8-conferência-manual) traz outros cenários. Estas instruções não significam que os testes foram executados no banco real.
 
 ## Publicar alterações no GitHub
 

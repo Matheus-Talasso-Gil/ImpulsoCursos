@@ -108,3 +108,13 @@ Quero um sistema para organizar alunos, contas e cursos da ImpulsoCursos. Os alu
 2. Melhorar busca, filtros e experiência em dispositivos móveis.
 3. Implementar permissões, gestão de turmas e histórico.
 4. Manter catálogo, gestão de cursos, inscrições, cancelamento, perfil e indicadores administrativos; avaliar exportações, indicadores por turma e recuperação de senha para uso real.
+
+## Documentos relacionados
+
+Este briefing faz parte da documentação reunida em `escrito.md/`.
+
+- [Apresentação e instalação](../README.md)
+- [Documentação técnica](documentacao.md)
+- [Dicionário de dados](dicionario.md)
+- [Diagramas](diagrama.md)
+- [Product Backlog](product_backlog.md)
