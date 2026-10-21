@@ -1,4 +1,7 @@
 <?php
+
+// lista para o administrador os alunos suas contas e cursos com uma linha por curso incluindo alunos sem conta ou inscricoes
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../database/connect_postgres.php';

@@ -1,4 +1,7 @@
 <?php
+
+// permite ao administrador cadastrar e editar cursos validando dados e token csrf registrando as acoes no historico e exibindo mensagens de sucesso ou erro
+
 require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/functions.php';

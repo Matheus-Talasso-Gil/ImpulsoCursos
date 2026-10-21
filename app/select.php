@@ -1,4 +1,7 @@
 <?php
+
+// exibe o relatorio de alunos para o administrador com filtros por curso e situacao dados cadastrais e opcao de editar
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../includes/functions.php';

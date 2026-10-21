@@ -1,4 +1,7 @@
 <?php
+
+// inicia a sessao com protecoes de cookie e encerra o acesso apos 30 minutos de inatividade redirecionando para o login
+
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.use_strict_mode', '1'); // recusa ids de sessao nao inicializados
     ini_set('session.use_only_cookies', '1');

@@ -1,4 +1,7 @@
 <?php
+
+// permite redefinir senhas de contas comuns apenas no computador local validando tokens com prazo de dez minutos e salvando a nova senha como hash
+
 function protegerRecuperacaoLocal() // restringe a demonstracao local pois nao verifica identidade
 {
     if (!in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)) {

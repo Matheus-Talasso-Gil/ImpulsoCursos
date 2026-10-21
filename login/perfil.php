@@ -1,4 +1,7 @@
 <?php
+
+// exibe os dados e a data de criacao da conta o cadastro do aluno e uma previa de ate tres cursos para usuarios comuns adaptando o perfil ao tipo de conta
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/verificar_user.php';
 require_once __DIR__ . '/../includes/functions.php';

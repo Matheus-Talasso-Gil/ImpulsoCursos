@@ -1,4 +1,7 @@
 <?php
+
+// carrega as configuracoes do ambiente ou arquivo local conecta ao postgresql com pdo e em caso de falha registra o erro no servidor e retorna codigo 503
+
 $configLocal = __DIR__ . '/config.local.php';
 $config = is_file($configLocal) ? require $configLocal : [];
 $host = getenv('DB_HOST') ?: ($config['host'] ?? '');

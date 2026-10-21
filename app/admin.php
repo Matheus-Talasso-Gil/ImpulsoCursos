@@ -1,4 +1,7 @@
 <?php
+
+// exibe o painel exclusivo do administrador com totais de alunos usuarios cursos e inscricoes e links para gerenciamento
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../database/connect_postgres.php';

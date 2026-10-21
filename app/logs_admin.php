@@ -1,4 +1,7 @@
 <?php
+
+// exibe para o administrador as ultimas 100 acoes registradas com data responsavel acao entidade id e descricao
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../database/connect_postgres.php';

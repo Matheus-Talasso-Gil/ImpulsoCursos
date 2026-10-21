@@ -1,3 +1,5 @@
+-- prepara o vinculo opcional e unico entre aluno e conta e impede alterar id cpf nascimento e um vinculo ja definido aplicando tudo em uma transacao
+
 BEGIN;
 
 ALTER TABLE alunos ADD COLUMN IF NOT EXISTS usuario_id INTEGER;

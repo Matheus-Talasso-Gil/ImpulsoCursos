@@ -1,4 +1,7 @@
 <?php
+
+// inicia a recuperacao de senha apenas no computador local valida o token csrf e permite continuar sem enviar email nem revelar se a conta existe
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../includes/recuperacao_senha.php';
 if (isset($_SESSION['id'])) {

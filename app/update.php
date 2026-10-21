@@ -1,4 +1,7 @@
 <?php
+
+// permite ao administrador editar nome email e situacao do aluno validando dados e token csrf preservando id cpf e nascimento e evitando trocar o aluno entre abas
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../includes/functions.php';

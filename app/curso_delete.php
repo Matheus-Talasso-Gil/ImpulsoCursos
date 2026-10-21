@@ -1,4 +1,7 @@
 <?php
+
+// permite ao administrador excluir cursos sem inscricoes valida o id e o token csrf registra a exclusao no historico e redireciona ou exibe erros
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../includes/functions.php';

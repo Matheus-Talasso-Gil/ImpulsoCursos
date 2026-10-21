@@ -1,4 +1,7 @@
 <?php
+
+// solicita confirmacao de saida valida o token csrf apaga os dados e o cookie da sessao encerra a sessao e redireciona para o inicio
+
 require_once __DIR__ . '/verificar_user.php';
 $_SESSION['logout_token'] ??= bin2hex(random_bytes(32));
 $erro = '';

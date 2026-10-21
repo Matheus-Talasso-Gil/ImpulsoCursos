@@ -1,4 +1,7 @@
 <?php
+
+// lista os cursos permite filtrar ingles e tecnologia pelo nome e realizar inscricoes com token csrf indicando cursos ja inscritos e exibindo sucesso ou erros
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_user.php';
 require_once __DIR__ . '/../includes/functions.php';

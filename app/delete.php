@@ -1,4 +1,7 @@
 <?php
+
+// permite ao administrador excluir alunos com token csrf e confirmacao adicional quando possuem cursos preservando a conta e as inscricoes
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../includes/functions.php';

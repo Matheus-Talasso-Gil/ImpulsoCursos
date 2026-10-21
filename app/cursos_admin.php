@@ -1,4 +1,7 @@
 <?php
+
+// lista os cursos e a quantidade de inscritos para o administrador com opcoes de cadastrar editar e excluir e mensagens de sucesso ou erro
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../includes/functions.php';

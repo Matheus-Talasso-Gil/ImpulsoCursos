@@ -1,4 +1,7 @@
 <?php
+// exibe o formulario de cadastro valida o token csrf cria a conta junto ao aluno e redireciona para o login ou exibe erros
+
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../includes/functions.php';
 if (isset($_SESSION['id'])) {

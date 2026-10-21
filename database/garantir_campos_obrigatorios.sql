@@ -1,3 +1,5 @@
+-- torna obrigatorios os campos indicados define ativo como verdadeiro por padrao e aplica tudo em uma transacao que falha se houver valores nulos nesses campos
+
 BEGIN;
 
 -- alinha bancos antigos ao schema sem preencher nem apagar registros

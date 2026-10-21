@@ -1,4 +1,7 @@
 <?php
+
+// exibe a pagina de acesso restrito com codigo 403 informando a falta de permissao e oferecendo links para o inicio e meus cursos
+
 require_once __DIR__ . '/session.php';
 http_response_code(403);
 ?>

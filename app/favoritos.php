@@ -1,4 +1,7 @@
 <?php
+
+// lista os cursos favoritos do usuario permite remover favoritos com token csrf e exibe mensagens de sucesso erro ou lista vazia
+
 require_once __DIR__ . '/../login/verificar_user.php';
 require_once __DIR__ . '/../includes/functions.php';
 $_SESSION['favoritos_token'] ??= bin2hex(random_bytes(32)); // protege os favoritos contra csrf

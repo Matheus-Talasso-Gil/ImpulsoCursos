@@ -1,6 +1,7 @@
+-- bloqueia alteracoes temporariamente verifica emails duplicados e garante a unicidade do email se necessario cancelando a transacao caso encontre duplicatas
+
 BEGIN;
 
--- impede novos cadastros durante a verificacao de duplicatas
 LOCK TABLE usuarios IN SHARE ROW EXCLUSIVE MODE;
 
 DO $$

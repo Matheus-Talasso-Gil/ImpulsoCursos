@@ -1,4 +1,7 @@
 <?php
+
+// lista para o administrador as contas cadastradas com id email tipo data de criacao e aluno vinculado sem consultar senhas
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../database/connect_postgres.php';

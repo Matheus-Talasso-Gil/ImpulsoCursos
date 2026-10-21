@@ -1,4 +1,5 @@
--- impede favoritos duplicados e vincula cada favorito a uma conta e um curso
+-- cria a tabela de favoritos se nao existir impede duplicatas e remove os favoritos automaticamente quando a conta ou o curso e excluido
+
 CREATE TABLE IF NOT EXISTS favoritos (
     id SERIAL PRIMARY KEY,
     usuario_id INTEGER NOT NULL,

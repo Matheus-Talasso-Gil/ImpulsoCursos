@@ -1,4 +1,7 @@
 <?php
+
+// permite redefinir a senha apenas no computador local valida os tokens e a nova senha e exibe sucesso ou erro
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../includes/recuperacao_senha.php';
 if (isset($_SESSION['id'])) {

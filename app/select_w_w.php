@@ -1,4 +1,7 @@
 <?php
+
+// permite ao administrador consultar alunos por id ou cpf com ou sem mascara exibindo os dados encontrados ou mensagens de erro
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_admin.php';
 require_once __DIR__ . '/../includes/functions.php';

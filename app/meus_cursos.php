@@ -1,4 +1,7 @@
 <?php
+
+// lista os cursos do usuario e permite cancelar suas inscricoes com confirmacao e token csrf exibindo mensagens de sucesso ou erro
+
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../login/verificar_user.php';
 require_once __DIR__ . '/../includes/functions.php';

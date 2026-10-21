@@ -1,4 +1,7 @@
 <?php
+
+// exibe o painel do usuario com resumo da conta totais e previas de cursos e favoritos atalhos de navegacao e redireciona administradores para o painel administrativo
+
 require_once __DIR__ . '/../login/verificar_user.php';
 if (($_SESSION['tipo'] ?? 'usuario') === 'admin') {
     header('Location: /impulsocursos/app/admin.php');

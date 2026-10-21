@@ -1,4 +1,7 @@
 <?php
+
+// valida e formata a data de criacao da conta sem alterar o fuso horario e retorna nao informada quando o valor e invalido
+
 function formatarDataCriacaoConta($valor) // exibe o horario do banco sem conversao de fuso
 {
     if (!is_string($valor) || !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:\.\d{1,6})?$/D', $valor)) {
