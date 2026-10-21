@@ -54,7 +54,7 @@ As explicações seguem o PHP e o SQL do projeto. Os resultados de verificaçõe
 
 1. Tenha PHP com PDO e o driver PostgreSQL habilitados.
 2. Tenha acesso ao servidor PostgreSQL e às tabelas necessárias.
-3. Copie `database/config.example.php` para `database/config.local.php` e preencha os dados do banco, como explicado no [README](README.md#5-configurar-a-conexão-do-projeto).
+3. Copie `database/config.example.php` para `database/config.local.php` e preencha os dados do banco, como explicado no [README](README.md#3-configurar-a-conexão).
 4. Mantenha o código na subpasta `impulsocursos`, dentro de `ImpulsoCursos`, conforme os links.
 5. Abra o terminal na pasta `ImpulsoCursos` que contém `impulsocursos` e execute:
 
