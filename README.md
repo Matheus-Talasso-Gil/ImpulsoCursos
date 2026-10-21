@@ -503,37 +503,7 @@ impulsocursos/
 │   └── verificar_user.php
 ├── prototipos/                                     # arquivos Excalidraw e suas imagens
 │   ├── imagens/
-│   │   ├── tela_cadastrar.png
-│   │   ├── tela_cadastrar_aluno.png
-│   │   ├── tela_confirmar_exclusao.png
-│   │   ├── tela_excluir.png
-│   │   ├── tela_inicial.png
-│   │   ├── tela_login.png
-│   │   └── tela_resultado_da_consulta.png
-│   ├── prototipo_ImpulsoCursos.excalidraw
-│   ├── tela_cadastrar.excalidraw
-│   ├── tela_cadastrar_aluno.excalidraw
-│   ├── tela_confirmar_exclusao.excalidraw
-│   ├── tela_consultar.excalidraw
-│   ├── tela_excluir.excalidraw
-│   ├── tela_inicial.excalidraw
-│   ├── tela_login.excalidraw
-│   └── tela_resultado_da_consulta.excalidraw
 ├── trello/                                         # registros do acompanhamento do projeto
-│   ├── commits16-21.png
-│   ├── commits22-28.png
-│   ├── commits29-35.png
-│   ├── commits36-42.png
-│   ├── commits43-49.png
-│   ├── commits50-56.png
-│   ├── commits57-63.png
-│   ├── commits64-70.png
-│   ├── commits71-77.png
-│   ├── commits78-84.png
-│   ├── commits8-15.png
-│   ├── commits85-91.png
-│   ├── commits92-98.png
-│   └── primeiros7commits.png
 ├── briefing.md
 ├── diagrama.md
 ├── dicionario.md
